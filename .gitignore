@@ -1,0 +1,7 @@
+/.idea/**
+!/.idea/codeStyleSettings.xml
+/target/
+/*.xml
+!/pom.xml
+*.iml
+/.idea/
