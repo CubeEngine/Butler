@@ -27,55 +27,26 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.bukkit.Difficulty;
-import org.bukkit.DyeColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.WorldType;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Villager.Profession;
-import org.bukkit.inventory.ItemStack;
-
 import de.cubeisland.engine.command.BaseCommandSender;
+import de.cubeisland.engine.command.exception.InvalidArgumentException;
 import de.cubeisland.engine.command.reader.readers.BooleanReader;
 import de.cubeisland.engine.command.reader.readers.ByteReader;
-import de.cubeisland.engine.command.reader.readers.DifficultyReader;
 import de.cubeisland.engine.command.reader.readers.DoubleReader;
-import de.cubeisland.engine.command.reader.readers.DyeColorReader;
-import de.cubeisland.engine.command.reader.readers.EnchantmentReader;
-import de.cubeisland.engine.command.reader.readers.EntityTypeReader;
-import de.cubeisland.engine.command.reader.readers.EnvironmentReader;
 import de.cubeisland.engine.command.reader.readers.FloatReader;
 import de.cubeisland.engine.command.reader.readers.IntReader;
 import de.cubeisland.engine.command.reader.readers.IntegerOrAllReader;
-import de.cubeisland.engine.command.reader.readers.ItemStackReader;
-import de.cubeisland.engine.command.reader.readers.LogLevelReader;
 import de.cubeisland.engine.command.reader.readers.LongReader;
-import de.cubeisland.engine.command.reader.readers.OfflinePlayerReader;
-import de.cubeisland.engine.command.reader.readers.ProfessionReader;
 import de.cubeisland.engine.command.reader.readers.ShortReader;
 import de.cubeisland.engine.command.reader.readers.StringReader;
-import de.cubeisland.engine.command.reader.readers.UserListOrAllReader;
-import de.cubeisland.engine.command.reader.readers.UserListReader;
-import de.cubeisland.engine.command.reader.readers.UserOrAllReader;
-import de.cubeisland.engine.command.reader.readers.UserReader;
-import de.cubeisland.engine.command.reader.readers.WorldReader;
-import de.cubeisland.engine.command.reader.readers.WorldTypeReader;
-import de.cubeisland.engine.core.Core;
-import de.cubeisland.engine.core.user.User;
-import de.cubeisland.engine.command.exception.InvalidArgumentException;
-import sun.util.logging.resources.logging.LogLevel;
 
 public abstract class ArgumentReader
 {
     // TODO unregister reader from a module!!! else memory leakage
-    private static final Map<Class<?>, ArgumentReader> READERS = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, ArgumentReader> READERS = new ConcurrentHashMap<Class<?>, ArgumentReader>();
 
-    public static void init(Core core)
+    public static void init()
     {
-        registerReader(new BooleanReader(core), Boolean.class, boolean.class);
+        registerReader(new BooleanReader(), Boolean.class, boolean.class);
         registerReader(new ByteReader(), Byte.class, byte.class);
         registerReader(new ShortReader(), Short.class, short.class);
         registerReader(new IntReader(), Integer.class, int.class);

@@ -37,7 +37,7 @@ public class PaginationManager implements ResultManager<PaginatedResult>
     public static final String ONE_PAGE_FOOTER = "--------- page {integer}/{integer} ---------";
     public static final int LINES_PER_PAGE = 5;
 
-    private Map<BaseCommandSender, PaginatedResult> resultMap = new HashMap<>();
+    private Map<BaseCommandSender, PaginatedResult> resultMap = new HashMap<BaseCommandSender, PaginatedResult>();
 
     public PaginatedResult getResult(BaseCommandSender sender)
     {

@@ -50,7 +50,7 @@ public class CommandParameter
         }
         this.name = name;
         this.label = label.isEmpty() ? name : label;
-        this.aliases = new HashSet<>(0);
+        this.aliases = new HashSet<String>(0);
         this.type = type;
         this.required = false;
         this.completer = null;

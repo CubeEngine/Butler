@@ -44,7 +44,7 @@ public class IndexedParameterCompleter implements Completer
     @Override
     public List<String> complete(CommandContext context, String token)
     {
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<String>();
         if (this.completer != null)
         {
             result.addAll(this.completer.complete(context, token));

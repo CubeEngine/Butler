@@ -28,13 +28,8 @@ import de.cubeisland.engine.command.CommandManager;
 import de.cubeisland.engine.command.CommandOwner;
 import de.cubeisland.engine.command.CommandResult;
 import de.cubeisland.engine.command.ContextFactory;
-import de.cubeisland.engine.core.module.Module;
-import de.cubeisland.engine.old.command.CubeCommand;
 
-import static de.cubeisland.engine.core.util.formatter.MessageType.NEGATIVE;
-import static de.cubeisland.engine.core.util.formatter.MessageType.NEUTRAL;
-
-public class ConfirmCommand extends BaseCommand
+public abstract class ConfirmCommand extends BaseCommand
 {
     private final ConfirmManager confirmManager;
 
@@ -47,18 +42,20 @@ public class ConfirmCommand extends BaseCommand
     @Override
     public CommandResult run(CommandContext context)
     {
+        /*
         int pendingConfirmations = confirmManager.countPendingConfirmations(context.getSender());
         if (pendingConfirmations < 1)
         {
-            context.sendTranslated(NEGATIVE, "You don't have any pending confirmations!");
+            // TODO context.sendTranslated(NEGATIVE, "You don't have any pending confirmations!");
             return null;
         }
         confirmManager.getLastPendingConfirmation(context.getSender()).run();
         pendingConfirmations = confirmManager.countPendingConfirmations(context.getSender());
         if (pendingConfirmations > 0)
         {
-            context.sendTranslated(NEUTRAL, "You have {amount} pending confirmations", pendingConfirmations);
+            // TODO context.sendTranslated(NEUTRAL, "You have {amount} pending confirmations", pendingConfirmations);
         }
+        */
         return null;
     }
 }

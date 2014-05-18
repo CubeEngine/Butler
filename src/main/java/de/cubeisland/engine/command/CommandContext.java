@@ -110,7 +110,7 @@ public class CommandContext
      */
     public Stack<String> getLabels()
     {
-        Stack<String> newStack = new Stack<>();
+        Stack<String> newStack = new Stack<String>();
         newStack.addAll(this.labels);
         return newStack;
     }
@@ -149,7 +149,7 @@ public class CommandContext
      */
     public List<Object> getIndexed()
     {
-        return new ArrayList<>(this.indexed);
+        return new ArrayList<Object>(this.indexed);
     }
 
     /**
@@ -244,12 +244,12 @@ public class CommandContext
 
     public Set<String> getFlags()
     {
-        return new HashSet<>(this.flags);
+        return new HashSet<String>(this.flags);
     }
 
     public LinkedHashMap<String, Object> getParams()
     {
-        return new LinkedHashMap<>(this.named);
+        return new LinkedHashMap<String, Object>(this.named);
     }
 
     public boolean hasParam(String name)
@@ -333,7 +333,7 @@ public class CommandContext
     private List<Object> readIndexed(BaseCommandSender sender)
     {
         List<CommandParameterIndexed> iParams = this.command.getContextFactory().getIndexedParameters();
-        List<Object> result = new ArrayList<>();
+        List<Object> result = new ArrayList<Object>();
         int i = 0;
         if (rawIndexed.get(rawIndexed.size() - 1).isEmpty())
         {
@@ -369,7 +369,7 @@ public class CommandContext
     private Map<String, Object> readNamed(BaseCommandSender sender)
     {
         LinkedHashMap<String, CommandParameter> nParams = this.command.getContextFactory().getParameters();
-        Map<String, Object> readParams = new LinkedHashMap<>();
+        Map<String, Object> readParams = new LinkedHashMap<String, Object>();
 
         for (Entry<String, String> entry : rawNamed.entrySet())
         {

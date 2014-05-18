@@ -47,7 +47,7 @@ public abstract class ListCompleter<T> implements Completer
     {
         List<String> tokens = Arrays.asList(token.split(","));
         String lastToken = token.substring(token.lastIndexOf(",") + 1, token.length()).toUpperCase();
-        List<String> matches = new ArrayList<>();
+        List<String> matches = new ArrayList<String>();
         for (T stringConvertable : stringConvertables)
         {
             String converted = convertToString(stringConvertable);

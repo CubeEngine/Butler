@@ -44,8 +44,8 @@ public abstract class BaseCommand
     private final CommandOwner owner;
     private final String name;
     private final ContextFactory contextFactory;
-    private final Map<String, BaseCommand> children = new HashMap<>();
-    private final Map<String, AliasCommand> aliases = new HashMap<>();
+    private final Map<String, BaseCommand> children = new HashMap<String, BaseCommand>();
+    private final Map<String, AliasCommand> aliases = new HashMap<String, AliasCommand>();
     private String description;
     private CommandPermission permission;
     private String label;

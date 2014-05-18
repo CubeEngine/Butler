@@ -22,32 +22,12 @@
  */
 package de.cubeisland.engine.old.command.conversation;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.Stack;
-
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 
 import de.cubeisland.engine.command.BaseCommand;
-import de.cubeisland.engine.command.CommandContext;
-import de.cubeisland.engine.command.CommandFlag;
 import de.cubeisland.engine.command.CommandManager;
 import de.cubeisland.engine.command.CommandOwner;
-import de.cubeisland.engine.command.CommandParameter;
-import de.cubeisland.engine.core.module.Module;
-import de.cubeisland.engine.core.user.User;
-import de.cubeisland.engine.core.util.ChatFormat;
-import de.cubeisland.engine.core.util.StringUtils;
-import de.cubeisland.engine.old.command.HelpContext;
-import de.cubeisland.engine.old.command.parameterized.ParameterizedCommand;
-import de.cubeisland.engine.old.command.parameterized.ParameterizedTabContext;
-
-import static de.cubeisland.engine.core.util.formatter.MessageType.NEUTRAL;
 
 public abstract class ConversationCommand extends BaseCommand
 {
@@ -57,15 +37,10 @@ public abstract class ConversationCommand extends BaseCommand
     {
 
         super(manager, owner, "", "", contextFactory, null);
-        owner.getCore().getEventManager().registerListener(owner, this);
+        // TODO owner.getCore().getEventManager().registerListener(owner, this);
     }
 
-    @Override
-    public Module getOwner()
-    {
-        return super.getOwner();
-    }
-
+    /*
     public boolean hasUser(User user)
     {
         return usersInMode.contains(user.getId());
@@ -181,17 +156,11 @@ public abstract class ConversationCommand extends BaseCommand
         return (ConversationContextFactory)super.getContextFactory();
     }
 
-    /**
-     * Adds a user to this chatcommands internal list
-     */
     public boolean addUser(User user)
     {
         return this.usersInMode.add(user.getId());
     }
 
-    /**
-     * Removes a user from this chatcommands internal list
-     */
     public void removeUser(User user)
     {
         this.usersInMode.remove(user.getId());
@@ -215,4 +184,6 @@ public abstract class ConversationCommand extends BaseCommand
         }
         context.sendMessage("    " + StringUtils.implode(ChatFormat.GREY + ", " + ChatFormat.WHITE, params));
     }
+
+    */
 }

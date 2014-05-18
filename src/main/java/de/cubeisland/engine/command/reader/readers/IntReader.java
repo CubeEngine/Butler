@@ -39,7 +39,7 @@ public class IntReader extends ArgumentReader
         }
         catch (NumberFormatException e)
         {
-            throw new InvalidArgumentException("Could not parse {input} to integer!", arg);
+            throw new InvalidArgumentException("Could not parse {input} to integer!"); // TODO
         }
     }
 }

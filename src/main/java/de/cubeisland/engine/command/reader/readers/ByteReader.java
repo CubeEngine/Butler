@@ -39,7 +39,7 @@ public class ByteReader extends ArgumentReader
         }
         catch (NumberFormatException e)
         {
-            throw new InvalidArgumentException("Could not parse {input} to a byte!", arg);
+            throw new InvalidArgumentException("Could not parse {input} to a byte!"); // TODO
         }
     }
 }

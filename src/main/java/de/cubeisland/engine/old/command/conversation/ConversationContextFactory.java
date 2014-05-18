@@ -53,8 +53,8 @@ public class ConversationContextFactory extends ContextFactory
                                       String[] rawArgs)
     {
         // TODO proper impl. ignoring indexed & /w flags without - in front
-        final Set<String> flags = new HashSet<>();
-        final Map<String, String> params = new HashMap<>();
+        final Set<String> flags = new HashSet<String>();
+        final Map<String, String> params = new HashMap<String, String>();
         if (rawArgs.length > 0)
         {
             for (int offset = 0; offset < rawArgs.length; )

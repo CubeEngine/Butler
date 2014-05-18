@@ -55,7 +55,7 @@ public class PaginatedResult implements CommandResult
     public void show(CommandContext context)
     {
         int pageCount = iterator.pageCount(PaginationManager.LINES_PER_PAGE);
-        context.sendTranslated(NONE, PaginationManager.HEADER, pageNumber + 1, pageCount);
+        // TODO context.sendTranslated(NONE, PaginationManager.HEADER, pageNumber + 1, pageCount);
         for (String line : iterator.getPage(pageNumber, PaginationManager.LINES_PER_PAGE))
         {
             context.sendMessage(line);
@@ -64,20 +64,20 @@ public class PaginatedResult implements CommandResult
         {
             if (pageCount == 1)
             {
-                context.sendTranslated(NONE, PaginationManager.ONE_PAGE_FOOTER, pageNumber + 1, pageCount);
+                // TODO context.sendTranslated(NONE, PaginationManager.ONE_PAGE_FOOTER, pageNumber + 1, pageCount);
             }
             else
             {
-                context.sendTranslated(NONE, PaginationManager.FIRST_FOOTER, pageNumber + 1, pageCount);
+                // TODO  context.sendTranslated(NONE, PaginationManager.FIRST_FOOTER, pageNumber + 1, pageCount);
             }
         }
         else if (pageNumber >= pageCount)
         {
-            context.sendTranslated(NONE, PaginationManager.LAST_FOOTER, pageNumber + 1, pageCount);
+            // TODO  context.sendTranslated(NONE, PaginationManager.LAST_FOOTER, pageNumber + 1, pageCount);
         }
         else
         {
-            context.sendTranslated(NONE, PaginationManager.FOOTER, pageNumber + 1, pageCount);
+            // TODO  context.sendTranslated(NONE, PaginationManager.FOOTER, pageNumber + 1, pageCount);
         }
     }
 
@@ -100,7 +100,7 @@ public class PaginatedResult implements CommandResult
         }
         else
         {
-            context.sendTranslated(NEGATIVE, "The page you want to see is out of bounds.");
+            // TODO   context.sendTranslated(NEGATIVE, "The page you want to see is out of bounds.");
         }
     }
 
@@ -122,7 +122,7 @@ public class PaginatedResult implements CommandResult
                 int lastItem = Math.min(offset + numberOfLines, lines.size());
                 return lines.subList(offset, lastItem);
             }
-            return new ArrayList<>();
+            return new ArrayList<String>();
         }
 
         @Override

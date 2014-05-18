@@ -42,7 +42,7 @@ public abstract class SimpleCompleter implements Completer
     @Override
     public List<String> complete(CommandContext context, String token)
     {
-        List<String> offers = new ArrayList<>();
+        List<String> offers = new ArrayList<String>();
         for (String string : this.strings)
         {
             if (startsWithIgnoreCase(string, token))

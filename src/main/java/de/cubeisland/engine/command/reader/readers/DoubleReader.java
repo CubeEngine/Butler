@@ -46,7 +46,7 @@ public class DoubleReader extends ArgumentReader
             }
             catch (ParseException e1)
             {
-                throw new InvalidArgumentException("Could not parse {input} to double!", arg);
+                throw new InvalidArgumentException("Could not parse {input} to double!"); // TODO
             }
         }
     }

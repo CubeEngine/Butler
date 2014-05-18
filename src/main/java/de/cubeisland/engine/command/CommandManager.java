@@ -24,8 +24,6 @@ package de.cubeisland.engine.command;
 
 import java.util.Locale;
 
-import de.cubeisland.engine.old.command.sender.ConsoleCommandSender;
-
 /**
  * This class manages the registration of commands.
  */
@@ -47,8 +45,6 @@ public interface CommandManager
     void removeCommands();
 
     boolean runCommand(BaseCommandSender sender, String commandLine);
-
-    ConsoleCommandSender getConsoleSender();
 
     <T extends BaseCommand> void registerCommandFactory(CommandFactory<T> factory);
 

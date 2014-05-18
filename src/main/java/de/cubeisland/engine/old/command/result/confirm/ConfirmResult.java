@@ -26,9 +26,6 @@ import de.cubeisland.engine.command.BaseCommandSender;
 import de.cubeisland.engine.command.CommandContext;
 import de.cubeisland.engine.command.CommandOwner;
 import de.cubeisland.engine.command.CommandResult;
-import de.cubeisland.engine.core.module.Module;
-
-import static de.cubeisland.engine.core.util.formatter.MessageType.NONE;
 
 /**
  * A result that should be confirmed via the /confirm command
@@ -55,10 +52,10 @@ public class ConfirmResult implements CommandResult
     @Override
     public void show(CommandContext context)
     {
-        context.getCommand().getCommandManager().getManager(ConfirmManager.class).(this, this.owner, sender);
+        context.getCommand().getCommandManager().getManager(ConfirmManager.class).getResult(sender).show(context);
         if (!message.isEmpty())
         {
-            context.sendTranslated(NONE, message, context.getCommand().getName());
+            // TODO context.sendTranslated(NONE, message, context.getCommand().getName());
         }
     }
 

@@ -51,7 +51,7 @@ public class CompleterUtils
         {
             return tabCompleteParamValue(context, cFactory);
         }
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<String>();
         List<Object> args = context.getIndexed();
         String lastArg = args.get(args.size() - 1).toString();
         if (lastType == FLAG_OR_INDEXED)

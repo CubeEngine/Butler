@@ -27,10 +27,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import de.cubeisland.engine.command.reader.ArgumentReader;
-import de.cubeisland.engine.core.Core;
 import de.cubeisland.engine.command.exception.InvalidArgumentException;
-import gnu.trove.set.hash.THashSet;
+import de.cubeisland.engine.command.reader.ArgumentReader;
 
 public class BooleanReader extends ArgumentReader
 {
@@ -39,13 +37,13 @@ public class BooleanReader extends ArgumentReader
 
     public BooleanReader()
     {
-        this.yesStrings = new HashSet<>();
+        this.yesStrings = new HashSet<String>();
         this.yesStrings.add("yes");
         this.yesStrings.add("+");
         this.yesStrings.add("1");
         this.yesStrings.add("true");
 
-        this.noStrings = new HashSet<>();
+        this.noStrings = new HashSet<String>();
         this.noStrings.add("no");
         this.noStrings.add("-");
         this.noStrings.add("0");
@@ -66,6 +64,7 @@ public class BooleanReader extends ArgumentReader
         }
         else
         {
+            /* TODO
             String word = this.core.getI18n().translate(locale, "yes");
             if (arg.equalsIgnoreCase(word))
             {
@@ -76,6 +75,7 @@ public class BooleanReader extends ArgumentReader
             {
                 return false;
             }
+            */
         }
         return Boolean.parseBoolean(arg);
     }

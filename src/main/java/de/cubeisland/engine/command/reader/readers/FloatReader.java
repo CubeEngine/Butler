@@ -46,7 +46,7 @@ public class FloatReader extends ArgumentReader
             }
             catch (ParseException e1)
             {
-                throw new InvalidArgumentException("Could not parse {input} to float!", arg);
+                throw new InvalidArgumentException("Could not parse {input} to float!"); // TODO
             }
         }
     }

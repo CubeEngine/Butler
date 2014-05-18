@@ -45,7 +45,7 @@ public abstract class SimpleListCompleter implements Completer
     {
         List<String> tokens = Arrays.asList(token.split(","));
         String lastToken = token.substring(token.lastIndexOf(",") + 1, token.length()).toUpperCase();
-        List<String> offers = new ArrayList<>();
+        List<String> offers = new ArrayList<String>();
         for (String string : this.strings)
         {
             if (startsWithIgnoreCase(string, lastToken) && !tokens.contains(string))

@@ -38,7 +38,7 @@ public class ShortReader extends ArgumentReader
         }
         catch (NumberFormatException e)
         {
-            throw new InvalidArgumentException("Could not parse {input} to short!", arg);
+            throw new InvalidArgumentException("Could not parse {input} to short!"); // TODO
         }
     }
 }

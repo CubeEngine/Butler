@@ -38,7 +38,7 @@ public class LongReader extends ArgumentReader
         }
         catch (NumberFormatException e)
         {
-            throw new InvalidArgumentException("Could not parse {input} to long!", arg);
+            throw new InvalidArgumentException("Could not parse {input} to long!"); // TODO
         }
     }
 }

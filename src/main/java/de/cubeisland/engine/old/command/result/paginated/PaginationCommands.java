@@ -46,7 +46,7 @@ public class PaginationCommands
         }
         else
         {
-            context.sendTranslated(NEGATIVE, "You don't have any results to show!");
+            // TODO    context.sendTranslated(NEGATIVE, "You don't have any results to show!");
         }
     }
 
@@ -59,7 +59,7 @@ public class PaginationCommands
         }
         else
         {
-            context.sendTranslated(NEGATIVE, "You don't have any results to show!");
+            // TODO  context.sendTranslated(NEGATIVE, "You don't have any results to show!");
         }
     }
 
@@ -76,12 +76,12 @@ public class PaginationCommands
             }
             else
             {
-                context.sendTranslated(NEGATIVE, "You have to call the command with a numeric parameter.");
+                // TODO        context.sendTranslated(NEGATIVE, "You have to call the command with a numeric parameter.");
             }
         }
         else
         {
-            context.sendTranslated(NEGATIVE, "You don't have any results to show!");
+            // TODO   context.sendTranslated(NEGATIVE, "You don't have any results to show!");
         }
     }
 }

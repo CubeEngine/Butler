@@ -79,7 +79,7 @@ public abstract class ReflectedCommandFactory<T extends ReflectedCommand> implem
         }
 
         String name = commandNames[0].trim().toLowerCase(Locale.ENGLISH);
-        Set<String> aliases = new HashSet<>(commandNames.length - 1);
+        Set<String> aliases = new HashSet<String>(commandNames.length - 1);
         for (int i = 1; i < commandNames.length; ++i)
         {
             aliases.add(commandNames[i].toLowerCase(Locale.ENGLISH));
@@ -175,10 +175,10 @@ public abstract class ReflectedCommandFactory<T extends ReflectedCommand> implem
                     greed = -1;
                 }
                 CommandParameterIndexed indexedParam = new CommandParameterIndexed(labels, aIndexed.type(), arg.req(),
-                                                                                   aIndexed.req(), greed);
+                                                                                   aIndexed.req(), greed, null); // TODO perm
                 indexedParam.setCompleter(getCompleter(aIndexed.completer()));
 
-                Set<String> staticLabels = new HashSet<>();
+                Set<String> staticLabels = new HashSet<String>();
                 for (String label : labels)
                 {
                     if (label.startsWith("!"))
@@ -206,7 +206,7 @@ public abstract class ReflectedCommandFactory<T extends ReflectedCommand> implem
                             labels = new String[]{String.valueOf(index)};
                         }
                         indexedParam = new CommandParameterIndexed(labels, aIndexed.type(), arg.req(), aIndexed.req(),
-                                                                   0);
+                                                                   0, null); // TODO perm
                         indexedParam.setCompleter(getCompleter(aIndexed.completer()));
                         factory.addIndexed(indexedParam);
                     }
@@ -263,7 +263,7 @@ public abstract class ReflectedCommandFactory<T extends ReflectedCommand> implem
     @Override
     public List<T> parseCommands(CommandManager manager, CommandOwner owner, Object holder)
     {
-        List<T> commands = new ArrayList<>();
+        List<T> commands = new ArrayList<T>();
 
         for (Method method : holder.getClass().getDeclaredMethods())
         {

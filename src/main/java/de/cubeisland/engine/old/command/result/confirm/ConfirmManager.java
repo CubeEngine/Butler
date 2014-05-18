@@ -23,21 +23,12 @@
 package de.cubeisland.engine.old.command.result.confirm;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
 import de.cubeisland.engine.command.BaseCommandSender;
 import de.cubeisland.engine.command.CommandManager;
 import de.cubeisland.engine.command.ResultManager;
-import de.cubeisland.engine.core.Core;
-import de.cubeisland.engine.core.contract.NotNull;
-import de.cubeisland.engine.core.module.Module;
-import de.cubeisland.engine.core.util.Pair;
-import de.cubeisland.engine.old.command.BasicContextFactory;
-
-import static de.cubeisland.engine.core.contract.Contract.expectNotNull;
-import static de.cubeisland.engine.core.util.formatter.MessageType.NEGATIVE;
 
 public class ConfirmManager implements ResultManager<ConfirmResult>
 {
@@ -46,9 +37,8 @@ public class ConfirmManager implements ResultManager<ConfirmResult>
 
     public ConfirmManager(CommandManager commandManager)
     {
-        this.confirmations = new HashMap<>();
-        commandManager.registerCommand(new ConfirmCommand(core.getModuleManager().getCoreModule(),
-                                                          new BasicContextFactory(), this));
+        this.confirmations = new HashMap<BaseCommandSender, Queue<ConfirmResult>>();
+        // TODO commandManager.registerCommand(new ConfirmCommand(core.getModuleManager().getCoreModule(), new BasicContextFactory(), this));
     }
 
     @Override
@@ -86,15 +76,8 @@ public class ConfirmManager implements ResultManager<ConfirmResult>
 
     }
 
-    /**
-     * Register a Confirmation request. This will start a timer that will abort the request after 30 seconds and notify
-     * the user.
-     * This should only be called from the ConfirmResult itself!
-     *
-     * @param confirmResult The ConfirmResult to register
-     * @param module        The module the ConfirmResult is registered to
-     * @param sender        The user that need to confirm something
-     */
+    /*
+
     public synchronized void registerConfirmation(ConfirmResult confirmResult, Module module, BaseCommandSender sender)
     {
         Queue<ConfirmResult> pendingConfirmations = this.confirmations.get(sender);
@@ -118,9 +101,6 @@ public class ConfirmManager implements ResultManager<ConfirmResult>
         this.confirmationTimeoutTasks.put(sender, confirmationTimeoutTasks);
     }
 
-    /**
-     * Check if a commandSender has something to confirm
-     */
     public synchronized int countPendingConfirmations(@NotNull BaseCommandSender sender)
     {
         expectNotNull(sender);
@@ -132,10 +112,6 @@ public class ConfirmManager implements ResultManager<ConfirmResult>
         return pendingConfirmations.size();
     }
 
-    /**
-     * Get the pending confirmation of the CommandSender and abort the task.
-     * This can only be called once per confirmation
-     */
     public synchronized ConfirmResult getLastPendingConfirmation(BaseCommandSender sender)
     {
         if (countPendingConfirmations(sender) < 1)
@@ -161,9 +137,6 @@ public class ConfirmManager implements ResultManager<ConfirmResult>
         return pendingConfirmations.poll();
     }
 
-    /**
-     * Class to remove tasks that have timed out, and notify the CommandSender
-     */
     private class ConfirmationTimeoutTask implements Runnable
     {
 
@@ -181,4 +154,5 @@ public class ConfirmManager implements ResultManager<ConfirmResult>
             confirmations.remove(sender);
         }
     }
+    */
 }

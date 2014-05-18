@@ -39,9 +39,9 @@ import static java.util.Locale.ENGLISH;
 
 public class ContextFactory
 {
-    private final LinkedHashMap<Integer, CommandParameterIndexed> indexed = new LinkedHashMap<>();
-    private final Map<String, CommandParameter> named = new LinkedHashMap<>();
-    private final Map<String, CommandFlag> flags = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, CommandParameterIndexed> indexed = new LinkedHashMap<Integer, CommandParameterIndexed>();
+    private final Map<String, CommandParameter> named = new LinkedHashMap<String, CommandParameter>();
+    private final Map<String, CommandFlag> flags = new LinkedHashMap<String, CommandFlag>();
     private ArgBounds bounds;
     private int indexedCount = 0;
 
@@ -113,7 +113,7 @@ public class ContextFactory
 
     public List<CommandParameterIndexed> getIndexedParameters()
     {
-        return new ArrayList<>(this.indexed.values());
+        return new ArrayList<CommandParameterIndexed>(this.indexed.values());
     }
 
     public ContextFactory addParameters(Collection<CommandParameter> params)
@@ -166,7 +166,7 @@ public class ContextFactory
 
     public LinkedHashMap<String, CommandParameter> getParameters()
     {
-        return new LinkedHashMap<>(this.named);
+        return new LinkedHashMap<String, CommandParameter>(this.named);
     }
 
     public ContextFactory addFlag(CommandFlag flag)
@@ -204,19 +204,19 @@ public class ContextFactory
 
     public Set<CommandFlag> getFlags()
     {
-        return new HashSet<>(this.flags.values());
+        return new HashSet<CommandFlag>(this.flags.values());
     }
 
     public void calculateArgBounds()
     {
-        this.bounds = new ArgBounds(new ArrayList<>(this.indexed.values()));
+        this.bounds = new ArgBounds(new ArrayList<CommandParameterIndexed>(this.indexed.values()));
     }
 
     public CommandContext parse(BaseCommand command, BaseCommandSender sender, Stack<String> labels, String[] rawArgs)
     {
-        List<String> indexed = new LinkedList<>();
-        Set<String> flags = new HashSet<>();
-        Map<String, String> named = new LinkedHashMap<>();
+        List<String> indexed = new LinkedList<String>();
+        Set<String> flags = new HashSet<String>();
+        Map<String, String> named = new LinkedHashMap<String, String>();
         return new CommandContext(command, sender, labels, indexed, flags, named, readCommand(rawArgs, flags, indexed,
                                                                                               named));
     }

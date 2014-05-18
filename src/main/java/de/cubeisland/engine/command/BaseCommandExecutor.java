@@ -92,7 +92,7 @@ public abstract class BaseCommandExecutor
         BaseCommand command = context.getCommand();
         if (command.hasChildren() && context.getRawIndexed().size() == 1)
         {
-            List<String> actions = new ArrayList<>();
+            List<String> actions = new ArrayList<String>();
             String token = context.getString(0).toLowerCase(Locale.ENGLISH);
 
             BaseCommandSender sender = context.getSender();
@@ -113,7 +113,7 @@ public abstract class BaseCommandExecutor
 
     private static CommandContext toCommandContext(BaseCommand command, BaseCommandSender sender, String label, String[] args, boolean tabComplete)
     {
-        Stack<String> labels = new Stack<>();
+        Stack<String> labels = new Stack<String>();
         labels.push(label);
 
         if (args.length > 0 && !args[0].isEmpty())
