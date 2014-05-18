@@ -44,7 +44,7 @@ public class ConfirmManager implements ResultManager<ConfirmResult>
     private static final int CONFIRM_TIMEOUT = 600; // 30 seconds
     private final Map<BaseCommandSender, Queue<ConfirmResult>> confirmations;
 
-    public ConfirmManager(CommandManager commandManager, Core core)
+    public ConfirmManager(CommandManager commandManager)
     {
         this.confirmations = new HashMap<>();
         commandManager.registerCommand(new ConfirmCommand(core.getModuleManager().getCoreModule(),

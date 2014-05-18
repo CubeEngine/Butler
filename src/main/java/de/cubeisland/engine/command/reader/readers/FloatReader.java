@@ -27,7 +27,7 @@ import java.text.ParseException;
 import java.util.Locale;
 
 import de.cubeisland.engine.command.reader.ArgumentReader;
-import de.cubeisland.engine.old.command.exception.InvalidArgumentException;
+import de.cubeisland.engine.command.exception.InvalidArgumentException;
 
 public class FloatReader extends ArgumentReader
 {

@@ -65,7 +65,7 @@ import de.cubeisland.engine.command.reader.readers.WorldReader;
 import de.cubeisland.engine.command.reader.readers.WorldTypeReader;
 import de.cubeisland.engine.core.Core;
 import de.cubeisland.engine.core.user.User;
-import de.cubeisland.engine.old.command.exception.InvalidArgumentException;
+import de.cubeisland.engine.command.exception.InvalidArgumentException;
 import sun.util.logging.resources.logging.LogLevel;
 
 public abstract class ArgumentReader

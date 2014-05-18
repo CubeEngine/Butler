@@ -24,6 +24,8 @@ package de.cubeisland.engine.old.command.result.confirm;
 
 import de.cubeisland.engine.command.BaseCommand;
 import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.CommandManager;
+import de.cubeisland.engine.command.CommandOwner;
 import de.cubeisland.engine.command.CommandResult;
 import de.cubeisland.engine.command.ContextFactory;
 import de.cubeisland.engine.core.module.Module;
@@ -36,10 +38,10 @@ public class ConfirmCommand extends BaseCommand
 {
     private final ConfirmManager confirmManager;
 
-    public ConfirmCommand(Module module, ContextFactory contextFactory, ConfirmManager confirmManager)
+    public ConfirmCommand(CommandManager manager, CommandOwner owner)
     {
-        super(module, "confirm", "Confirm a command", contextFactory, null);
-        this.confirmManager = confirmManager;
+        super(manager, owner, "confirm", "Confirms a command", new ContextFactory(), null);
+        this.confirmManager = new ConfirmManager(manager);
     }
 
     @Override

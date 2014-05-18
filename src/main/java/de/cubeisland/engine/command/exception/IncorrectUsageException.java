@@ -20,29 +20,34 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.old.command.exception;
+package de.cubeisland.engine.command.exception;
 
-public class InvalidArgumentException extends CommandException
+/**
+ * This exception is thrown when a user performed an invalid command.
+ * Use invalidUsage to throw an exception inside a command. The exception will be caught.
+ */
+public class IncorrectUsageException extends CommandException
 {
-    private Object position;
+    private final boolean displayUsage;
 
-    public InvalidArgumentException(String message)
+    public IncorrectUsageException()
+    {
+        this(null, true);
+    }
+
+    public IncorrectUsageException(String message)
+    {
+        this(message, true);
+    }
+
+    public IncorrectUsageException(String message, boolean displayUsage)
     {
         super(message);
+        this.displayUsage = displayUsage;
     }
 
-    public void setPosition(int position)
+    public boolean getDisplayUsage()
     {
-        this.position = position;
-    }
-
-    public Object getPosition()
-    {
-        return position;
-    }
-
-    public void setPosition(String name)
-    {
-        this.position = name;
+        return displayUsage;
     }
 }

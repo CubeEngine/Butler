@@ -32,9 +32,9 @@ import java.util.Set;
 import java.util.Stack;
 
 import de.cubeisland.engine.command.completer.CompleterUtils;
-import de.cubeisland.engine.old.command.exception.IncorrectUsageException;
-import de.cubeisland.engine.old.command.exception.MissingParameterException;
-import de.cubeisland.engine.old.command.exception.PermissionDeniedException;
+import de.cubeisland.engine.command.exception.IncorrectUsageException;
+import de.cubeisland.engine.command.exception.MissingParameterException;
+import de.cubeisland.engine.command.exception.PermissionDeniedException;
 
 // TODO loggable
 // TODO asnyc

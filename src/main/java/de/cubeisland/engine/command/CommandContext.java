@@ -32,8 +32,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import de.cubeisland.engine.command.reader.ArgumentReader;
-import de.cubeisland.engine.old.command.exception.InvalidArgumentException;
-import de.cubeisland.engine.old.command.exception.PermissionDeniedException;
+import de.cubeisland.engine.command.exception.InvalidArgumentException;
+import de.cubeisland.engine.command.exception.PermissionDeniedException;
 
 import static java.util.Locale.ENGLISH;
 

@@ -20,21 +20,31 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.old.command.sender;
+package de.cubeisland.engine.command.exception;
 
-import org.bukkit.block.Block;
-
-import de.cubeisland.engine.core.Core;
-
-public class BlockCommandSender extends WrappedCommandSender
+/**
+ * This exception will be catched by the executor.
+ * Its message will be send to the command sender.
+ */
+public class CommandException extends RuntimeException
 {
-    public BlockCommandSender(Core core, org.bukkit.command.BlockCommandSender sender)
+    public CommandException()
     {
-        super(core, sender);
+        super();
     }
 
-    public Block getBlock()
+    public CommandException(String message)
     {
-        return ((org.bukkit.command.BlockCommandSender)this.getWrappedSender()).getBlock();
+        super(message);
+    }
+
+    public CommandException(Throwable cause)
+    {
+        super(cause);
+    }
+
+    public CommandException(String message, Throwable cause)
+    {
+        super(message, cause);
     }
 }

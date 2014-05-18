@@ -20,34 +20,17 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.old.command.exception;
+package de.cubeisland.engine.command.exception;
 
-/**
- * This exception is thrown when a user performed an invalid command.
- * Use invalidUsage to throw an exception inside a command. The exception will be caught.
- */
-public class IncorrectUsageException extends CommandException
+public class MissingParameterException extends CommandException
 {
-    private final boolean displayUsage;
-
-    public IncorrectUsageException()
+    public MissingParameterException(String paramName)
     {
-        this(null, true);
+        super(paramName);
     }
 
-    public IncorrectUsageException(String message)
+    public String getParamName()
     {
-        this(message, true);
-    }
-
-    public IncorrectUsageException(String message, boolean displayUsage)
-    {
-        super(message);
-        this.displayUsage = displayUsage;
-    }
-
-    public boolean getDisplayUsage()
-    {
-        return displayUsage;
+        return this.getMessage();
     }
 }

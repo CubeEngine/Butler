@@ -20,17 +20,43 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.old.command.exception;
+package de.cubeisland.engine.command.exception;
 
-public class MissingParameterException extends CommandException
+
+import de.cubeisland.engine.command.CommandPermission;
+
+/**
+ * This exception is thrown when a user is not allowed to perform an action.
+ * Use denyAccess to throw an exception insinde a command. The exception will be caught.
+ */
+public class PermissionDeniedException extends CommandException
 {
-    public MissingParameterException(String paramName)
+    private final String permission;
+
+    public PermissionDeniedException(String permission)
     {
-        super(paramName);
+        this.permission = permission;
     }
 
-    public String getParamName()
+    public PermissionDeniedException(String message, String permission)
     {
-        return this.getMessage();
+        super(message);
+        this.permission = permission;
+    }
+
+    public PermissionDeniedException(String message, CommandPermission permission)
+    {
+        super(message);
+        this.permission = permission.getName();
+    }
+
+    public PermissionDeniedException(CommandPermission permission)
+    {
+        this(permission.getName());
+    }
+
+    public String getPermission()
+    {
+        return permission;
     }
 }

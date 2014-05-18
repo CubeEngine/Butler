@@ -32,7 +32,7 @@ import de.cubeisland.engine.command.CommandOwner;
 import de.cubeisland.engine.command.CommandPermission;
 import de.cubeisland.engine.command.CommandResult;
 import de.cubeisland.engine.command.ContextFactory;
-import de.cubeisland.engine.old.command.exception.CommandException;
+import de.cubeisland.engine.command.exception.CommandException;
 
 public class ReflectedCommand extends BaseCommand
 {

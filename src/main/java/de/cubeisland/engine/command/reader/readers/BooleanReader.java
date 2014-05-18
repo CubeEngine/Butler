@@ -29,7 +29,7 @@ import java.util.Set;
 
 import de.cubeisland.engine.command.reader.ArgumentReader;
 import de.cubeisland.engine.core.Core;
-import de.cubeisland.engine.old.command.exception.InvalidArgumentException;
+import de.cubeisland.engine.command.exception.InvalidArgumentException;
 import gnu.trove.set.hash.THashSet;
 
 public class BooleanReader extends ArgumentReader

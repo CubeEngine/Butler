@@ -20,14 +20,29 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.old.command.exception;
+package de.cubeisland.engine.command.exception;
 
-import de.cubeisland.engine.core.module.exception.ModuleException;
-
-public class ModuleAlreadyLoadedException extends ModuleException
+public class InvalidArgumentException extends CommandException
 {
-    public ModuleAlreadyLoadedException(String message)
+    private Object position;
+
+    public InvalidArgumentException(String message)
     {
         super(message);
+    }
+
+    public void setPosition(int position)
+    {
+        this.position = position;
+    }
+
+    public Object getPosition()
+    {
+        return position;
+    }
+
+    public void setPosition(String name)
+    {
+        this.position = name;
     }
 }
