@@ -1,22 +1,29 @@
 /**
- * This file is part of CubeEngine.
- * CubeEngine is licensed under the GNU General Public License Version 3.
+ * The MIT License (MIT)
  *
- * CubeEngine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright (c) 2013 Anselm Brehme, Phillip Schichtel
  *
- * CubeEngine is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
  *
- * You should have received a copy of the GNU General Public License
- * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 package de.cubeisland.engine.command.reader.readers;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -27,20 +34,18 @@ import gnu.trove.set.hash.THashSet;
 
 public class BooleanReader extends ArgumentReader
 {
-    private final Core core;
     private final Set<String> yesStrings;
     private final Set<String> noStrings;
 
-    public BooleanReader(Core core)
+    public BooleanReader()
     {
-        this.core = core;
-        this.yesStrings = new THashSet<>();
+        this.yesStrings = new HashSet<>();
         this.yesStrings.add("yes");
         this.yesStrings.add("+");
         this.yesStrings.add("1");
         this.yesStrings.add("true");
 
-        this.noStrings = new THashSet<>();
+        this.noStrings = new HashSet<>();
         this.noStrings.add("no");
         this.noStrings.add("-");
         this.noStrings.add("0");
