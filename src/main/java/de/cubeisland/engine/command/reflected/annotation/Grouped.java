@@ -20,17 +20,13 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reflected;
+package de.cubeisland.engine.command.reflected.annotation;
 
-import static de.cubeisland.engine.command.CommandPermission.PermDefault.OP;
-
-public @interface Flag
+public @interface Grouped
 {
-    String name();
+    Indexed[] value();
 
-    String longName() default "";
+    boolean req() default true;
 
-    String permission() default "";
-
-    byte permDefault() default OP;
+    boolean greedy() default false;
 }

@@ -52,7 +52,7 @@ public class ConfirmResult implements CommandResult
     @Override
     public void show(CommandContext context)
     {
-        context.getCommand().getCommandManager().getManager(ConfirmManager.class).getResult(sender).show(context);
+        context.getCommand().getCommandManager().getResultManager(ConfirmManager.class).getResult(sender).show(context);
         if (!message.isEmpty())
         {
             // TODO context.sendTranslated(NONE, message, context.getCommand().getName());

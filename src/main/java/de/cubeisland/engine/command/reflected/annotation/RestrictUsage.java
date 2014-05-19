@@ -20,17 +20,18 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.reflected.annotation;
 
-public interface CommandPermission
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import de.cubeisland.engine.command.BaseCommandSender;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+public @interface RestrictUsage
 {
-    byte DEFAULT = 0;
-    byte OP = 1;
-    byte TRUE = 2;
-    byte FALSE = 3;
-    byte NOT_OP = 4;
-
-    public boolean isAuthorized(Permissible permissible);
-
-    String getName();
+    Class<? extends BaseCommandSender>[] value();
 }

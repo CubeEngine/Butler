@@ -25,63 +25,69 @@ package de.cubeisland.engine.command.reflected;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import de.cubeisland.engine.command.*;
 import de.cubeisland.engine.command.BaseCommand;
-import de.cubeisland.engine.command.CommandContext;
-import de.cubeisland.engine.command.CommandManager;
-import de.cubeisland.engine.command.CommandOwner;
-import de.cubeisland.engine.command.CommandPermission;
-import de.cubeisland.engine.command.CommandResult;
-import de.cubeisland.engine.command.ContextFactory;
 import de.cubeisland.engine.command.exception.CommandException;
 
 public class ReflectedCommand extends BaseCommand
 {
-    private final Object holder;
     private final Method method;
-    private final Class<? extends CommandContext> contextType;
+    private final Object holder;
 
-    @SuppressWarnings("unchecked")
-    public ReflectedCommand(CommandManager manager, CommandOwner owner, Object holder, Method method, String name,
-                            String description, ContextFactory factory, CommandPermission permission)
+    public ReflectedCommand(CommandManager manager, ReflectedCommandDescriptor descriptor)
     {
-        super(manager, owner, name, description, factory, permission);
-        this.holder = holder;
-        this.method = method;
-        this.method.setAccessible(true);
-        this.contextType = (Class<? extends CommandContext>)method.getParameterTypes()[0];
+        super(manager, descriptor);
+        this.method = descriptor.getMethod();
+        this.holder = descriptor.getAlias();
     }
 
     @Override
     public CommandResult run(final CommandContext context)
     {
-        if (this.contextType.isInstance(context))
+        if (method == null)
         {
-            try
+            this.help(context);
+            return null;
+        }
+
+        try
+        {
+            Object result = this.method.invoke(this.holder, context);
+            if (result instanceof CommandResult)
             {
-                Object result = this.method.invoke(this.holder, context);
-                if (result instanceof CommandResult)
-                {
-                    return (CommandResult)result;
-                }
+                return (CommandResult)result;
             }
-            catch (IllegalAccessException e)
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (InvocationTargetException e)
+        {
+            if (e.getCause() instanceof CommandException)
             {
-                throw new RuntimeException(e);
+                throw (CommandException)e.getCause();
             }
-            catch (InvocationTargetException e)
-            {
-                if (e.getCause() instanceof CommandException)
-                {
-                    throw (CommandException)e.getCause();
-                }
-                throw new RuntimeException(e.getCause());
-            }
+            throw new RuntimeException(e.getCause());
         }
         return null;
     }
 
     @Override
     public void help(CommandContext ctx)
+    {
+        if (method == null)
+        {
+            this.containerHelp(ctx);
+        }
+        else
+        {
+            this.reflectedHelp(ctx);
+        }
+
+    }
+
+    protected void reflectedHelp(CommandContext ctx)
     {
         ctx.sendMessage(this.getDescription());
         ctx.sendMessage("Usage: " + this.getUsage(ctx));
@@ -95,31 +101,23 @@ public class ReflectedCommand extends BaseCommand
         }
     }
 
-
-    /* // TODO in CE implement pretty help
-    public void help(HelpContext context)
+    protected void containerHelp(CommandContext ctx)
     {
-        context.sendTranslated(NONE, "{text:Description:color=GREY}: {input}", this.getDescription());
-        context.sendTranslated(NONE, "{text:Usage:color=GREY}: {input}", this.getUsage(context));
-
-        if (this.hasChildren())
+        ctx.sendMessage(this.getDescription());
+        if (ctx.getCommand().hasChildren())
         {
-            context.sendMessage(" ");
-            context.sendTranslated(NEUTRAL, "The following subcommands are available:");
-            context.sendMessage(" ");
-
-            final BaseCommandSender sender = context.getSender();
-            for (CubeCommand command : context.getCommand().getChildren())
+            ctx.sendMessage("Usage: " + this.getUsage(ctx));
+            ctx.sendMessage("Actions:");
+            for (BaseCommand command : ctx.getCommand().getChildren())
             {
-                if (command.isAuthorized(sender))
-                {
-                    context.sendMessage(YELLOW + command.getName() + WHITE + ": " + GREY + sender.getTranslation(NONE, command.getDescription()));
-                }
+                ctx.sendMessage(" - " + command.getName());
             }
         }
-        context.sendMessage(" ");
-        context.sendTranslated(NONE, "{text:Detailed help:color=GREY}: {input#link:color=INDIGO}", "http://engine.cubeisland.de/c/" + this.getOwner().getId() + "/" + this.getLabels(
-            "/"));
+        else
+        {
+            ctx.sendMessage("No Actions available!");
+        }
     }
-     */
+
+
 }

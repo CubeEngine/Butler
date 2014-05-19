@@ -22,15 +22,10 @@
  */
 package de.cubeisland.engine.command;
 
-public interface CommandPermission
+import de.cubeisland.engine.command.reflected.annotation.Permission;
+
+public interface PermissionProvider
 {
-    byte DEFAULT = 0;
-    byte OP = 1;
-    byte TRUE = 2;
-    byte FALSE = 3;
-    byte NOT_OP = 4;
-
-    public boolean isAuthorized(Permissible permissible);
-
-    String getName();
+    CommandPermission getPermission(Permission annotation, String commandName, boolean checkPerm);
+    CommandPermission getPermission(Permission annotation, CommandPermission basePerm);
 }

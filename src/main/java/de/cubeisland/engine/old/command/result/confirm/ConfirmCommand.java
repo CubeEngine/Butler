@@ -22,25 +22,26 @@
  */
 package de.cubeisland.engine.old.command.result.confirm;
 
-import de.cubeisland.engine.command.BaseCommand;
 import de.cubeisland.engine.command.CommandContext;
 import de.cubeisland.engine.command.CommandManager;
-import de.cubeisland.engine.command.CommandOwner;
 import de.cubeisland.engine.command.CommandResult;
-import de.cubeisland.engine.command.ContextFactory;
+import de.cubeisland.engine.command.reflected.annotation.Command;
+import de.cubeisland.engine.command.reflected.annotation.Permission;
 
-public abstract class ConfirmCommand extends BaseCommand
+import static de.cubeisland.engine.command.CommandPermission.TRUE;
+
+public abstract class ConfirmCommand
 {
     private final ConfirmManager confirmManager;
 
-    public ConfirmCommand(CommandManager manager, CommandOwner owner)
+    public ConfirmCommand(CommandManager manager)
     {
-        super(manager, owner, "confirm", "Confirms a command", new ContextFactory(), null);
         this.confirmManager = new ConfirmManager(manager);
     }
 
-    @Override
-    public CommandResult run(CommandContext context)
+    @Command(desc = "Confirms a command")
+    @Permission(permDefault = TRUE)
+    public CommandResult confirm(CommandContext context)
     {
         /*
         int pendingConfirmations = confirmManager.countPendingConfirmations(context.getSender());

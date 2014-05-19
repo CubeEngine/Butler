@@ -40,7 +40,7 @@ public class PaginatedResult implements CommandResult
         this.context = context;
         this.iterator = new StringListIterator(lines);
 
-        context.getCommand().getCommandManager().getManager(PaginationManager.class).addResult(context.getSender(), this);
+        context.getCommand().getCommandManager().getResultManager(PaginationManager.class).addResult(context.getSender(), this);
     }
 
     public PaginatedResult(CommandContext context, PaginationIterator iterator)
@@ -48,7 +48,7 @@ public class PaginatedResult implements CommandResult
         this.context = context;
         this.iterator = iterator;
 
-        context.getCommand().getCommandManager().getManager(PaginationManager.class).addResult(context.getSender(), this);
+        context.getCommand().getCommandManager().getResultManager(PaginationManager.class).addResult(context.getSender(), this);
     }
 
     @Override

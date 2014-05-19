@@ -22,15 +22,12 @@
  */
 package de.cubeisland.engine.command;
 
-public interface CommandPermission
+public abstract class DelegatingContextFilter
 {
-    byte DEFAULT = 0;
-    byte OP = 1;
-    byte TRUE = 2;
-    byte FALSE = 3;
-    byte NOT_OP = 4;
+    public abstract String delegateTo(CommandContext context);
 
-    public boolean isAuthorized(Permissible permissible);
-
-    String getName();
+    public CommandContext filterContext(CommandContext context, String child)
+    {
+        return context;
+    }
 }

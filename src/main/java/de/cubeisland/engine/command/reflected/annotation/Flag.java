@@ -20,17 +20,13 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.reflected.annotation;
 
-public interface CommandPermission
+public @interface Flag
 {
-    byte DEFAULT = 0;
-    byte OP = 1;
-    byte TRUE = 2;
-    byte FALSE = 3;
-    byte NOT_OP = 4;
+    String name();
 
-    public boolean isAuthorized(Permissible permissible);
+    String longName() default "";
 
-    String getName();
+    Permission perm() default @Permission();
 }

@@ -20,20 +20,23 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reflected;
+package de.cubeisland.engine.command.reflected.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import de.cubeisland.engine.command.completer.Completer;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-/**
- * Calls the annotated method asynchronous
- */
-public @interface AsyncCall
+public @interface Param
 {
+    String name();
+
+    String[] aliases() default {};
+
+    String label() default "";
+
+    Class type() default String.class;
+
+    boolean required() default false;
+
+    Class<? extends Completer> completer() default Completer.class;
+
+    Permission permission() default @Permission;
 }

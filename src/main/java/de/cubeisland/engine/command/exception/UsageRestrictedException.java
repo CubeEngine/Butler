@@ -20,17 +20,8 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.exception;
 
-public interface CommandPermission
+public class UsageRestrictedException extends CommandException
 {
-    byte DEFAULT = 0;
-    byte OP = 1;
-    byte TRUE = 2;
-    byte FALSE = 3;
-    byte NOT_OP = 4;
-
-    public boolean isAuthorized(Permissible permissible);
-
-    String getName();
 }

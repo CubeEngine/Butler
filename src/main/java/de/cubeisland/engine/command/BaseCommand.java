@@ -32,38 +32,62 @@ import java.util.Set;
 import java.util.Stack;
 
 import de.cubeisland.engine.command.completer.CompleterUtils;
-import de.cubeisland.engine.command.exception.IncorrectUsageException;
+import de.cubeisland.engine.command.exception.CommandException;
 import de.cubeisland.engine.command.exception.MissingParameterException;
 import de.cubeisland.engine.command.exception.PermissionDeniedException;
+import de.cubeisland.engine.command.exception.TooFewArgumentsException;
+import de.cubeisland.engine.command.exception.TooManyArgumentsException;
+import de.cubeisland.engine.command.exception.UsageRestrictedException;
 
-// TODO loggable
-// TODO asnyc
+import static de.cubeisland.engine.command.StringUtils.implode;
+
+
 public abstract class BaseCommand
 {
-    private final CommandManager manager;
-    private final CommandOwner owner;
-    private final String name;
-    private final ContextFactory contextFactory;
+    private final BaseCommand parent;
     private final Map<String, BaseCommand> children = new HashMap<String, BaseCommand>();
     private final Map<String, AliasCommand> aliases = new HashMap<String, AliasCommand>();
-    private String description;
-    private CommandPermission permission;
-    private String label;
-    private BaseCommand parent;
+    private final Stack<String> labels;
+    private final String name;
+    private final String description;
+    private final CommandOwner owner;
+    private final ContextFactory contextFactory;
+    private final Class<? extends BaseCommandSender>[] restrictUsage;
+    private final CommandPermission permission;
     private boolean registered = false;
 
-    private Class<? extends BaseCommandSender>[] restrictUsage = null;
+    private DelegatingContextFilter delegation;
 
-    public BaseCommand(CommandManager manager, CommandOwner owner, String name, String description,
-                       ContextFactory contextFactory, CommandPermission permission)
+    private final CommandManager commandManager;
+
+    protected BaseCommand(CommandManager manager, CommandDescriptor descriptor)
     {
-        this.manager = manager;
-        this.owner = owner;
-        this.name = name;
-        this.label = name;
-        this.description = description;
-        this.contextFactory = contextFactory;
-        this.permission = permission;
+        this.commandManager = manager;
+        this.name = descriptor.getName();
+        this.description = descriptor.getDescription();
+        this.owner = descriptor.getOwner();
+        this.contextFactory = descriptor.getContextFactory();
+        this.restrictUsage = descriptor.getRestrictUsage();
+        this.permission = descriptor.getPermission();
+        this.parent = descriptor.getParent();
+
+        this.delegation = descriptor.getDelegation();
+
+        Stack<String> labels = new Stack<String>();
+        BaseCommand cmd = this;
+        do
+        {
+            labels.push(cmd.getName());
+        }
+        while ((cmd = cmd.getParent()) != null);
+        this.labels = labels;
+    }
+
+    public final Stack<String> getLabels()
+    {
+        Stack<String> stack = new Stack<String>();
+        stack.addAll(labels);
+        return stack;
     }
 
     public CommandOwner getOwner()
@@ -78,12 +102,7 @@ public abstract class BaseCommand
 
     public String getLabel()
     {
-        return label;
-    }
-
-    public void setLabel(String label)
-    {
-        this.label = label == null ? this.name : label;
+        return name;
     }
 
     public String getDescription()
@@ -91,22 +110,17 @@ public abstract class BaseCommand
         return description;
     }
 
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-
-    protected void addAlias(String name, BaseCommand... parents)
+    protected void addAlias(String name, BaseCommand... parents) // TODO prefix / suffix arguments
     {
         if (parents.length == 0)
         {
-            this.addAlias(new AliasCommand(this, name));
+            this.addAlias(new AliasCommand(name, this, null));
         }
         else
         {
             for (BaseCommand parent : parents)
             {
-                parent.addAlias(new AliasCommand(this, name));
+                parent.addAlias(new AliasCommand(name, this, parent));
             }
         }
     }
@@ -116,30 +130,25 @@ public abstract class BaseCommand
         this.aliases.put(alias.getName(), alias);
     }
 
-    public void restrictUsage(Class<? extends BaseCommandSender>... to)
-    {
-        this.restrictUsage = to;
-    }
-
     public boolean isRestricted(BaseCommandSender sender)
     {
         if (this.restrictUsage != null)
         {
-            for (Class<? extends BaseCommandSender> clazz : restrictUsage)
+            for (Class<? extends BaseCommandSender> clazz : this.restrictUsage)
             {
                 if (clazz.isAssignableFrom(sender.getClass()))
                 {
-                    return true;
+                    return false;
                 }
             }
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public ContextFactory getContextFactory()
     {
-        return contextFactory;
+        return this.contextFactory;
     }
 
     public BaseCommand getParent()
@@ -159,7 +168,7 @@ public abstract class BaseCommand
 
     public final String getUsage()
     {
-        return "/" + StringUtils.implode(" ", this.getLabels()) + " " + this.getUsage(this.manager.getDefaultLocale(), null);
+        return "/" + this.getUsage(this.getLabels(), Locale.getDefault(), null);
     }
 
     public final String getUsage(Locale locale, BaseCommandSender sender)
@@ -169,40 +178,42 @@ public abstract class BaseCommand
 
     public String getUsage(BaseCommandSender sender)
     {
-        return StringUtils.implode(" ", this.getLabels()) + " " + this.getUsage(sender.getLocale(),
-                                                                    sender); // TODO if User append /
+        return this.getUsage(this.getLabels(), sender.getLocale(), sender);
     }
 
     public String getUsage(CommandContext ctx)
     {
-        return StringUtils.implode(" ", ctx.getLabels()) + " " + this.getUsage(ctx.getSender().getLocale(),
-                                                                   ctx.getSender()); // TODO if User append /
+        return this.getUsage(ctx.getLabels(), ctx.getSender().getLocale(), ctx.getSender());
     }
 
-    protected String getUsage0(Locale locale, BaseCommandSender sender)
+    private String getUsage(Stack<String> labels, Locale locale, Permissible permissible)
+    {
+        return implode(" ", labels) + " " + this.getUsage0(locale, permissible);
+    }
+
+    protected String getUsage0(Locale locale, Permissible sender)
     {
         // TODO indexed permissions
         StringBuilder sb = new StringBuilder();
         int inGroup = 0;
-        for (CommandParameterIndexed indexedParam : this.contextFactory.getIndexedParameters())
+        for (CommandParameterIndexed indexedParam : this.getContextFactory().getIndexedParameters())
         {
             if (indexedParam.getCount() == 1 || indexedParam.getCount() < 0)
             {
-                sb.append(convertLabel(indexedParam.isGroupRequired(), StringUtils.implode("|", convertLabels(
-                    indexedParam))));
+                sb.append(convertLabel(indexedParam.isGroupRequired(), implode("|", convertLabels(indexedParam))));
                 sb.append(' ');
                 inGroup = 0;
             }
             else if (indexedParam.getCount() > 1)
             {
                 sb.append(indexedParam.isGroupRequired() ? '<' : '[');
-                sb.append(convertLabel(indexedParam.isRequired(), StringUtils.implode("|", convertLabels(indexedParam))));
+                sb.append(convertLabel(indexedParam.isRequired(), implode("|", convertLabels(indexedParam))));
                 sb.append(' ');
                 inGroup = indexedParam.getCount() - 1;
             }
             else if (indexedParam.getCount() == 0)
             {
-                sb.append(convertLabel(indexedParam.isRequired(), StringUtils.implode("|", convertLabels(indexedParam))));
+                sb.append(convertLabel(indexedParam.isRequired(), implode("|", convertLabels(indexedParam))));
                 inGroup--;
                 if (inGroup == 0)
                 {
@@ -270,17 +281,7 @@ public abstract class BaseCommand
         }
     }
 
-    protected final Stack<String> getLabels()
-    {
-        Stack<String> cmds = new Stack<String>();
-        BaseCommand cmd = this;
-        do
-        {
-            cmds.push(cmd.getName());
-        }
-        while ((cmd = cmd.getParent()) != null);
-        return cmds;
-    }
+
 
     public final BaseCommand getChild(String name)
     {
@@ -306,25 +307,6 @@ public abstract class BaseCommand
         return name != null && this.children.containsKey(name.toLowerCase(Locale.ENGLISH));
     }
 
-    public final void addChild(BaseCommand command)
-    {
-        if (command == null)
-        {
-            throw new IllegalArgumentException("The command must not be null!");
-        }
-        if (this == command)
-        {
-            throw new IllegalArgumentException("You can't register a command as a child of itself!");
-        }
-        if (command.isRegistered())
-        {
-            throw new IllegalArgumentException("The given command is already registered! Use aliases instead!");
-        }
-
-        this.children.put(command.getName(), command);
-        command.parent = this;
-    }
-
     /**
      * This method handles the command execution
      *
@@ -332,38 +314,32 @@ public abstract class BaseCommand
      */
     public abstract CommandResult run(CommandContext context);
 
-    public void checkContext(CommandContext ctx)
+    public void checkContext(CommandContext ctx) throws CommandException
     {
-        if (!ctx.getCommand().permission.isAuthorized(ctx.getSender()))
+        BaseCommand command = ctx.getCommand();
+        ContextFactory cFactory = command.getContextFactory();
+        if (command.isRestricted(ctx.getSender()))
         {
-            throw new PermissionDeniedException(ctx.getCommand().permission);
+            throw new UsageRestrictedException();
         }
-
-        ArgBounds bounds = ctx.getCommand().getContextFactory().getArgBounds();
+        if (!command.isAuthorized(ctx.getSender()))
+        {
+            throw new PermissionDeniedException(command.permission);
+        }
+        ArgBounds bounds = cFactory.getArgBounds();
         if (ctx.getIndexedCount() < bounds.getMin())
         {
-            throw new IncorrectUsageException(ctx.getSender().getTranslation(
-                "You've given too few arguments.")); // TODO COLOR code
+            throw new TooFewArgumentsException();
         }
         if (bounds.getMax() > ArgBounds.NO_MAX && ctx.getIndexedCount() > bounds.getMax())
         {
-            throw new IncorrectUsageException(ctx.getSender().getTranslation(
-                "You've given too many arguments.")); // TODO COLOR code
+            throw new TooManyArgumentsException();
         }
-        if (ctx.getCommand().restrictUsage != null)
+        for (CommandParameterIndexed indexed : cFactory.getIndexedParameters())
         {
-            for (Class<? extends BaseCommandSender> clazz : ctx.getCommand().restrictUsage)
-            {
-                if (clazz.isAssignableFrom(ctx.getSender().getClass()))
-                {
-                    break;
-                }
-            }
-            throw new IncorrectUsageException(ctx.getSender().getTranslation(
-                "This command cannot be used by a " + ctx.getSender().getClass().getSimpleName())); // TODO COLOR code
+            // TODO permission for indexed
         }
-        // TODO permission for indexed
-        for (CommandParameter param : this.getContextFactory().getParameters().values())
+        for (CommandParameter param : cFactory.getParameters().values())
         {
             if (ctx.hasParam(param.getName()))
             {
@@ -377,7 +353,7 @@ public abstract class BaseCommand
                 throw new MissingParameterException(param.getName());
             }
         }
-        for (CommandFlag flag : this.getContextFactory().getFlags())
+        for (CommandFlag flag : cFactory.getFlags())
         {
             if (ctx.hasFlag(flag.getName()) && !flag.checkPermission(ctx.getSender()))
             {
@@ -393,13 +369,33 @@ public abstract class BaseCommand
 
     public abstract void help(CommandContext ctx);
 
-    public CommandManager getCommandManager()
-    {
-        return this.manager;
-    }
-
     public boolean isAuthorized(BaseCommandSender sender)
     {
         return this.permission.isAuthorized(sender);
+    }
+
+    public CommandPermission getPermission()
+    {
+        return this.permission;
+    }
+
+    Class<? extends BaseCommandSender>[] getRestrictUsage()
+    {
+        return this.restrictUsage;
+    }
+
+    public DelegatingContextFilter getDelegation()
+    {
+        return delegation;
+    }
+
+    public void delegate(DelegatingContextFilter delegation)
+    {
+        this.delegation = delegation;
+    }
+
+    public CommandManager getCommandManager()
+    {
+        return this.commandManager;
     }
 }

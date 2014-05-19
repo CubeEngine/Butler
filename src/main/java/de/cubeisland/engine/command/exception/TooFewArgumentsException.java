@@ -20,23 +20,8 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reflected;
+package de.cubeisland.engine.command.exception;
 
-import de.cubeisland.engine.command.completer.Completer;
-
-import static de.cubeisland.engine.command.CommandPermission.PermDefault.OP;
-
-public @interface Indexed
+public class TooFewArgumentsException extends CommandException
 {
-    String[] label();
-
-    Class[] type() default String.class;
-
-    Class<? extends Completer> completer() default Completer.class;
-
-    boolean req() default true;
-
-    String permission() default "";
-
-    byte permDefault() default OP;
 }

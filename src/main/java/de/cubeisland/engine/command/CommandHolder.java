@@ -24,5 +24,5 @@ package de.cubeisland.engine.command;
 
 public interface CommandHolder
 {
-    Class<? extends BaseCommand> getCommandType();
+
 }

@@ -20,25 +20,18 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reflected;
+package de.cubeisland.engine.command.reflected.annotation;
 
-import de.cubeisland.engine.command.completer.Completer;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import static de.cubeisland.engine.command.CommandPermission.PermDefault.OP;
-
-public @interface Param
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+public @interface IndexedParams
 {
-    String[] names();
-
-    String label() default "";
-
-    Class type() default String.class;
-
-    boolean required() default false;
-
-    Class<? extends Completer> completer() default Completer.class;
-
-    String permission() default "";
-
-    byte permDefault() default OP;
+    Grouped[] value();
 }

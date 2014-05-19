@@ -22,38 +22,70 @@
  */
 package de.cubeisland.engine.command;
 
-import java.util.List;
-
-public class AliasCommand extends BaseCommand
+public class AliasCommandDescriptor implements CommandDescriptor
 {
     private final BaseCommand target;
+    private String name;
+    private final BaseCommand parent;
 
-    public AliasCommand(String name, BaseCommand target, BaseCommand parent)
+    public AliasCommandDescriptor(BaseCommand target, String name, BaseCommand parent)
     {
-        super(target.getCommandManager(), new AliasCommandDescriptor(target, name, parent));
         this.target = target;
-    }
-
-    public BaseCommand getTarget()
-    {
-        return this.target;
+        this.name = name;
+        this.parent = parent;
     }
 
     @Override
-    public CommandResult run(CommandContext context)
+    public String getName()
     {
-        return this.target.run(context);
+        return this.name;
     }
 
     @Override
-    public void help(CommandContext context)
+    public String getDescription()
     {
-        this.target.help(context);
+        return target.getDescription();
     }
 
     @Override
-    public List<String> tabComplete(CommandContext context)
+    public String[] getAlias()
     {
-        return this.target.tabComplete(context);
+        return null; // TODO
+    }
+
+    @Override
+    public CommandPermission getPermission()
+    {
+        return target.getPermission();
+    }
+
+    @Override
+    public ContextFactory getContextFactory()
+    {
+        return target.getContextFactory();
+    }
+
+    @Override
+    public CommandOwner getOwner()
+    {
+        return target.getOwner();
+    }
+
+    @Override
+    public Class<? extends BaseCommandSender>[] getRestrictUsage()
+    {
+        return target.getRestrictUsage();
+    }
+
+    @Override
+    public BaseCommand getParent()
+    {
+        return this.parent;
+    }
+
+    @Override
+    public DelegatingContextFilter getDelegation()
+    {
+        return this.parent.getDelegation();
     }
 }

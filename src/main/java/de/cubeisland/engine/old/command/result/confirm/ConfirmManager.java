@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
-import de.cubeisland.engine.command.BaseCommandSender;
 import de.cubeisland.engine.command.CommandManager;
+import de.cubeisland.engine.command.BaseCommandSender;
 import de.cubeisland.engine.command.ResultManager;
 
 public class ConfirmManager implements ResultManager<ConfirmResult>

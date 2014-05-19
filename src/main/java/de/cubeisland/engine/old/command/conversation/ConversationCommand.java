@@ -25,18 +25,17 @@ package de.cubeisland.engine.old.command.conversation;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.cubeisland.engine.command.BaseCommand;
 import de.cubeisland.engine.command.CommandManager;
 import de.cubeisland.engine.command.CommandOwner;
 
-public abstract class ConversationCommand extends BaseCommand
+public abstract class ConversationCommand
 {
     private final Set<Long> usersInMode = new HashSet<Long>();
 
     protected ConversationCommand(CommandManager manager, CommandOwner owner, ConversationContextFactory contextFactory)
     {
-
-        super(manager, owner, "", "", contextFactory, null);
+        //new CommandDescriptor(), null);
+        // TODO set desc values manager, owner, "", "", contextFactory, null);
         // TODO owner.getCore().getEventManager().registerListener(owner, this);
     }
 

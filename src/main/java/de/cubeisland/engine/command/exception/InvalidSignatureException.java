@@ -20,17 +20,30 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.exception;
 
-public interface CommandPermission
+import java.lang.reflect.Method;
+
+public class InvalidSignatureException extends CommandException
 {
-    byte DEFAULT = 0;
-    byte OP = 1;
-    byte TRUE = 2;
-    byte FALSE = 3;
-    byte NOT_OP = 4;
+    private final Object holder;
+    private final Method method;
 
-    public boolean isAuthorized(Permissible permissible);
+    public Object getHolder()
+    {
+        return holder;
+    }
 
-    String getName();
+    public Method getMethod()
+    {
+        return method;
+    }
+
+    public InvalidSignatureException(Object holder, Method method)
+    {
+        // TODO
+        //module.getLog().warn("The method ''{}.{}'' does not match the required method signature: public void {}(CommandContext context)",holder.getClass().getSimpleName(), method.getName(), method.getName());
+        this.holder = holder;
+        this.method = method;
+    }
 }

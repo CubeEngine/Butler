@@ -20,13 +20,25 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reflected;
+package de.cubeisland.engine.command.reflected.annotation;
 
-public @interface Grouped
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static de.cubeisland.engine.command.CommandPermission.OP;
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+public @interface Permission
 {
-    Indexed[] value();
-
-    boolean req() default true;
-
-    boolean greedy() default false;
+    /**
+     * Use this permission node instead of the automatically generated one.
+     * 'cubeengine.<module>.command' will be prepended to this.
+     */
+    String value() default "";
+    byte permDefault() default OP;
 }

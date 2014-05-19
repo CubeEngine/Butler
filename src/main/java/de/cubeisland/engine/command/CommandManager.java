@@ -22,43 +22,61 @@
  */
 package de.cubeisland.engine.command;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-/**
- * This class manages the registration of commands.
- */
-public interface CommandManager
+public abstract class CommandManager
 {
-    void registerCommand(BaseCommand command, BaseCommand... parents);
+    private Locale defaultLocale;
+    private Map<Class, ResultManager> resultManagers = new HashMap<Class, ResultManager>();
 
-    void registerCommands(CommandOwner owner, CommandHolder commandHolder, BaseCommand... parents);
+    private final CommandExecutor executor;
 
-    <T extends BaseCommand> void registerCommands(CommandOwner owner, Object commandHolder, Class<T> commandType,
-                                                  BaseCommand... parents);
+    protected CommandManager(CommandExecutor executor)
+    {
+        this.executor = executor;
+    }
 
-    BaseCommand getCommand(String name);
+    public void setDefaultLocale(Locale defaultLocale)
+    {
+        this.defaultLocale = defaultLocale;
+    }
 
-    void removeCommands(BaseCommand command);
+    public void registerCommand(BaseCommand command)
+    {
+        if (command.isRegistered())
+        {
+            throw new IllegalArgumentException("The given command is already registered!");
+        }
+        this.registerCommand0(command);
+    }
 
-    void removeCommands(Object owner);
+    protected abstract void registerCommand0(BaseCommand command); // TODO register perm
 
-    void removeCommands();
+    public Locale getDefaultLocale()
+    {
+        return defaultLocale;
+    }
 
-    boolean runCommand(BaseCommandSender sender, String commandLine);
+    public void registerResultManager(ResultManager manager)
+    {
+        this.resultManagers.put(manager.getClass(), manager);
+    }
 
-    <T extends BaseCommand> void registerCommandFactory(CommandFactory<T> factory);
+    public <T extends ResultManager> T getResultManager(Class<T> clazz)
+    {
+        return (T)this.resultManagers.get(clazz);
+    }
 
-    void removeCommandFactory(Class<? extends BaseCommand> type);
+    protected abstract void logTabCompletion(BaseCommandSender sender, BaseCommand command, String[] args);
+    protected abstract void logExecution(BaseCommandSender sender, BaseCommand command, String[] args);
 
-    public <T extends BaseCommand> CommandFactory<T> getCommandFactory(Class<T> type);
+    public abstract BaseCommand getCommand(String name);
+    public abstract boolean runCommand(BaseCommandSender sender, String commandline);
 
-    void logExecution(BaseCommandSender sender, BaseCommand cubeCommand, String[] args);
-
-    void logFailed(BaseCommandSender sender, BaseCommand cubeCommand, String[] args);
-
-    void logTabCompletion(BaseCommandSender sender, BaseCommand cubeCommand, String[] args);
-
-    <T extends ResultManager> T getManager(Class<T> clazz);
-
-    Locale getDefaultLocale();
+    public CommandExecutor getExecutor()
+    {
+        return executor;
+    }
 }

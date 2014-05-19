@@ -23,10 +23,10 @@
 package de.cubeisland.engine.old.command.result.paginated;
 
 import de.cubeisland.engine.command.CommandContext;
-import de.cubeisland.engine.command.reflected.Command;
-import de.cubeisland.engine.command.reflected.Grouped;
-import de.cubeisland.engine.command.reflected.Indexed;
-import de.cubeisland.engine.command.reflected.IndexedParams;
+import de.cubeisland.engine.command.reflected.annotation.Command;
+import de.cubeisland.engine.command.reflected.annotation.Grouped;
+import de.cubeisland.engine.command.reflected.annotation.Indexed;
+import de.cubeisland.engine.command.reflected.annotation.IndexedParams;
 
 public class PaginationCommands
 {

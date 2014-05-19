@@ -30,43 +30,36 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
 
-import de.cubeisland.engine.command.ContainerCommand.DelegatingContextFilter;
-
 import static de.cubeisland.engine.command.StringUtils.startsWithIgnoreCase;
 
-public abstract class BaseCommandExecutor
+public abstract class CommandExecutor
 {
-    private final BaseCommand command;
-
-    public BaseCommandExecutor(BaseCommand command)
-    {
-        this.command = command;
-    }
-
-    public void onCommand(BaseCommandSender sender, String label, String[] args)
+    public boolean onCommand(BaseCommand command, BaseCommandSender sender, String label, String[] args)
     {
         CommandContext ctx = null;
         try
         {
-            ctx = toCommandContext(this.command, sender, label, args, false);
+            ctx = toCommandContext(command, sender, label, args, false);
 
             // TODO async cmds
 
             // sync call:
             ctx.runAndShowResult();
+            return true;
         }
         catch (Exception e)
         {
             this.handleCommandException(ctx, sender, e);
+            return false;
         }
     }
 
-    public List<String> onTabComplete(BaseCommandSender sender, String label, String[] args)
+    public List<String> onTabComplete(BaseCommand command, BaseCommandSender sender, String label, String[] args)
     {
         CommandContext ctx = null;
         try
         {
-            ctx = toCommandContext(this.command, sender, label, args, true);
+            ctx = toCommandContext(command, sender, label, args, true);
 
             List<String> result = this.completeChild(ctx);
             if (result == null)
@@ -138,22 +131,17 @@ public abstract class BaseCommandExecutor
         // TODO aliascmd prefix & suffix
 
         CommandContext ctx = command.getContextFactory().parse(command, sender, labels, args);
-        if (command instanceof ContainerCommand && (!tabComplete || ctx.getRawIndexed().size() != 1))
+        if ((!tabComplete || ctx.getRawIndexed().size() != 1) && ctx.getCommand().getDelegation() != null)
         {
-            DelegatingContextFilter delegation = ((ContainerCommand)command).getDelegation();
-            if (delegation != null)
+            String child = ctx.getCommand().getDelegation().delegateTo(ctx);
+            if (child != null)
             {
-                String child = delegation.delegateTo(ctx);
-                if (child != null)
+                BaseCommand target = command.getChild(child);
+                if (target != null)
                 {
-                    BaseCommand target = command.getChild(child);
-                    if (target != null)
-                    {
-                        return target.getContextFactory().parse(target, sender, labels, args);
-                    }
-                    // TODO command.getModule().getLog().warn("Child delegation failed: child '{}' not found!", child);
-                    throw new IllegalArgumentException();
+                    return target.getContextFactory().parse(target, sender, labels, args);
                 }
+                throw new IllegalArgumentException("Child delegation failed child does not exist: " + child);
             }
         }
         return ctx;
