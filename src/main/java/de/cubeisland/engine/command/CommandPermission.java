@@ -30,7 +30,7 @@ public interface CommandPermission
     byte FALSE = 3;
     byte NOT_OP = 4;
 
-    public boolean isAuthorized(Permissible permissible);
+    public boolean hasPerm(Permissible permissible);
 
     String getName();
 }

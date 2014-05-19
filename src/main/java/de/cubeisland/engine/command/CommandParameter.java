@@ -148,7 +148,7 @@ public class CommandParameter
 
     public boolean checkPermission(Permissible permissible)
     {
-        return this.permission == null || permissible == null || this.permission.isAuthorized(permissible);
+        return this.permission == null || permissible == null || this.permission.hasPerm(permissible);
     }
 
     public CommandPermission getPermission()

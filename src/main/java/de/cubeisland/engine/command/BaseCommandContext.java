@@ -324,7 +324,7 @@ public class BaseCommandContext
 
     public void ensurePermission(CommandPermission permission) throws PermissionDeniedException
     {
-        if (!permission.isAuthorized(this.getSender()))
+        if (!permission.hasPerm(this.getSender()))
         {
             throw new PermissionDeniedException(permission);
         }

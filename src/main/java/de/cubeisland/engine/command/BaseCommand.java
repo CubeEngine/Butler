@@ -372,7 +372,7 @@ public abstract class BaseCommand
 
     public boolean isAuthorized(BaseCommandSender sender)
     {
-        return this.permission.isAuthorized(sender);
+        return this.permission.hasPerm(sender);
     }
 
     public CommandPermission getPermission()
