@@ -26,7 +26,7 @@ package de.cubeisland.engine.command.completer;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.BaseCommandContext;
 
 import static de.cubeisland.engine.command.StringUtils.startsWithIgnoreCase;
 
@@ -40,7 +40,7 @@ public abstract class SimpleCompleter implements Completer
     }
 
     @Override
-    public List<String> complete(CommandContext context, String token)
+    public List<String> complete(BaseCommandContext context, String token)
     {
         List<String> offers = new ArrayList<String>();
         for (String string : this.strings)

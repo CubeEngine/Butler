@@ -20,34 +20,25 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reader.readers;
+package de.cubeisland.engine.command.reader;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 
 import de.cubeisland.engine.command.reader.ArgumentReader;
 import de.cubeisland.engine.command.exception.InvalidArgumentException;
 
-public class DoubleReader extends ArgumentReader
+public class LongReader extends ArgumentReader
 {
     @Override
-    public Double read(String arg, Locale locale) throws InvalidArgumentException
+    public Long read(String arg, Locale locale) throws InvalidArgumentException
     {
         try
         {
-            return NumberFormat.getInstance(locale).parse(arg).doubleValue();
+            return Long.parseLong(arg);
         }
-        catch (ParseException e)
+        catch (NumberFormatException e)
         {
-            try
-            {
-                return NumberFormat.getInstance().parse(arg).doubleValue(); // Try parsing with default locale
-            }
-            catch (ParseException e1)
-            {
-                throw new InvalidArgumentException("Could not parse {input} to double!"); // TODO
-            }
+            throw new InvalidArgumentException("Could not parse {input} to long!"); // TODO
         }
     }
 }

@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.BaseCommandContext;
 import de.cubeisland.engine.command.CommandFlag;
 import de.cubeisland.engine.command.CommandParameter;
 import de.cubeisland.engine.command.CommandParameterIndexed;
@@ -40,7 +40,7 @@ import static de.cubeisland.engine.command.Type.*;
 public class CompleterUtils
 {
 
-    public static List<String> tabComplete(CommandContext context, Type lastType)
+    public static List<String> tabComplete(BaseCommandContext context, Type lastType)
     {
         if (lastType == NOTHING)
         {
@@ -77,7 +77,7 @@ public class CompleterUtils
         return result;
     }
 
-    private static List<String> tabCompleteParamValue(CommandContext context, ContextFactory cFactory)
+    private static List<String> tabCompleteParamValue(BaseCommandContext context, ContextFactory cFactory)
     {
         Iterator<Entry<String, String>> iterator = context.getRawNamed().entrySet().iterator();
         Entry<String, String> last;
@@ -94,7 +94,7 @@ public class CompleterUtils
         return null; //TODO remove once ALL our commands have tabcompleter for players
     }
 
-    private static void tabCompleteParam(CommandContext context, ContextFactory cFactory, List<String> result,
+    private static void tabCompleteParam(BaseCommandContext context, ContextFactory cFactory, List<String> result,
                                          String last)
     {
         for (CommandParameter parameter : cFactory.getParameters().values())
@@ -119,7 +119,7 @@ public class CompleterUtils
         }
     }
 
-    private static void tabCompleteIndexed(CommandContext context, ContextFactory cFactory, List<String> result,
+    private static void tabCompleteIndexed(BaseCommandContext context, ContextFactory cFactory, List<String> result,
                                            int index, String last)
     {
         CommandParameterIndexed indexed = cFactory.getIndexed(index);
@@ -133,7 +133,7 @@ public class CompleterUtils
         }
     }
 
-    private static void tabCompleteFlags(CommandContext context, ContextFactory cFactory, List<String> result,
+    private static void tabCompleteFlags(BaseCommandContext context, ContextFactory cFactory, List<String> result,
                                          String last)
     {
         if (!last.isEmpty())

@@ -83,9 +83,11 @@ public class ReflectedCommandDescriptor implements CommandDescriptor
         return this;
     }
 
+
+
     public ReflectedCommandDescriptor context(IndexedParams iParam, NamedParams nParam, Flags flags)
     {
-        this.contextFactory = new ContextFactory();
+        this.contextFactory = newContextFactory();
 
         if (iParam != null)
         {
@@ -169,6 +171,11 @@ public class ReflectedCommandDescriptor implements CommandDescriptor
         }
 
         return this;
+    }
+
+    protected ContextFactory newContextFactory()
+    {
+        return new ContextFactory();
     }
 
     private CommandParameter readParameter(Param param, CommandPermission basePerm)

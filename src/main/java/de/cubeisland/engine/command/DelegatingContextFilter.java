@@ -24,9 +24,9 @@ package de.cubeisland.engine.command;
 
 public abstract class DelegatingContextFilter
 {
-    public abstract String delegateTo(CommandContext context);
+    public abstract String delegateTo(BaseCommandContext context);
 
-    public CommandContext filterContext(CommandContext context, String child)
+    public BaseCommandContext filterContext(BaseCommandContext context, String child)
     {
         return context;
     }

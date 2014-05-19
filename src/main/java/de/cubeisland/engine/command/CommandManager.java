@@ -52,7 +52,7 @@ public abstract class CommandManager
         this.registerCommand0(command);
     }
 
-    protected abstract void registerCommand0(BaseCommand command); // TODO register perm
+    protected abstract void registerCommand0(BaseCommand command);
 
     public Locale getDefaultLocale()
     {

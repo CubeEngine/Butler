@@ -40,19 +40,19 @@ public class AliasCommand extends BaseCommand
     }
 
     @Override
-    public CommandResult run(CommandContext context)
+    public CommandResult run(BaseCommandContext context)
     {
         return this.target.run(context);
     }
 
     @Override
-    public void help(CommandContext context)
+    public void help(BaseCommandContext context)
     {
         this.target.help(context);
     }
 
     @Override
-    public List<String> tabComplete(CommandContext context)
+    public List<String> tabComplete(BaseCommandContext context)
     {
         return this.target.tabComplete(context);
     }

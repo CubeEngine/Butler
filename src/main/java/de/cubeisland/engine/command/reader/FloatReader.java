@@ -20,25 +20,34 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reader.readers;
+package de.cubeisland.engine.command.reader;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Locale;
 
 import de.cubeisland.engine.command.reader.ArgumentReader;
 import de.cubeisland.engine.command.exception.InvalidArgumentException;
 
-public class ShortReader extends ArgumentReader
+public class FloatReader extends ArgumentReader
 {
     @Override
-    public Short read(String arg, Locale locale) throws InvalidArgumentException
+    public Float read(String arg, Locale locale) throws InvalidArgumentException
     {
         try
         {
-            return Short.parseShort(arg);
+            return NumberFormat.getInstance(locale).parse(arg).floatValue();
         }
-        catch (NumberFormatException e)
+        catch (ParseException e)
         {
-            throw new InvalidArgumentException("Could not parse {input} to short!"); // TODO
+            try
+            {
+                return NumberFormat.getInstance().parse(arg).floatValue(); // Try default locale
+            }
+            catch (ParseException e1)
+            {
+                throw new InvalidArgumentException("Could not parse {input} to float!"); // TODO
+            }
         }
     }
 }

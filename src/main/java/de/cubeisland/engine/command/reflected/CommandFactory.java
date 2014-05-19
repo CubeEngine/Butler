@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.BaseCommand;
-import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.BaseCommandContext;
 import de.cubeisland.engine.command.CommandHolder;
 import de.cubeisland.engine.command.CommandManager;
 import de.cubeisland.engine.command.CommandOwner;
@@ -94,7 +94,7 @@ public class CommandFactory
             if (aHolder.isAnnotationPresent(Command.class))
             {
                 Class<?>[] methodParams = aHolder.getParameterTypes();
-                if (methodParams.length != 1 || !CommandContext.class.isAssignableFrom(methodParams[0]))
+                if (methodParams.length != 1 || !BaseCommandContext.class.isAssignableFrom(methodParams[0]))
                 {
                     throw new InvalidSignatureException(holder, aHolder);
                 }

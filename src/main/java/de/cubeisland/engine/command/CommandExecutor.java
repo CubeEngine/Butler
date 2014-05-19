@@ -34,12 +34,12 @@ import static de.cubeisland.engine.command.StringUtils.startsWithIgnoreCase;
 
 public abstract class CommandExecutor
 {
-    public boolean onCommand(BaseCommand command, BaseCommandSender sender, String label, String[] args)
+    public boolean onCommand(BaseCommand cmd, BaseCommandSender sender, String label, String[] args)
     {
-        CommandContext ctx = null;
+        BaseCommandContext ctx = null;
         try
         {
-            ctx = toCommandContext(command, sender, label, args, false);
+            ctx = toCommandContext(cmd, sender, label, args, false);
 
             // TODO async cmds
 
@@ -49,17 +49,17 @@ public abstract class CommandExecutor
         }
         catch (Exception e)
         {
-            this.handleCommandException(ctx, sender, e);
+            this.handleCommandException(ctx == null ? cmd : ctx.getCommand(), ctx, sender, e);
             return false;
         }
     }
 
-    public List<String> onTabComplete(BaseCommand command, BaseCommandSender sender, String label, String[] args)
+    public List<String> onTabComplete(BaseCommand cmd, BaseCommandSender sender, String label, String[] args)
     {
-        CommandContext ctx = null;
+        BaseCommandContext ctx = null;
         try
         {
-            ctx = toCommandContext(command, sender, label, args, true);
+            ctx = toCommandContext(cmd, sender, label, args, true);
 
             List<String> result = this.completeChild(ctx);
             if (result == null)
@@ -75,12 +75,12 @@ public abstract class CommandExecutor
         }
         catch (Exception e)
         {
-            this.handleCommandException(ctx, sender, e);
+            this.handleCommandException(ctx == null ? cmd : ctx.getCommand(), ctx, sender, e);
         }
         return Collections.emptyList();
     }
 
-    protected final List<String> completeChild(CommandContext context)
+    protected final List<String> completeChild(BaseCommandContext context)
     {
         BaseCommand command = context.getCommand();
         if (command.hasChildren() && context.getRawIndexed().size() == 1)
@@ -104,7 +104,7 @@ public abstract class CommandExecutor
         return null;
     }
 
-    private static CommandContext toCommandContext(BaseCommand command, BaseCommandSender sender, String label, String[] args, boolean tabComplete)
+    private static BaseCommandContext toCommandContext(BaseCommand command, BaseCommandSender sender, String label, String[] args, boolean tabComplete)
     {
         Stack<String> labels = new Stack<String>();
         labels.push(label);
@@ -115,7 +115,7 @@ public abstract class CommandExecutor
             {
                 if ("?".equals(args[0]))
                 {
-                    new CommandContext(command, sender, labels, Arrays.asList(Arrays.copyOfRange(args, 1, args.length)), Collections.<String>emptySet(), Collections.<String, String>emptyMap(), Type.ANY);
+                    new BaseCommandContext(command, sender, labels, Arrays.asList(Arrays.copyOfRange(args, 1, args.length)), Collections.<String>emptySet(), Collections.<String, String>emptyMap(), Type.ANY);
                 }
                 BaseCommand child = command.getChild(args[0]);
                 if (child == null)
@@ -130,7 +130,7 @@ public abstract class CommandExecutor
 
         // TODO aliascmd prefix & suffix
 
-        CommandContext ctx = command.getContextFactory().parse(command, sender, labels, args);
+        BaseCommandContext ctx = command.getContextFactory().parse(command, sender, labels, args);
         if ((!tabComplete || ctx.getRawIndexed().size() != 1) && ctx.getCommand().getDelegation() != null)
         {
             String child = ctx.getCommand().getDelegation().delegateTo(ctx);
@@ -147,7 +147,8 @@ public abstract class CommandExecutor
         return ctx;
     }
 
-    protected abstract void handleCommandException(CommandContext ctx, BaseCommandSender sender, Throwable t);
+    protected abstract void handleCommandException(BaseCommand cmd, BaseCommandContext ctx, BaseCommandSender sender,
+                                                   Throwable t);
     /*
     if (!CubeEngine.isMainThread())
         {

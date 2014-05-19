@@ -22,6 +22,7 @@
  */
 package de.cubeisland.engine.command;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -181,7 +182,7 @@ public abstract class BaseCommand
         return this.getUsage(this.getLabels(), sender.getLocale(), sender);
     }
 
-    public String getUsage(CommandContext ctx)
+    public String getUsage(BaseCommandContext ctx)
     {
         return this.getUsage(ctx.getLabels(), ctx.getSender().getLocale(), ctx.getSender());
     }
@@ -312,9 +313,9 @@ public abstract class BaseCommand
      *
      * @param context The CommandContext containing all the necessary information
      */
-    public abstract CommandResult run(CommandContext context);
+    public abstract CommandResult run(BaseCommandContext context);
 
-    public void checkContext(CommandContext ctx) throws CommandException
+    public void checkContext(BaseCommandContext ctx) throws CommandException
     {
         BaseCommand command = ctx.getCommand();
         ContextFactory cFactory = command.getContextFactory();
@@ -362,12 +363,12 @@ public abstract class BaseCommand
         }
     }
 
-    public List<String> tabComplete(CommandContext context)
+    public List<String> tabComplete(BaseCommandContext context)
     {
         return CompleterUtils.tabComplete(context, context.last);
     }
 
-    public abstract void help(CommandContext ctx);
+    public abstract void help(BaseCommandContext ctx);
 
     public boolean isAuthorized(BaseCommandSender sender)
     {
@@ -397,5 +398,10 @@ public abstract class BaseCommand
     public CommandManager getCommandManager()
     {
         return this.commandManager;
+    }
+
+    public ArrayList<AliasCommand> getAliases()
+    {
+        return new ArrayList<AliasCommand>(aliases.values());
     }
 }

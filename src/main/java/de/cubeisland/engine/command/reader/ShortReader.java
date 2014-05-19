@@ -20,18 +20,25 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reader.readers;
+package de.cubeisland.engine.command.reader;
 
 import java.util.Locale;
 
 import de.cubeisland.engine.command.reader.ArgumentReader;
 import de.cubeisland.engine.command.exception.InvalidArgumentException;
 
-public final class StringReader extends ArgumentReader
+public class ShortReader extends ArgumentReader
 {
     @Override
-    public String read(String arg, Locale locale) throws InvalidArgumentException
+    public Short read(String arg, Locale locale) throws InvalidArgumentException
     {
-        return arg;
+        try
+        {
+            return Short.parseShort(arg);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new InvalidArgumentException("Could not parse {input} to short!"); // TODO
+        }
     }
 }

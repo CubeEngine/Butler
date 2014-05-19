@@ -34,6 +34,7 @@ import java.lang.annotation.Target;
 public @interface Command
 {
     String name() default "";
+    String[] alias() default "";
     String desc();
     boolean checkPerm() default true;
 }

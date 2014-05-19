@@ -24,9 +24,9 @@ package de.cubeisland.engine.command.completer;
 
 import java.util.List;
 
-import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.BaseCommandContext;
 
 public interface Completer
 {
-    List<String> complete(CommandContext context, String token);
+    List<String> complete(BaseCommandContext context, String token);
 }

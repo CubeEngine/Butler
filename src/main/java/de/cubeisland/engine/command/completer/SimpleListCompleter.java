@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.BaseCommandContext;
 
 import static de.cubeisland.engine.command.StringUtils.startsWithIgnoreCase;
 
@@ -41,7 +41,7 @@ public abstract class SimpleListCompleter implements Completer
     }
 
     @Override
-    public List<String> complete(CommandContext context, String token)
+    public List<String> complete(BaseCommandContext context, String token)
     {
         List<String> tokens = Arrays.asList(token.split(","));
         String lastToken = token.substring(token.lastIndexOf(",") + 1, token.length()).toUpperCase();

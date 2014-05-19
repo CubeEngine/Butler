@@ -212,16 +212,16 @@ public class ContextFactory
         this.bounds = new ArgBounds(new ArrayList<CommandParameterIndexed>(this.indexed.values()));
     }
 
-    public CommandContext parse(BaseCommand command, BaseCommandSender sender, Stack<String> labels, String[] rawArgs)
+    public BaseCommandContext parse(BaseCommand command, BaseCommandSender sender, Stack<String> labels, String[] rawArgs)
     {
         List<String> indexed = new LinkedList<String>();
         Set<String> flags = new HashSet<String>();
         Map<String, String> named = new LinkedHashMap<String, String>();
-        return new CommandContext(command, sender, labels, indexed, flags, named, readCommand(rawArgs, flags, indexed,
+        return new BaseCommandContext(command, sender, labels, indexed, flags, named, readCommand(rawArgs, flags, indexed,
                                                                                               named));
     }
 
-    private Type readCommand(String[] rawArgs, Set<String> flags, List<String> args, Map<String, String> rawParams)
+    protected Type readCommand(String[] rawArgs, Set<String> flags, List<String> args, Map<String, String> rawParams)
     {
         if (rawArgs.length < 1)
         {

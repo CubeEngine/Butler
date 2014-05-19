@@ -20,13 +20,18 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.old.command.result.paginated;
+package de.cubeisland.engine.command.reader;
 
-import java.util.List;
+import java.util.Locale;
 
-public interface PaginationIterator
+import de.cubeisland.engine.command.reader.ArgumentReader;
+import de.cubeisland.engine.command.exception.InvalidArgumentException;
+
+public final class StringReader extends ArgumentReader
 {
-    public List<String> getPage(int page, int numberOfLines);
-
-    public int pageCount(int numberOfLinesPerPage);
+    @Override
+    public String read(String arg, Locale locale) throws InvalidArgumentException
+    {
+        return arg;
+    }
 }

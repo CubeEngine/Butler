@@ -42,7 +42,7 @@ public class ReflectedCommand extends BaseCommand
     }
 
     @Override
-    public CommandResult run(final CommandContext context)
+    public CommandResult run(final BaseCommandContext context)
     {
         if (method == null)
         {
@@ -74,7 +74,7 @@ public class ReflectedCommand extends BaseCommand
     }
 
     @Override
-    public void help(CommandContext ctx)
+    public void help(BaseCommandContext ctx)
     {
         if (method == null)
         {
@@ -87,7 +87,7 @@ public class ReflectedCommand extends BaseCommand
 
     }
 
-    protected void reflectedHelp(CommandContext ctx)
+    protected void reflectedHelp(BaseCommandContext ctx)
     {
         ctx.sendMessage(this.getDescription());
         ctx.sendMessage("Usage: " + this.getUsage(ctx));
@@ -101,7 +101,7 @@ public class ReflectedCommand extends BaseCommand
         }
     }
 
-    protected void containerHelp(CommandContext ctx)
+    protected void containerHelp(BaseCommandContext ctx)
     {
         ctx.sendMessage(this.getDescription());
         if (ctx.getCommand().hasChildren())

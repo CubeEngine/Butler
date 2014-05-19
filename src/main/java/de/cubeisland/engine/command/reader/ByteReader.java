@@ -20,25 +20,26 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.reader.readers;
+package de.cubeisland.engine.command.reader;
 
 import java.util.Locale;
 
 import de.cubeisland.engine.command.reader.ArgumentReader;
 import de.cubeisland.engine.command.exception.InvalidArgumentException;
 
-public class LongReader extends ArgumentReader
+public class ByteReader extends ArgumentReader
 {
     @Override
-    public Long read(String arg, Locale locale) throws InvalidArgumentException
+    public Byte read(String arg, Locale locale) throws InvalidArgumentException
     {
+        String num = arg.replace(',', '.').replace(".", "");
         try
         {
-            return Long.parseLong(arg);
+            return Byte.parseByte(num);
         }
         catch (NumberFormatException e)
         {
-            throw new InvalidArgumentException("Could not parse {input} to long!"); // TODO
+            throw new InvalidArgumentException("Could not parse {input} to a byte!"); // TODO
         }
     }
 }

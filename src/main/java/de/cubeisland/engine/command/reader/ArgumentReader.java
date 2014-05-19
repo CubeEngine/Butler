@@ -29,24 +29,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import de.cubeisland.engine.command.BaseCommandSender;
 import de.cubeisland.engine.command.exception.InvalidArgumentException;
-import de.cubeisland.engine.command.reader.readers.BooleanReader;
-import de.cubeisland.engine.command.reader.readers.ByteReader;
-import de.cubeisland.engine.command.reader.readers.DoubleReader;
-import de.cubeisland.engine.command.reader.readers.FloatReader;
-import de.cubeisland.engine.command.reader.readers.IntReader;
-import de.cubeisland.engine.command.reader.readers.IntegerOrAllReader;
-import de.cubeisland.engine.command.reader.readers.LongReader;
-import de.cubeisland.engine.command.reader.readers.ShortReader;
-import de.cubeisland.engine.command.reader.readers.StringReader;
 
 public abstract class ArgumentReader
 {
-    // TODO unregister reader from a module!!! else memory leakage
-    private static final Map<Class<?>, ArgumentReader> READERS = new ConcurrentHashMap<Class<?>, ArgumentReader>();
+    private static final Map<Class<?>, ArgumentReader> READERS;
 
-    public static void init()
+    static
     {
-        registerReader(new BooleanReader(), Boolean.class, boolean.class);
+        READERS = new ConcurrentHashMap<Class<?>, ArgumentReader>();
         registerReader(new ByteReader(), Byte.class, byte.class);
         registerReader(new ShortReader(), Short.class, short.class);
         registerReader(new IntReader(), Integer.class, int.class);
@@ -54,8 +44,6 @@ public abstract class ArgumentReader
         registerReader(new FloatReader(), Float.class, float.class);
         registerReader(new DoubleReader(), Double.class, double.class);
         registerReader(new StringReader(), String.class);
-
-        registerReader(new IntegerOrAllReader()); // "*" or Integer.class
     }
 
     public static void registerReader(ArgumentReader reader, Class<?>... classes)

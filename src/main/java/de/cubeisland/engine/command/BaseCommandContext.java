@@ -37,7 +37,7 @@ import de.cubeisland.engine.command.exception.PermissionDeniedException;
 
 import static java.util.Locale.ENGLISH;
 
-public class CommandContext
+public class BaseCommandContext
 {
     final Type last;
     private final BaseCommand command;
@@ -49,8 +49,8 @@ public class CommandContext
     private List<Object> indexed = null;
     private Map<String, Object> named = null;
 
-    public CommandContext(BaseCommand command, BaseCommandSender sender, Stack<String> labels, List<String> rawIndexed,
-                          Set<String> flags, Map<String, String> rawNamed, Type last)
+    public BaseCommandContext(BaseCommand command, BaseCommandSender sender, Stack<String> labels,
+                              List<String> rawIndexed, Set<String> flags, Map<String, String> rawNamed, Type last)
     {
         this.command = command;
         this.sender = sender;
@@ -172,7 +172,7 @@ public class CommandContext
     {
         try
         {
-            T value = this.getIndexe(index);
+            T value = this.getIndexed(index);
             if (value != null)
             {
                 return value;
@@ -192,7 +192,7 @@ public class CommandContext
      * @return the converted arg value
      */
     @SuppressWarnings("unchecked")
-    public <T> T getIndexe(int index)
+    public <T> T getIndexed(int index)
     {
         try
         {
@@ -217,10 +217,10 @@ public class CommandContext
         {
             return null;
         }
-        StringBuilder sb = new StringBuilder(this.<String>getIndexe(from));
+        StringBuilder sb = new StringBuilder(this.<String>getIndexed(from));
         while (this.hasArg(++from))
         {
-            sb.append(" ").append(this.getIndexe(from));
+            sb.append(" ").append(this.getIndexed(from));
         }
         return sb.toString();
     }
