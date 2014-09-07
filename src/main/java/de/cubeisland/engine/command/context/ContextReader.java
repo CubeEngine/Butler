@@ -46,6 +46,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import de.cubeisland.engine.command.context.parameter.IndexedParameter;
+import de.cubeisland.engine.command.context.parameter.NamedParameter;
 import de.cubeisland.engine.command.context.reader.ArgumentReader;
 import de.cubeisland.engine.command.exception.IncorrectArgumentException;
 import de.cubeisland.engine.command.exception.ReaderException;

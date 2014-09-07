@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.context;
+package de.cubeisland.engine.command.context.parameter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,58 +30,41 @@ import java.util.Map;
 import java.util.Set;
 
 import de.cubeisland.engine.command.Completer;
+import de.cubeisland.engine.command.context.Group;
 
 public abstract class BaseParameter<T extends BaseParameter> implements Group<T>
 {
     public static final String STATIC_LABEL = "\n";
-    private final Class<?> type;
-    private final Class<?> reader;
-    private final int greed;
-    private final boolean required;
-
-    private final String valueLabel;
-    private final String description;
+    public static final int INFINITE_GREED = -1;
 
     private final List<T> thisList;
     private final List<Group<T>> thisGroupList;
-    /**
-     * Contains all allowed static values mapped onto their Reader/Type Class
-     */
-    private final Map<String, Class<?>> staticValues = new HashMap<>();
-    private Completer completer;
+
+    // package private so BaseParameterFactory can access/set the fields
+    final Map<String, Class<?>> staticReaders = new HashMap<>();
+    Class<?> type;
+    Class<?> reader;
+    int greed;
+    boolean required;
+    String valueLabel;
+    String description;
+    Completer<?> completer;
 
     @SuppressWarnings("unchecked")
-    protected BaseParameter(Class<?> type, Class<?> reader, int greed, boolean required, String valueLabel,
-                            String description)
+    protected BaseParameter()
     {
         this.thisList = Collections.unmodifiableList(Arrays.asList((T)this));
-        thisGroupList = Collections.unmodifiableList(Arrays.asList((Group<T>)this));
-        this.type = type;
-        // TODO when reader String.class(default) set reader to type
-        this.reader = reader; // TODO when passing List<?> type pass type as generic and reader as List
-        // TODO expect(ArgumentReader.hasReader(reader), "The Parameter " + label + " has an unreadable type: " + type.getName());
-        this.greed = greed;
-        this.required = required;
-        this.valueLabel = valueLabel;
-        this.description = description;
-    }
-
-    public void addStaticReader(String value, Class reader)
-    {
-        if (!value.isEmpty())
-        {
-            this.staticValues.put(value.toLowerCase(), reader);
-        }
+        this.thisGroupList = Collections.unmodifiableList(Arrays.asList((Group<T>)this));
     }
 
     public Class<?> getStaticReader(String arg)
     {
-        return this.staticValues.get(arg);
+        return this.staticReaders.get(arg);
     }
 
-    public Set<String> getStaticValues()
+    public Set<String> getStaticReaders()
     {
-        return this.staticValues.keySet();
+        return this.staticReaders.keySet();
     }
 
     public Class<?> getType()
@@ -127,14 +110,9 @@ public abstract class BaseParameter<T extends BaseParameter> implements Group<T>
         return this.thisList;
     }
 
-    public Completer getCompleter()
+    public Completer<?> getCompleter()
     {
         return completer;
-    }
-
-    public void setCompleter(Completer completer)
-    {
-        this.completer = completer;
     }
 
     public boolean isInRequiredGroup()

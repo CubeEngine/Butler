@@ -28,21 +28,24 @@ import java.util.Map;
 import java.util.Set;
 
 import de.cubeisland.engine.command.BaseCommand;
+import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.context.ContextParser.Type;
 
-public class CommandContext<CommandT extends BaseCommand> extends ReadParameters
+public class CommandContext<CommandT extends BaseCommand, SourceT extends CommandSource> extends ReadParameters
 {
     private final CommandT command;
+    private final SourceT source;
     private final List<String> labels;
     private final String label;
 
     public CommandContext(String[] rawArgs, List<String> rawIndexed, Map<String, String> rawNamed, Set<String> flags,
-                          Type last, CommandT command, List<String> labels)
+                          Type last, CommandT command, List<String> labels, SourceT source)
     {
         super(rawArgs, rawIndexed, rawNamed, flags, last);
         this.command = command;
         this.labels = Collections.unmodifiableList(labels);
         this.label = labels.get(labels.size() - 1);
+        this.source = source;
     }
 
     public CommandT getCommand()
@@ -58,5 +61,15 @@ public class CommandContext<CommandT extends BaseCommand> extends ReadParameters
     public List<String> getLabels()
     {
         return labels;
+    }
+
+    public SourceT getSource()
+    {
+        return this.source;
+    }
+
+    public boolean isSource(Class<? extends CommandSource> type)
+    {
+        return type.isAssignableFrom(this.source.getClass());
     }
 }

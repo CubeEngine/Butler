@@ -28,6 +28,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.cubeisland.engine.command.context.parameter.FlagParameter;
+import de.cubeisland.engine.command.context.parameter.IndexedParameter;
+import de.cubeisland.engine.command.context.parameter.NamedParameter;
+
 public class CtxDescriptor
 {
     protected final Group<? extends IndexedParameter> indexedGroup;
@@ -35,12 +39,12 @@ public class CtxDescriptor
 
     protected final LinkedHashMap<Integer, IndexedParameter> indexedMap = new LinkedHashMap<>();
     protected final LinkedHashMap<String, NamedParameter> namedMap = new LinkedHashMap<>();
-    protected final Map<String, Flag> flagMap = new HashMap<>();
+    protected final Map<String, FlagParameter> flagMap = new HashMap<>();
 
     protected final ArgBounds bounds;
 
-    protected CtxDescriptor(Group<? extends IndexedParameter> indexedGroup, Group<? extends NamedParameter> namedGroup,
-                            List<? extends Flag> flags)
+    public CtxDescriptor(Group<? extends IndexedParameter> indexedGroup, Group<? extends NamedParameter> namedGroup,
+                            List<? extends FlagParameter> flags)
     {
         this.indexedGroup = indexedGroup;
         this.namedGroup = namedGroup;
@@ -59,7 +63,7 @@ public class CtxDescriptor
             }
         }
 
-        for (Flag flag : flags)
+        for (FlagParameter flag : flags)
         {
             flagMap.put(flag.getLongName().toLowerCase(), flag);
             flagMap.put(flag.getName().toLowerCase(), flag);
@@ -68,15 +72,9 @@ public class CtxDescriptor
         this.bounds = new ArgBounds(indexedGroup);
     }
 
-
-    public Flag getFlag(String name)
+    public FlagParameter getFlag(String name)
     {
         return this.flagMap.get(name.toLowerCase());
-    }
-
-    public NamedParameter getNamed(String name)
-    {
-        return this.namedMap.get(name.toLowerCase());
     }
 
     public Group<? extends IndexedParameter> getIndexedGroups()
@@ -89,7 +87,7 @@ public class CtxDescriptor
         return this.namedGroup;
     }
 
-    public Collection<Flag> getFlags()
+    public Collection<FlagParameter> getFlags()
     {
         return this.flagMap.values();
     }
@@ -102,5 +100,10 @@ public class CtxDescriptor
     public IndexedParameter getIndexed(int index)
     {
         return this.indexedMap.get(index);
+    }
+
+    public NamedParameter getNamed(String name)
+    {
+        return this.namedMap.get(name);
     }
 }

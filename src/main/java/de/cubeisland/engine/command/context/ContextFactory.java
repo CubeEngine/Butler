@@ -22,41 +22,20 @@
  */
 package de.cubeisland.engine.command.context;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Stack;
 
-public class NamedParameter extends BaseParameter<NamedParameter>
+import de.cubeisland.engine.command.BaseCommand;
+import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.context.CommandContext;
+import de.cubeisland.engine.command.context.ContextReader;
+import de.cubeisland.engine.command.context.CtxDescriptor;
+
+public abstract class ContextFactory<CmdT extends BaseCommand, SrcT extends CommandSource, CtxT extends CommandContext<CmdT, SrcT>> extends ContextReader
 {
-    private final String name;
-    private final Set<String> aliases = new HashSet<>();
-
-    public NamedParameter(String name, Class<?> type, Class<?> reader, int greed, boolean required, String valueLabel,
-                          String description)
+    public ContextFactory(CtxDescriptor descriptor)
     {
-        super(type, reader, greed, required, valueLabel, description);
-        this.name = name;
+        super(descriptor);
     }
 
-    public String getName()
-    {
-        return name;
-    }
-
-    public Set<String> getAliases()
-    {
-        return aliases;
-    }
-
-    public void addAlias(String alias)
-    {
-        this.aliases.add(alias);
-    }
-
-    public void addAliases(String... aliases)
-    {
-        for (String alias : aliases)
-        {
-            this.addAlias(alias);
-        }
-    }
+    public abstract CtxT parse(CmdT command, SrcT source, Stack<String> labels, String[] rawArgs);
 }

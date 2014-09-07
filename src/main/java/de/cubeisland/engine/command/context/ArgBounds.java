@@ -39,6 +39,9 @@
  */
 package de.cubeisland.engine.command.context;
 
+import de.cubeisland.engine.command.context.parameter.IndexedParameter;
+import de.cubeisland.engine.command.context.parameter.ParameterGroup;
+
 public class ArgBounds
 {
     public static final int NO_MAX = -1;

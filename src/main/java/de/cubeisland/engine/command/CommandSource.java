@@ -20,52 +20,34 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.context;
+package de.cubeisland.engine.command;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
-public class ParameterGroup<T extends Group<T>> implements Group<T>
+/**
+ * A CommandSource able to execute commands;
+ */
+public interface CommandSource
 {
-    private final List<Group<T>> entries;
-    private boolean isRequired;
+    /**
+     * Returns the name of this CommandSource
+     *
+     * @return the name
+     */
+    String getName();
 
-    public ParameterGroup(List<Group<T>> entries, boolean isRequired)
-    {
-        this.entries = entries;
-        this.isRequired = isRequired;
-    }
+    /**
+     * Returns the UUID of this CommandSource.
+     *
+     * @return the uuid
+     */
+    UUID getUUID();
 
-    public ParameterGroup()
-    {
-        this(true);
-    }
-
-    public ParameterGroup(boolean isRequired)
-    {
-        this(new ArrayList<Group<T>>(), isRequired);
-    }
-
-    @Override
-    public boolean isRequired()
-    {
-        return isRequired;
-    }
-
-    @Override
-    public List<Group<T>> list()
-    {
-        return entries;
-    }
-
-    @Override
-    public List<T> listAll()
-    {
-        List<T> result = new ArrayList<>();
-        for (Group<T> entry : entries)
-        {
-            result.addAll(entry.listAll());
-        }
-        return result;
-    }
+    /**
+     * Returns the locale of this CommandSource or if not known the default Locale
+     *
+     * @return the locale
+     */
+    Locale getLocale();
 }

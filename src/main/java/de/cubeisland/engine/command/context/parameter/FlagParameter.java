@@ -20,13 +20,20 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.context;
+package de.cubeisland.engine.command.context.parameter;
 
-public class IndexedParameter extends BaseParameter<IndexedParameter>
+public class FlagParameter
 {
-    public IndexedParameter(Class<?> type, Class<?> reader, int greed, boolean required, String valueLabel,
-                            String description)
+    String name;
+    String longName;
+
+    public String getName()
     {
-        super(type, reader, greed, required, valueLabel, description);
+        return name;
+    }
+
+    public String getLongName()
+    {
+        return longName;
     }
 }

@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.cubeisland.engine.command.context.parameter.FlagParameter;
+import de.cubeisland.engine.command.context.parameter.NamedParameter;
+
 import static de.cubeisland.engine.command.context.ContextParser.Type.*;
 import static java.util.Locale.ENGLISH;
 
@@ -106,7 +109,7 @@ public class ContextParser
 
         flag = flag.toLowerCase(ENGLISH); // lowercase flag
 
-        Flag cmdFlag = this.descriptor.flagMap.get(flag);
+        FlagParameter cmdFlag = this.descriptor.flagMap.get(flag);
         if (cmdFlag != null) // has flag ?
         {
             flags.add(cmdFlag.getName()); // added flag

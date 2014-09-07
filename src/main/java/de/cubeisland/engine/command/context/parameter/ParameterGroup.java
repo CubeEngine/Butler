@@ -20,20 +20,59 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.context.parameter;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
-import de.cubeisland.engine.command.context.CommandContext;
-import de.cubeisland.engine.command.context.ContextReader;
-import de.cubeisland.engine.command.context.CtxDescriptor;
+import de.cubeisland.engine.command.context.Group;
 
-public abstract class ContextFactory<CommandT extends BaseCommand<?>, ContextT extends CommandContext<CommandT>> extends ContextReader
+public class ParameterGroup<T extends Group<T>> implements Group<T>
 {
-    public ContextFactory(CtxDescriptor descriptor)
+    private final List<Group<T>> entries;
+    private boolean isRequired;
+
+    public ParameterGroup(List<Group<T>> entries, boolean isRequired)
     {
-        super(descriptor);
+        this.entries = entries;
+        this.isRequired = isRequired;
     }
 
-    public abstract ContextT parse(CommandT command, Stack<String> labels, String[] rawArgs);
+    public ParameterGroup()
+    {
+        this(true);
+    }
+
+    public ParameterGroup(boolean isRequired)
+    {
+        this(new ArrayList<Group<T>>(), isRequired);
+    }
+
+    @Override
+    public boolean isRequired()
+    {
+        return isRequired;
+    }
+
+    @Override
+    public List<Group<T>> list()
+    {
+        return entries;
+    }
+
+    @Override
+    public List<T> listAll()
+    {
+        List<T> result = new ArrayList<>();
+        for (Group<T> entry : entries)
+        {
+            result.addAll(entry.listAll());
+        }
+        return result;
+    }
+
+    public void add(T toAdd)
+    {
+        this.entries.add(toAdd);
+    }
 }
