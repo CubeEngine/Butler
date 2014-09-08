@@ -44,7 +44,7 @@ public abstract class BaseParameter<T extends BaseParameter> implements Group<T>
     final Map<String, Class<?>> staticReaders = new HashMap<>();
     Class<?> type;
     Class<?> reader;
-    int greed;
+    int greed = 1;
     boolean required;
     String valueLabel;
     String description;
@@ -110,7 +110,7 @@ public abstract class BaseParameter<T extends BaseParameter> implements Group<T>
         return this.thisList;
     }
 
-    public Completer<?> getCompleter()
+    public Completer getCompleter()
     {
         return completer;
     }

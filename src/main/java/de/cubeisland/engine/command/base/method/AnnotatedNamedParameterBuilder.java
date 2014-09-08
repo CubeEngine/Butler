@@ -1,19 +1,19 @@
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.method;
 
 import de.cubeisland.engine.command.context.parameter.NamedParameter;
-import de.cubeisland.engine.command.context.parameter.NamedParameterFactory;
+import de.cubeisland.engine.command.context.parameter.NamedParameterBuilder;
 
 import static de.cubeisland.engine.command.context.parameter.BaseParameter.STATIC_LABEL;
 
-public class MethodNamedParameterFactory extends NamedParameterFactory<NamedParameter, Named>
+public class AnnotatedNamedParameterBuilder extends NamedParameterBuilder<NamedParameter, Named>
 {
-    public MethodNamedParameterFactory()
+    public AnnotatedNamedParameterBuilder()
     {
         super(NamedParameter.class);
     }
 
     @Override
-    public MethodNamedParameterFactory build(Named source)
+    public AnnotatedNamedParameterBuilder build(Named source)
     {
         this.begin();
 

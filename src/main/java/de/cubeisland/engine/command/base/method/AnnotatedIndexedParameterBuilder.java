@@ -1,19 +1,19 @@
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.method;
 
-import de.cubeisland.engine.command.context.parameter.BaseParameterFactory;
+import de.cubeisland.engine.command.context.parameter.BaseParameterBuilder;
 import de.cubeisland.engine.command.context.parameter.IndexedParameter;
 
 import static de.cubeisland.engine.command.context.parameter.BaseParameter.STATIC_LABEL;
 
-public class MethodIndexedParameterFactory extends BaseParameterFactory<IndexedParameter, Indexed>
+public class AnnotatedIndexedParameterBuilder extends BaseParameterBuilder<IndexedParameter, Indexed>
 {
-    public MethodIndexedParameterFactory()
+    public AnnotatedIndexedParameterBuilder()
     {
         super(IndexedParameter.class);
     }
 
     @Override
-    public MethodIndexedParameterFactory build(Indexed source)
+    public AnnotatedIndexedParameterBuilder build(Indexed source)
     {
         this.begin();
 

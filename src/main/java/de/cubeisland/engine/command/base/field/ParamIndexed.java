@@ -15,11 +15,32 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.field;
 
-public @interface Flag
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface ParamIndexed
 {
-    String name();
+    /**
+     * Index position
+     */
+    int value();
 
-    String longName() default "";
+    /**
+     * How many parameters this parameters takes up
+     * Use INFINITE as last indexed parameter to catch all remaining values
+     */
+    int greed() default 1;
+
+    /**
+     * ONLY use for the last ParamIndexed
+     */
+    int INFINITE = -1;
 }

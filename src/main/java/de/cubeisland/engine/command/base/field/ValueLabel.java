@@ -15,17 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.field;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Provides a translatable value-label for the annotated Parameter
+ */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Restricted
+@Target(ElementType.FIELD)
+public @interface ValueLabel
 {
-    Class[] value();
-    String msg() default "";
+    String value();
 }

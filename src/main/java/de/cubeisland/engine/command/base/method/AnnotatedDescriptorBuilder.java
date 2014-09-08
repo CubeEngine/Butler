@@ -1,31 +1,37 @@
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.method;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.context.CtxDescriptor;
-import de.cubeisland.engine.command.context.parameter.DescriptorFactory;
+import de.cubeisland.engine.command.context.parameter.DescriptorBuilder;
 import de.cubeisland.engine.command.context.parameter.FlagParameter;
 import de.cubeisland.engine.command.context.parameter.IndexedParameter;
 import de.cubeisland.engine.command.context.parameter.NamedParameter;
 import de.cubeisland.engine.command.context.parameter.ParameterGroup;
 
-public class MethodDescriptorFactory implements DescriptorFactory<CtxDescriptor, Method>
+public class AnnotatedDescriptorBuilder<Annot extends AnnotatedElement> implements DescriptorBuilder<CtxDescriptor, Annot>
 {
-    protected final MethodIndexedParameterFactory factoryIndexed;
-    protected final MethodNamedParameterFactory factoryNamed;
-    protected final MethodFlagFactory factoryFlag;
+    protected final AnnotatedIndexedParameterBuilder factoryIndexed;
+    protected final AnnotatedNamedParameterBuilder factoryNamed;
+    protected final AnnotatedFlagBuilder factoryFlag;
 
-    public MethodDescriptorFactory(MethodIndexedParameterFactory factoryIndexed, MethodNamedParameterFactory factoryNamed, MethodFlagFactory factoryFlag)
+    public AnnotatedDescriptorBuilder(AnnotatedIndexedParameterBuilder factoryIndexed,
+                                      AnnotatedNamedParameterBuilder factoryNamed, AnnotatedFlagBuilder factoryFlag)
     {
         this.factoryIndexed = factoryIndexed;
         this.factoryNamed = factoryNamed;
         this.factoryFlag = factoryFlag;
     }
 
+    public AnnotatedDescriptorBuilder()
+    {
+        this(new AnnotatedIndexedParameterBuilder(), new AnnotatedNamedParameterBuilder(), new AnnotatedFlagBuilder());
+    }
+
     @Override
-    public CtxDescriptor build(Method source)
+    public CtxDescriptor build(Annot source)
     {
         Indexeds indexeds = source.getAnnotation(Indexeds.class);
         ParameterGroup<IndexedParameter> groupIndexed = new ParameterGroup<>();
@@ -57,13 +63,8 @@ public class MethodDescriptorFactory implements DescriptorFactory<CtxDescriptor,
         return this.build(source, groupIndexed, groupNamed, groupFlag);
     }
 
-    protected CtxDescriptor build(Method source, ParameterGroup<IndexedParameter> groupIndexed, ParameterGroup<NamedParameter> groupNamed, List<FlagParameter> groupFlag)
+    protected CtxDescriptor build(Annot source, ParameterGroup<IndexedParameter> groupIndexed, ParameterGroup<NamedParameter> groupNamed, List<FlagParameter> groupFlag)
     {
         return new CtxDescriptor(groupIndexed, groupNamed, groupFlag);
-    }
-
-    public static MethodDescriptorFactory newInstance()
-    {
-        return new MethodDescriptorFactory(new MethodIndexedParameterFactory(), new MethodNamedParameterFactory(), new MethodFlagFactory());
     }
 }

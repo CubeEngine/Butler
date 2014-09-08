@@ -1,11 +1,11 @@
 package de.cubeisland.engine.command.context.parameter;
 
-public abstract class ParameterFactory<ParamT, SourceT>
+public abstract class ParameterBuilder<ParamT, SourceT>
 {
     private ParamT parameter;
     private Class<ParamT> clazz;
 
-    protected ParameterFactory(Class<ParamT> clazz)
+    protected ParameterBuilder(Class<ParamT> clazz)
     {
         this.clazz = clazz;
     }
@@ -17,7 +17,7 @@ public abstract class ParameterFactory<ParamT, SourceT>
      *
      * @return fluent interface
      */
-    public abstract ParameterFactory<ParamT, SourceT> build(SourceT source);
+    public abstract ParameterBuilder<ParamT, SourceT> build(SourceT source);
 
     /**
      * Starts Building a new Parameter

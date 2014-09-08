@@ -1,8 +1,8 @@
 package de.cubeisland.engine.command.context.parameter;
 
-public abstract class FlagFactory<FlagT extends FlagParameter, SourceT> extends ParameterFactory<FlagT, SourceT>
+public abstract class FlagBuilder<FlagT extends FlagParameter, SourceT> extends ParameterBuilder<FlagT, SourceT>
 {
-    public FlagFactory(Class<FlagT> clazz)
+    public FlagBuilder(Class<FlagT> clazz)
     {
         super(clazz);
     }

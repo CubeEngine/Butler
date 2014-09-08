@@ -1,16 +1,16 @@
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.method;
 
 import de.cubeisland.engine.command.context.parameter.*;
 
-public class MethodFlagFactory extends FlagFactory<FlagParameter, Flag>
+public class AnnotatedFlagBuilder extends FlagBuilder<FlagParameter, Flag>
 {
-    public MethodFlagFactory()
+    public AnnotatedFlagBuilder()
     {
         super(FlagParameter.class);
     }
 
     @Override
-    public MethodFlagFactory build(Flag source)
+    public AnnotatedFlagBuilder build(Flag source)
     {
         this.begin();
         this.setName(source.name());

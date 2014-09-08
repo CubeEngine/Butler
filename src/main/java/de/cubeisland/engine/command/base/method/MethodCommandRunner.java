@@ -1,4 +1,4 @@
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.method;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

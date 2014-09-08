@@ -1,25 +1,25 @@
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.method;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
 import de.cubeisland.engine.command.BaseCommand;
-import de.cubeisland.engine.command.BaseCommandBuilder;
+import de.cubeisland.engine.command.ExternalBaseCommandBuilder;
+import de.cubeisland.engine.command.base.Command;
 import de.cubeisland.engine.command.context.ContextFactory;
 import de.cubeisland.engine.command.context.CtxDescriptor;
 
-public abstract class MethodCommandFactory<CmdT extends BaseCommand> extends BaseCommandBuilder<CmdT, MethodCommandRunner, Method>
+public abstract class MethodCommandBuilder<CmdT extends BaseCommand> extends ExternalBaseCommandBuilder<CmdT, MethodCommandRunner, Method>
 {
-
-    protected MethodCommandFactory(Class<CmdT> clazz, MethodDescriptorFactory descriptorFactory)
+    protected MethodCommandBuilder(Class<CmdT> clazz, AnnotatedDescriptorBuilder<Method> descriptorFactory)
     {
         super(clazz, descriptorFactory);
     }
 
-    public MethodCommandFactory(Class<CmdT> clazz)
+    public MethodCommandBuilder(Class<CmdT> clazz)
     {
-        this(clazz, MethodDescriptorFactory.newInstance());
+        this(clazz, new AnnotatedDescriptorBuilder<Method>());
     }
 
     protected Method method(MethodCommandRunner runner)
@@ -28,7 +28,7 @@ public abstract class MethodCommandFactory<CmdT extends BaseCommand> extends Bas
     }
 
     @Override
-    protected MethodCommandFactory<CmdT> build(MethodCommandRunner runner)
+    protected MethodCommandBuilder<CmdT> build(MethodCommandRunner runner)
     {
         this.begin();
 

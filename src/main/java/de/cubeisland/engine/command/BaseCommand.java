@@ -51,6 +51,10 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
     CtxF contextFactory;
     CommandRunner<CtxT> runner;
 
+    protected BaseCommand()
+    {
+    }
+
     /**
      * Returns the parent of this command or null if there is none
      *

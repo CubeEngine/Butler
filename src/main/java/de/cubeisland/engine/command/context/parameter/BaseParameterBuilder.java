@@ -3,9 +3,9 @@ package de.cubeisland.engine.command.context.parameter;
 import de.cubeisland.engine.command.Completer;
 import de.cubeisland.engine.command.context.reader.ArgumentReader;
 
-public abstract class BaseParameterFactory<ParamT extends BaseParameter<?>, SourceT> extends ParameterFactory<ParamT, SourceT>
+public abstract class BaseParameterBuilder<ParamT extends BaseParameter<?>, SourceT> extends ParameterBuilder<ParamT, SourceT>
 {
-    protected BaseParameterFactory(Class<ParamT> clazz)
+    protected BaseParameterBuilder(Class<ParamT> clazz)
     {
         super(clazz);
     }

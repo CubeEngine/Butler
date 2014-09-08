@@ -31,6 +31,7 @@ import java.util.Map;
 import de.cubeisland.engine.command.context.parameter.FlagParameter;
 import de.cubeisland.engine.command.context.parameter.IndexedParameter;
 import de.cubeisland.engine.command.context.parameter.NamedParameter;
+import de.cubeisland.engine.command.context.parameter.ParameterGroup;
 
 public class CtxDescriptor
 {
@@ -43,8 +44,15 @@ public class CtxDescriptor
 
     protected final ArgBounds bounds;
 
+    private CtxDescriptor()
+    {
+        this.indexedGroup = new ParameterGroup<IndexedParameter>();
+        this.namedGroup = new ParameterGroup<NamedParameter>();
+        this.bounds = new ArgBounds(0, 0);
+    }
+
     public CtxDescriptor(Group<? extends IndexedParameter> indexedGroup, Group<? extends NamedParameter> namedGroup,
-                            List<? extends FlagParameter> flags)
+                         List<? extends FlagParameter> flags)
     {
         this.indexedGroup = indexedGroup;
         this.namedGroup = namedGroup;
@@ -70,6 +78,11 @@ public class CtxDescriptor
         }
 
         this.bounds = new ArgBounds(indexedGroup);
+    }
+
+    public static CtxDescriptor emptyDescriptor()
+    {
+        return new CtxDescriptor();
     }
 
     public FlagParameter getFlag(String name)

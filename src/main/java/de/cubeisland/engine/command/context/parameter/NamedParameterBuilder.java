@@ -1,8 +1,8 @@
 package de.cubeisland.engine.command.context.parameter;
 
-public abstract class NamedParameterFactory<ParamT extends NamedParameter, SourceT> extends BaseParameterFactory<ParamT, SourceT>
+public abstract class NamedParameterBuilder<ParamT extends NamedParameter, SourceT> extends BaseParameterBuilder<ParamT, SourceT>
 {
-    protected NamedParameterFactory(Class<ParamT> clazz)
+    protected NamedParameterBuilder(Class<ParamT> clazz)
     {
         super(clazz);
     }

@@ -15,21 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.methodbased;
+package de.cubeisland.engine.command.base.field;
 
-import de.cubeisland.engine.command.Completer;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public @interface Indexed
+/**
+ * Makes annotated named Parameter required
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Required
 {
-    Class type() default String.class;
-    Class reader() default Void.class;
-    int greed() default 1;
-    boolean req() default true;
-
-    String label();
-    String desc() default "";
-
-    String[] staticValues() default {};
-
-    Class<? extends Completer> completer() default Completer.class;
 }

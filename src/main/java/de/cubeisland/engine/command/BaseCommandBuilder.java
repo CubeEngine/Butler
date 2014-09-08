@@ -3,51 +3,33 @@ package de.cubeisland.engine.command;
 import java.util.Set;
 
 import de.cubeisland.engine.command.context.ContextFactory;
-import de.cubeisland.engine.command.context.CtxDescriptor;
-import de.cubeisland.engine.command.context.parameter.DescriptorFactory;
 
-public abstract class BaseCommandBuilder<CmdT extends BaseCommand, SourceT, DSourceT>
+public class BaseCommandBuilder<CmdT extends BaseCommand>
 {
-    private final Class<CmdT> clazz;
-    private final DescriptorFactory<?, DSourceT> descriptorFactory;
-    private CmdT cmd;
-
-    protected BaseCommandBuilder(Class<CmdT> clazz, DescriptorFactory<?, DSourceT> descriptorFactory)
-    {
-        this.clazz = clazz;
-        this.descriptorFactory = descriptorFactory;
-    }
-
+    CmdT cmd;
     protected CmdT cmd()
     {
         return cmd;
     }
 
-    /**
-     * Starts Building a new Command
-     */
-    public final void begin()
+    protected BaseCommandBuilder()
     {
-        try
-        {
-            this.cmd = clazz.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            throw new IllegalArgumentException(e);
-        }
+    }
+
+    protected BaseCommandBuilder(CmdT cmd)
+    {
+        this.cmd = cmd;
     }
 
     /**
-     * Builds a Context Descriptor
+     * Sets the aliases of the command
      *
-     * @param source the source
-     *
-     * @return the descriptor
+     * @param aliases the aliases to set
      */
-    public CtxDescriptor newDescriptor(DSourceT source)
+    protected void setAlias(Set<String> aliases)
     {
-        return descriptorFactory.build(source);
+        cmd.aliases.clear();
+        cmd.aliases.addAll(aliases);
     }
 
     /**
@@ -63,36 +45,5 @@ public abstract class BaseCommandBuilder<CmdT extends BaseCommand, SourceT, DSou
         cmd.description = description;
         cmd.contextFactory = ctxFactory;
         cmd.runner = runner;
-    }
-
-    /**
-     * Sets the aliases of the command
-     *
-     * @param aliases the aliases to set
-     */
-    public void setAlias(Set<String> aliases)
-    {
-        cmd.aliases.clear();
-        cmd.aliases.addAll(aliases);
-    }
-
-    /**
-     * Builds a command
-     *
-     * @param source the source
-     */
-    protected abstract BaseCommandBuilder<CmdT, SourceT, DSourceT> build(SourceT source);
-
-    /**
-     * Returns the finalized command.
-     * This Builder will, when used after this cause {@link java.lang.NullPointerException}s as the underlying command is no longer available.
-     *
-     * @return the comand
-     */
-    public final CmdT finish()
-    {
-        CmdT cmd = this.cmd;
-        this.cmd = null; // prevent modification later
-        return cmd;
     }
 }
