@@ -37,13 +37,11 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old.context.reader;
-
-import java.util.Locale;
+package de.cubeisland.engine.command.parameter.reader;
 
 import de.cubeisland.engine.command.old.exception.ReaderException;
-import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+
+import java.util.Locale;
 
 public final class StringReader implements ArgumentReader
 {

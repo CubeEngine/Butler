@@ -24,8 +24,8 @@ public class Flag implements Parameter
     }
 
     @Override
-    public ParsedParameter parse(String[] tokens, int offset)
+    public ParsedParameter parse(CallT call, String[] tokens, int beginOffset)
     {
-        return ParsedParameter.of(this, tokens[offset], 1);
+        return ParsedParameter.of(this, tokens[beginOffset], 1);
     }
 }

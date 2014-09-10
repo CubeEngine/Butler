@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.Locale;
 
 import de.cubeisland.engine.command.old.exception.ReaderException;
+import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
+import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 
-public class SimpleListReader extends ArgumentReader
+public class SimpleListReader implements ArgumentReader
 {
     private String delimiter;
 
@@ -38,13 +40,13 @@ public class SimpleListReader extends ArgumentReader
     }
 
     @Override
-    public Object read(Class type, String arg, Locale locale) throws ReaderException
+    public Object read(ReaderManager manager, Class type, String arg, Locale locale) throws ReaderException
     {
         List<Object> result = new ArrayList<>();
         String[] tokens = arg.split(delimiter);
         for (String token : tokens)
         {
-            result.add(ArgumentReader.read(type, type, token, locale));
+            result.add(manager.read(type, type, token, locale));
         }
         return result;
     }

@@ -8,6 +8,10 @@ import de.cubeisland.engine.command.CommandBase;
 import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
 
+/**
+ * A CommandBuilder to be called from inside of a command
+ * The command information are extracted from the annotation on the objects class
+ */
 public class SelfbuildingBuilder implements CommandBuilder
 {
     @Override

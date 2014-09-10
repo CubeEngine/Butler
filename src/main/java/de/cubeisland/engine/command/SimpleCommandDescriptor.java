@@ -1,7 +1,8 @@
 package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.CommandDescriptor;
-
+/**
+ * A simple Implementation of the {@link de.cubeisland.engine.command.CommandDescriptor}
+ */
 public class SimpleCommandDescriptor implements CommandDescriptor
 {
     private String name;

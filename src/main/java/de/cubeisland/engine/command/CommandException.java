@@ -37,19 +37,31 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old.context.reader;
+package de.cubeisland.engine.command;
 
-import java.util.Locale;
-
-import de.cubeisland.engine.command.old.exception.ReaderException;
-import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
-
-public final class StringReader implements ArgumentReader
+/**
+ * This exception will be catched by the executor.
+ * Its message will be send to the command sender.
+ */
+public class CommandException extends RuntimeException
 {
-    @Override
-    public Object read(ReaderManager manager, Class type, String arg, Locale locale) throws ReaderException
+    public CommandException()
     {
-        return arg;
+        super();
+    }
+
+    public CommandException(String message)
+    {
+        super(message);
+    }
+
+    public CommandException(Throwable cause)
+    {
+        super(cause);
+    }
+
+    public CommandException(String message, Throwable cause)
+    {
+        super(message, cause);
     }
 }

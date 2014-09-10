@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A Command that can dispatch sub-commands
+ */
 public class DispatcherCommand implements CommandDispatcher
 {
     private final Map<String, CommandBase> commands = new HashMap<>();
