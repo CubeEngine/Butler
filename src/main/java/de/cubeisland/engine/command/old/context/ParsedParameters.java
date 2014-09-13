@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.cubeisland.engine.command.context.ContextParser.Type;
-
 import static java.util.Locale.ENGLISH;
 
 public class ParsedParameters
@@ -61,16 +59,14 @@ public class ParsedParameters
     private int namedCount;
     private int flagCount;
 
-    public final Type last;
 
-    public ParsedParameters(String[] rawArgs, List<String> rawIndexed, Map<String, String> rawNamed, Set<String> flags,
-                            Type last)
+    public ParsedParameters(String[] rawArgs, List<String> rawIndexed, Map<String, String> rawNamed, Set<String> flags
+                           )
     {
         this.rawArgs = rawArgs;
         this.rawIndexed = rawIndexed;
         this.rawNamed = rawNamed;
         this.flags = flags;
-        this.last = last;
 
         this.indexedCount = rawIndexed.size();
         this.namedCount = rawNamed.size();

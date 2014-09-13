@@ -43,20 +43,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.cubeisland.engine.command.old.context.parameter.FlagParameter;
-import de.cubeisland.engine.command.old.context.parameter.NamedParameter;
+import de.cubeisland.engine.command.parameter.FlagParameter;
 
 import static de.cubeisland.engine.command.old.context.ContextParser.Type.*;
 import static java.util.Locale.ENGLISH;
 
 public class ContextParser
 {
-    protected final CtxDescriptor descriptor;
-
-    public ContextParser(CtxDescriptor descriptor)
-    {
-        this.descriptor = descriptor;
-    }
 
     public Type parse(String[] rawArgs, List<String> indexed, Map<String, String> named, Set<String> flags)
     {
@@ -94,6 +87,7 @@ public class ContextParser
 
     protected int readFlag(String rawArg, List<String> indexed, Set<String> flags, int offset, ContextParser.LastType type)
     {
+        /*
         String flag = rawArg;
         if (flag.charAt(0) == '-')
         {
@@ -121,11 +115,13 @@ public class ContextParser
             indexed.add(rawArg); // flag not found, adding it as an indexed param
         }
         offset++;
+        */
         return offset;
     }
 
     protected int readRawParam(String[] rawArgs, List<String> indexed, Map<String, String> named, int offset, ContextParser.LastType type)
     {
+        /*
         String paramName = rawArgs[offset].toLowerCase(ENGLISH);
         // has alias named Param ?
         NamedParameter param = this.descriptor.namedMap.get(paramName);
@@ -146,6 +142,7 @@ public class ContextParser
             indexed.add(arg.toString());// added indexed param
             type.last = INDEXED_OR_PARAM;
         }
+        */
         return offset;
     }
 
@@ -210,9 +207,4 @@ public class ContextParser
         public Type last;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends CtxDescriptor> T descriptor()
-    {
-        return (T)descriptor;
-    }
 }

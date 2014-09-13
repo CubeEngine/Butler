@@ -41,9 +41,7 @@ package de.cubeisland.engine.command.old;
 
 import java.util.List;
 
-import de.cubeisland.engine.command.old.context.CommandContext;
-
-public interface Completer<CtxT extends CommandContext<?,?>>
+public interface Completer
 {
-    List<String> complete(CtxT context, String token);
+    List<String> complete(Object context, String token);
 }

@@ -1,14 +1,34 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013 Anselm Brehme, Phillip Schichtel
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package de.cubeisland.engine.command.methodic;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.cubeisland.engine.command.annotations.Command;
+import de.cubeisland.engine.command.Command;
 import de.cubeisland.engine.command.CommandBase;
 import de.cubeisland.engine.command.CommandBuilder;
-import de.cubeisland.engine.command.CommandDescriptor;
-import de.cubeisland.engine.command.SimpleCommandDescriptor;
 
 public class MethodicBuilder implements CommandBuilder
 {
@@ -26,15 +46,8 @@ public class MethodicBuilder implements CommandBuilder
         return list;
     }
 
-    protected CommandBase build(Object holder, Method method)
+    protected MethodicCommand build(Object object, Method method)
     {
-        return new MethodicCommand(buildDescriptor(holder, method), holder, method);
-    }
-
-    protected CommandDescriptor buildDescriptor(Object holder, Method method)
-    {
-        Command cmdAnnot = method.getAnnotation(Command.class);
-        String name = cmdAnnot.name().isEmpty() ? method.getName() : cmdAnnot.name();
-        return new SimpleCommandDescriptor(name, cmdAnnot.desc(), cmdAnnot.alias());
+        return new MethodicCommand(object, method);
     }
 }

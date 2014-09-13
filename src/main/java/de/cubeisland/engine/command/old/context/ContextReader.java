@@ -44,20 +44,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import de.cubeisland.engine.command.old.context.parameter.IndexedParameter;
-import de.cubeisland.engine.command.old.context.parameter.NamedParameter;
-import de.cubeisland.engine.command.old.context.reader.ArgumentReader;
-import de.cubeisland.engine.command.old.exception.IncorrectArgumentException;
-import de.cubeisland.engine.command.old.exception.ReaderException;
 
 public class ContextReader extends ContextParser
 {
-    public ContextReader(CtxDescriptor descriptor)
-    {
-        super(descriptor);
-    }
 
     public void readContext(ReadParameters ctx, Locale locale)
     {
@@ -77,6 +66,8 @@ public class ContextReader extends ContextParser
     protected List<Object> readIndexed(Locale locale, List<String> rawIndexed)
     {
         List<Object> result = new ArrayList<>();
+        /*
+
         int i = 0;
         for (String arg : rawIndexed)
         {
@@ -105,13 +96,14 @@ public class ContextReader extends ContextParser
                 }
             }
         }
+        */
         return result;
     }
 
     protected Map<String, Object> readNamed(Locale locale, Map<String, String> rawNamed)
     {
         Map<String, Object> readParams = new LinkedHashMap<>();
-
+        /*
         for (Entry<String, String> entry : rawNamed.entrySet())
         {
             NamedParameter param = this.descriptor.namedMap.get(entry.getKey());
@@ -124,6 +116,7 @@ public class ContextReader extends ContextParser
                 throw new IncorrectArgumentException(param.getName(), ex);
             }
         }
+        */
         return readParams;
     }
 }

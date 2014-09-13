@@ -39,14 +39,13 @@
  */
 package de.cubeisland.engine.command.old.context;
 
-import de.cubeisland.engine.command.old.context.parameter.IndexedParameter;
-import de.cubeisland.engine.command.old.context.parameter.ParameterGroup;
-
 public class ArgBounds
 {
+
     public static final int NO_MAX = -1;
     private final int min;
     private final int max;
+
 
     public ArgBounds(int min)
     {
@@ -62,7 +61,7 @@ public class ArgBounds
         this.min = min;
         this.max = max;
     }
-
+ /*
 
     public ArgBounds(Group<? extends IndexedParameter> indexedGroup)
     {
@@ -110,7 +109,7 @@ public class ArgBounds
         this.min = tMin;
         this.max = tMax;
     }
-
+ */
     public int getMin()
     {
         return this.min;
@@ -120,4 +119,5 @@ public class ArgBounds
     {
         return max;
     }
+
 }

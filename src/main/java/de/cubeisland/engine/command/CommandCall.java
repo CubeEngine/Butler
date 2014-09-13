@@ -1,38 +1,63 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013 Anselm Brehme, Phillip Schichtel
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
-import java.util.*;
+import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 
 /**
  * a CommandCall
  */
-public class CommandCall
+public class CommandCall extends PropertyHolder
 {
     private final String[] tokens;
-    private final Map<Object, Object> callArguments = new HashMap<>();
+    private int consumed = 0;
+
     private final ReaderManager manager;
     private final Locale locale;
 
     /**
      * Creates a CommandCall from a commandline
      *
-     * @param args the commandline
-     * @param locale
+     * @param args   the commandline
+     * @param locale the locale
      */
     public CommandCall(String args, ReaderManager manager, Locale locale)
     {
         String[] rawTokens = args.split(" ");
 
         List<String> stringParsed = new ArrayList<>();
-        for (int offset = 0; offset < rawTokens.length; offset++)
+        for (int offset = 0; offset < rawTokens.length;)
         {
             StringBuilder sb = new StringBuilder();
             offset += parseString(sb, rawTokens, offset);
             stringParsed.add(sb.toString());
         }
-        stringParsed.toArray(new String[stringParsed.size()])
-        this.tokens = args;
+        this.tokens = stringParsed.toArray(new String[stringParsed.size()]);
         this.manager = manager;
         this.locale = locale;
     }
@@ -47,120 +72,6 @@ public class CommandCall
         this.tokens = tokens;
         this.manager = manager;
         this.locale = locale;
-    }
-
-    /**
-     * Checks if the CommandCall has a value
-     *
-     * @param value the value to find
-     * @return true if the value is found
-     */
-    public boolean containsValue(Object value)
-    {
-        return callArguments.containsValue(value);
-    }
-
-    /**
-     * Checks if the CommandCall has a value for the key
-     *
-     * @param key the key to find a value for
-     * @return true if the key has a value
-     */
-    public boolean containsKey(Object key)
-    {
-        return callArguments.containsKey(key);
-    }
-
-    /**
-     * Returns the value for the specified key
-     *
-     * @param key the key to find a value for
-     * @return the value or {@code null} if not found
-     */
-    public Object get(Object key)
-    {
-        return callArguments.get(key);
-    }
-
-    /**
-     * Sets the value for the specified key
-     *
-     * @param key   the key to assign the value to
-     * @param value the value
-     * @return the previous value for given key
-     */
-    public Object put(Object key, Object value)
-    {
-
-        return callArguments.put(key, value);
-    }
-
-    /**
-     * Returns the value for the specified key
-     *
-     * @param key          the key to find a value for
-     * @param expectedType the expected returnType
-     * @param <T>          the Type of the returned value
-     * @return the value or null if not found or not of expected Type
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(Object key, Class<T> expectedType)
-    {
-        Object o = this.get(key);
-        if (expectedType.isAssignableFrom(o.getClass()))
-        {
-            return (T) o;
-        }
-        return null;
-    }
-
-    /**
-     * Returns the value for the specified key
-     *
-     * @param key the key to find a value for
-     * @param <T> the Type of the returned value
-     * @return the value or null if no found or not of expected Type
-     */
-    public <T> T get(Class<T> key)
-    {
-        return this.get(key, key);
-    }
-
-    /**
-     * Returns the String the Call got created with
-     *
-     * @return the CallString
-     */
-    public String[] getTokens()
-    {
-        return tokens;
-    }
-
-    /**
-     * Creates the subordinated CommandCall
-     *
-     * @return the subordinated CommandCall
-     */
-    public CommandCall subCall()
-    {
-        CommandCall commandCall = new CommandCall(Arrays.copyOfRange(this.tokens, 1, this.tokens.length - 1), this.manager);
-        commandCall.callArguments.putAll(this.callArguments);
-        return commandCall;
-    }
-
-    /**
-     * Returns the ReaderManager
-     *
-     * @return the readerManager
-     */
-    public ReaderManager getManager()
-    {
-        return manager;
-    }
-
-    public Locale getLocale()
-    {
-        return locale;
     }
 
     public static int parseString(StringBuilder sb, String[] args, int offset)
@@ -206,5 +117,84 @@ public class CommandCall
         }
 
         return consumed;
+    }
+
+    /**
+     * Returns the String the Call got created with
+     *
+     * @return the CallString
+     */
+    public String[] tokens()
+    {
+        return tokens;
+    }
+
+    /**
+     * Creates the subordinated CommandCall
+     *
+     * @return the subordinated CommandCall
+     */
+    public CommandCall subCall()
+    {
+        CommandCall commandCall = new CommandCall(Arrays.copyOfRange(this.tokens, 1, this.tokens.length - 1),
+                                                  this.manager, this.locale);
+        commandCall.properties.putAll(this.properties);
+        return commandCall;
+    }
+
+    /**
+     * Returns the ReaderManager
+     *
+     * @return the readerManager
+     */
+    public ReaderManager getManager()
+    {
+        return manager;
+    }
+
+    public Locale getLocale()
+    {
+        return locale;
+    }
+
+    public void consume(int amount)
+    {
+        this.consumed += amount;
+    }
+
+    public int consumed()
+    {
+        return consumed;
+    }
+
+    public String currentToken()
+    {
+        return this.tokens[this.consumed];
+    }
+
+    /**
+     * Creates a CommandCall inheriting from this one with a new set of unconsumed tokens
+     * which can be used to pass a token that is a list down to another Reader
+     *
+     * @param tokens the tokens
+     *
+     * @return the new CommandCall
+     */
+    public CommandCall subTokens(String[] tokens)
+    {
+        CommandCall commandCall = new CommandCall(tokens, this.manager, this.locale);
+        commandCall.properties.putAll(this.properties);
+        return commandCall;
+    }
+
+    public boolean isConsumed()
+    {
+        return this.consumed >= this.tokens.length;
+    }
+
+    public String tokensSince(int start)
+    {
+        return String.join(" ", Arrays.copyOfRange(this.tokens, start,
+                                                   this.consumed)); // excluding current (unconsumed) token
     }
 }

@@ -52,10 +52,10 @@ public class ReadParameters extends ParsedParameters
     List<Object> indexed;
     Map<String, Object> named;
 
-    public ReadParameters(String[] rawArgs, List<String> rawIndexed, Map<String, String> rawNamed, Set<String> flags,
-                          Type last)
+    public ReadParameters(String[] rawArgs, List<String> rawIndexed, Map<String, String> rawNamed, Set<String> flags
+                          )
     {
-        super(rawArgs, rawIndexed, rawNamed, flags, last);
+        super(rawArgs, rawIndexed, rawNamed, flags);
     }
 
     public List<Object> getIndexed()

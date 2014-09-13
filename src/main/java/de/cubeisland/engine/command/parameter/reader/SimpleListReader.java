@@ -25,7 +25,8 @@ package de.cubeisland.engine.command.parameter.reader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
+import de.cubeisland.engine.command.CommandCall;
 
 public class SimpleListReader implements ArgumentReader
 {
@@ -37,14 +38,16 @@ public class SimpleListReader implements ArgumentReader
     }
 
     @Override
-    public Object read(ReaderManager manager, Class type, String arg, Locale locale) throws ReaderException
+    public Object read(ReaderManager manager, Class type, CommandCall call) throws de.cubeisland.engine.command.old.exception.ReaderException
     {
         List<Object> result = new ArrayList<>();
-        String[] tokens = arg.split(delimiter);
-        for (String token : tokens)
+        String[] tokens = call.currentToken().split(delimiter);
+        CommandCall tokenCall = call.subTokens(tokens);
+        while (!tokenCall.isConsumed())
         {
-            result.add(manager.read(type, type, token, locale));
+            result.add(manager.read(type, type, tokenCall));
         }
+        call.consume(1);
         return result;
     }
 }

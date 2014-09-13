@@ -39,15 +39,16 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
+import de.cubeisland.engine.command.CommandCall;
 import de.cubeisland.engine.command.old.exception.ReaderException;
-
-import java.util.Locale;
 
 public final class StringReader implements ArgumentReader
 {
     @Override
-    public Object read(ReaderManager manager, Class type, String arg, Locale locale) throws ReaderException
+    public Object read(ReaderManager manager, Class type, CommandCall call) throws ReaderException
     {
-        return arg;
+        String result = call.currentToken();
+        call.consume(1);
+        return result;
     }
 }

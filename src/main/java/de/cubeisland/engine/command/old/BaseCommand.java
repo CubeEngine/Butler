@@ -29,27 +29,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import de.cubeisland.engine.command.old.context.ArgBounds;
-import de.cubeisland.engine.command.old.context.CommandContext;
-import de.cubeisland.engine.command.old.context.ContextFactory;
-import de.cubeisland.engine.command.old.context.CtxDescriptor;
-import de.cubeisland.engine.command.old.context.parameter.NamedParameter;
-import de.cubeisland.engine.command.old.exception.MissingParameterException;
-import de.cubeisland.engine.command.old.exception.TooFewArgumentsException;
-import de.cubeisland.engine.command.old.exception.TooManyArgumentsException;
-import de.cubeisland.engine.command.old.result.CommandResult;
-
 import static java.util.Locale.ENGLISH;
 
-public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseCommand, ?>, CtxF extends ContextFactory<?, ?, CtxT>, ChildCmdT extends BaseCommand<CtxT, CtxF, ?>>
+public abstract class BaseCommand
 {
     final Set<String> aliases = new HashSet<>();
-    private final Map<String, ChildCmdT> children = new TreeMap<>();
-    protected BaseCommand<CtxT, CtxF, ?> parent;
+    private final Map<String, BaseCommand> children = new TreeMap<>();
+    protected BaseCommand parent;
     String name;
     String description;
-    CtxF contextFactory;
-    CommandRunnerOld<CtxT> runner;
+    Object contextFactory;
 
     private Map<Object, Object> commandDescriptor;
 
@@ -82,7 +71,7 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
      *
      * @return the conextfactory
      */
-    public CtxF getContextFactory()
+    public Object getContextFactory()
     {
         return this.contextFactory;
     }
@@ -93,7 +82,7 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
      * @param command the command to add
      */
     @SuppressWarnings("unchecked")
-    public void addChild(ChildCmdT command)
+    public void addChild(BaseCommand command)
     {
         if (command == null)
         {
@@ -126,7 +115,7 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
      * @return the child or null if not found
      */
     @SuppressWarnings("unchecked")
-    public ChildCmdT getChild(String name)
+    public BaseCommand getChild(String name)
     {
         return name == null ? null : this.children.get(name.toLowerCase(ENGLISH));
     }
@@ -180,7 +169,7 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
      *
      * @return a Set of children
      */
-    public Set<ChildCmdT> getChildren()
+    public Set<BaseCommand> getChildren()
     {
         return new HashSet<>(this.children.values());
     }
@@ -192,8 +181,8 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
      */
     public void removeChild(String name)
     {
-        ChildCmdT cmd = this.getChild(name);
-        Iterator<Entry<String, ChildCmdT>> it = this.children.entrySet().iterator();
+        BaseCommand cmd = this.getChild(name);
+        Iterator<Entry<String, BaseCommand>> it = this.children.entrySet().iterator();
 
         while (it.hasNext())
         {
@@ -211,8 +200,9 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
      * @param ctx the CommandContext
      *
      * @return the CommandResult
-     */
-    public CommandResult run(CtxT ctx)
+     *
+
+    public CommandResult run(Object ctx)
     {
         return this.runner.run(ctx);
     }
@@ -222,8 +212,9 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
      *
      * @param ctx the context to check
      */
-    public void checkContext(CtxT ctx)
+    public void checkContext(Object ctx)
     {
+        /*
         CtxDescriptor descriptor = ctx.getCommand().getContextFactory().descriptor();
 
         // TODO use only by certain classes throw new RestrictedUsageException(sourceClass);
@@ -249,5 +240,6 @@ public abstract class BaseCommand<CtxT extends CommandContext<? extends BaseComm
                 }
             }
         }
+        */
     }
 }
