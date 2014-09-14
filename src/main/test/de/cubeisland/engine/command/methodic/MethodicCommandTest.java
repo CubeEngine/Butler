@@ -13,6 +13,7 @@ import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GRE
 
 public class MethodicCommandTest extends TestCase
 {
+    public static final String COMMAND_TEXT = "I get matched as one String by this greedy parameter";
     private MethodicCommand cmd;
     private ReaderManager readerManager;
 
@@ -28,7 +29,7 @@ public class MethodicCommandTest extends TestCase
 
     public void testCmd() throws Exception
     {
-        assertTrue(cmd.run(new CommandCall("I get matched as one String by this greedy parameter", readerManager, Locale.getDefault()),
+        assertTrue(cmd.run(new CommandCall(COMMAND_TEXT, readerManager, Locale.getDefault()),
                            Collections.<String>emptyList()));
     }
 
@@ -36,6 +37,7 @@ public class MethodicCommandTest extends TestCase
     @Params(positional = @Param(greed = INFINITE_GREED))
     public boolean runMethodic(ParameterizedContext ctx)
     {
+        assertEquals(ctx.getStrings(0), COMMAND_TEXT);
         return true;
     }
 }
