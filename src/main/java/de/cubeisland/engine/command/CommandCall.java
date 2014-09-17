@@ -22,12 +22,14 @@
  */
 package de.cubeisland.engine.command;
 
+import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+import static de.cubeisland.engine.command.StringUtils.join;
 
 /**
  * a CommandCall
@@ -35,10 +37,9 @@ import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 public class CommandCall extends PropertyHolder
 {
     private final String[] tokens;
-    private int consumed = 0;
-
     private final ReaderManager manager;
     private final Locale locale;
+    private int consumed = 0;
 
     /**
      * Creates a CommandCall from a commandline
@@ -51,7 +52,7 @@ public class CommandCall extends PropertyHolder
         String[] rawTokens = args.split(" ");
 
         List<String> stringParsed = new ArrayList<>();
-        for (int offset = 0; offset < rawTokens.length;)
+        for (int offset = 0; offset < rawTokens.length; )
         {
             StringBuilder sb = new StringBuilder();
             offset += parseString(sb, rawTokens, offset);
@@ -137,7 +138,7 @@ public class CommandCall extends PropertyHolder
     public CommandCall subCall()
     {
         CommandCall commandCall = new CommandCall(Arrays.copyOfRange(this.tokens, 1, this.tokens.length - 1),
-                                                  this.manager, this.locale);
+                this.manager, this.locale);
         commandCall.properties.putAll(this.properties);
         return commandCall;
     }
@@ -152,21 +153,41 @@ public class CommandCall extends PropertyHolder
         return manager;
     }
 
+    /**
+     * Returns the Locale to be used for this CommandCall
+     *
+     * @return the locale
+     */
     public Locale getLocale()
     {
         return locale;
     }
 
+    /**
+     * Consumes given amount of tokens
+     *
+     * @param amount the amount of tokens to consume
+     */
     public void consume(int amount)
     {
         this.consumed += amount;
     }
 
+    /**
+     * Returns the amount of tokens consumed
+     *
+     * @return the amount of tokens consumed
+     */
     public int consumed()
     {
         return consumed;
     }
 
+    /**
+     * Returns the current token
+     *
+     * @return the current token
+     */
     public String currentToken()
     {
         return this.tokens[this.consumed];
@@ -177,7 +198,6 @@ public class CommandCall extends PropertyHolder
      * which can be used to pass a token that is a list down to another Reader
      *
      * @param tokens the tokens
-     *
      * @return the new CommandCall
      */
     public CommandCall subTokens(String[] tokens)
@@ -187,14 +207,24 @@ public class CommandCall extends PropertyHolder
         return commandCall;
     }
 
+    /**
+     * Returns whether all tokens are consumed
+     *
+     * @return true if all tokens are consumed
+     */
     public boolean isConsumed()
     {
         return this.consumed >= this.tokens.length;
     }
 
+    /**
+     * Returns the consumed tokens joined together since
+     *
+     * @param start the index of the token to start with
+     * @return the joined tokens
+     */
     public String tokensSince(int start)
     {
-        return String.join(" ", Arrays.copyOfRange(this.tokens, start,
-                                                   this.consumed)); // excluding current (unconsumed) token
+        return join(" ", Arrays.copyOfRange(this.tokens, start, this.consumed));
     }
 }

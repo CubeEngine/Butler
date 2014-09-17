@@ -14,7 +14,8 @@ import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GRE
 public class ParametricCommandTest extends TestCase
 {
     public static final String CMD_STRING = "I get matched as one String by this greedy parameter";
-    private ParametricCommand cmd;
+    private ParametricCommand cmd1;
+    private ParametricCommand cmd2;
     private ReaderManager readerManager;
 
     @Override
@@ -22,21 +23,34 @@ public class ParametricCommandTest extends TestCase
     {
         readerManager = new ReaderManager();
         readerManager.registerDefaultReader();
-        cmd = new ParametricBuilder().build(this, ParametricCommandTest.class.getMethod("runParametric",
-                                                                                        CommandContext.class, String.class));
+        cmd1 = new ParametricBuilder().build(this, ParametricCommandTest.class.getMethod("cmd1", CommandContext.class, String.class));
+        cmd2 = new ParametricBuilder().build(this, ParametricCommandTest.class.getMethod("cmd2", CommandContext.class, TestEnum.class, TestEnum.class));
     }
 
 
     public void testCmd() throws Exception
     {
-        assertTrue(cmd.run(new CommandCall(CMD_STRING, readerManager, Locale.getDefault()),
-                           Collections.<String>emptyList()));
+        assertTrue(cmd1.run(new CommandCall(CMD_STRING, readerManager, Locale.getDefault()), Collections.<String>emptyList()));
+        assertTrue(cmd2.run(new CommandCall("Value1 Value2", readerManager, Locale.getDefault()), Collections.<String>emptyList()));
     }
 
     @Command(desc = "A Simple TestCommand")
-    public boolean runParametric(CommandContext ctx, @Index @Greed(INFINITE_GREED) String aString)
+    public boolean cmd1(CommandContext ctx, @Index @Greed(INFINITE_GREED) String aString)
     {
         assertEquals(aString, CMD_STRING);
         return true;
+    }
+
+    @Command(desc = "A Simple TestCommand")
+    public boolean cmd2(CommandContext ctx, @Index TestEnum aEnum, @Index TestEnum aEnum2)
+    {
+        assertEquals(aEnum, TestEnum.VALUE1);
+        assertEquals(aEnum2, TestEnum.VALUE2);
+        return true;
+    }
+
+    enum TestEnum
+    {
+        VALUE1, VALUE2
     }
 }

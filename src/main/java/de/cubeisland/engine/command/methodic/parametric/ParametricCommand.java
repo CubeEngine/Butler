@@ -30,6 +30,7 @@ import java.util.List;
 
 import de.cubeisland.engine.command.CommandCall;
 import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.Property;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.MethodicCommand;
 import de.cubeisland.engine.command.parameter.Parameter;
@@ -37,14 +38,7 @@ import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
-import de.cubeisland.engine.command.parameter.property.Description;
-import de.cubeisland.engine.command.parameter.property.FixedPosition;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
-import de.cubeisland.engine.command.parameter.property.MethodIndex;
-import de.cubeisland.engine.command.parameter.property.Required;
-import de.cubeisland.engine.command.parameter.property.ValueLabel;
-import de.cubeisland.engine.command.parameter.property.ValueReader;
-import de.cubeisland.engine.command.parameter.property.ValueType;
+import de.cubeisland.engine.command.parameter.property.*;
 
 public class ParametricCommand extends MethodicCommand
 {
@@ -99,9 +93,10 @@ public class ParametricCommand extends MethodicCommand
             // TODO Groups
             return null;
         }
-        SimpleParameter parameter = new SimpleParameter();
-        parameter.setProperty(new ValueType(clazz));
-        parameter.setProperty(Required.REQUIRED);
+
+
+        List<Property> properties = new ArrayList<>();
+        Class<?> reader = clazz;
         int greed = 1;
         for (Annotation annotation : annotations)
         {
@@ -111,34 +106,39 @@ public class ParametricCommand extends MethodicCommand
             }
             else if (annotation instanceof Label)
             {
-                parameter.setProperty(new ValueLabel(((Label)annotation).value()));
+                properties.add(new ValueLabel(((Label) annotation).value()));
             }
             else if (annotation instanceof Names)
             {
-                parameter.setProperty(new FixedValues(((Names)annotation).value()));
-            }
-            else if (annotation instanceof Reader)
-            {
-                parameter.setProperty(new ValueReader(((Reader)annotation).value()));
+                properties.add(new FixedValues(((Names) annotation).value()));
             }
             else if (annotation instanceof Optional)
             {
-                parameter.setProperty(Required.OPTIONAL);
+                properties.add(Required.OPTIONAL);
             }
             else if (annotation instanceof Desc)
             {
-                parameter.setProperty(new Description(((Desc)annotation).value()));
+                properties.add(new Description(((Desc) annotation).value()));
+            }
+            else if (annotation instanceof Reader)
+            {
+                reader = ((Reader) annotation).value();
             }
             // TODO completer
+        }
+        if (reader == clazz && Enum.class.isAssignableFrom(clazz))
+        {
+            reader = Enum.class;
+        }
+        SimpleParameter parameter = new SimpleParameter(clazz, reader);
+        parameter.setProperties(properties.toArray(new Property[properties.size()]));
+        if (parameter.propertyValue(Required.class) == null)
+        {
+            parameter.setProperty(Required.REQUIRED);
         }
         if (greed != 1)
         {
             parameter.setProperty(new de.cubeisland.engine.command.parameter.property.Greed(greed));
-        }
-        // TODO reader if not set ?
-        if (parameter.propertyValue(ValueReader.class) == null)
-        {
-            parameter.setProperty(new ValueReader(clazz));
         }
         return parameter;
     }
@@ -149,7 +149,7 @@ public class ParametricCommand extends MethodicCommand
     {
         try
         {
-            Object[] args = new Object[this.method.getParameterCount()];
+            Object[] args = new Object[this.method.getParameterTypes().length];
             args[0] = commandContext;
             for (ParsedParameter parameter : commandContext.getCall().propertyValue(ParsedParameters.class))
             {

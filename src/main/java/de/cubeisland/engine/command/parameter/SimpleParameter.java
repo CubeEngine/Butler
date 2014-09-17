@@ -22,17 +22,51 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import java.util.List;
-
 import de.cubeisland.engine.command.CommandCall;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Greed;
 
+import java.util.List;
+
+/**
+ * A Parameter implementation.
+ * <p>The following Properties are allowed</p>
+ * <p>{@link Greed} the amount of tokens consumed by this parameter</p>
+ * <p>{@link FixedValues} prefixed fixed values (e.g. used for named parameters) also augments the effective greed by one</p>
+ */
 public class SimpleParameter extends Parameter
 {
-    public SimpleParameter()
+    public SimpleParameter(Class<?> type, Class<?> reader)
     {
+        super(type, reader);
         this.setProperty(Greed.DEFAULT);
+    }
+
+    @Override
+    protected boolean parse(CommandCall call)
+    {
+        List<ParsedParameter> result = call.propertyValue(ParsedParameters.class);
+        String[] names = this.propertyValue(FixedValues.class);
+        if (names != null)
+        {
+            String name = call.currentToken().toLowerCase(); // previously matched in accepts(..)
+            if (this.propertyValue(Greed.class) == 0)
+            {
+                result.add(ParsedParameter.of(this, call.getManager().read(this, call), name));
+                return true;
+            }
+            call.consume(1); // else consume name
+            // TODO somehow include the name ?
+        }
+        ParsedParameter pParam = this.parseValue(call); // TODO handle greedy params better
+        if (!result.isEmpty() && result.get(result.size() - 1).getParameter().equals(pParam.getParameter()))
+        {
+            ParsedParameter last = result.remove(result.size() - 1);
+            String joined = last.getParsedValue() + " " + pParam.getParsedValue();
+            pParam = ParsedParameter.of(pParam.getParameter(), joined, joined);
+        }
+        result.add(pParam);
+        return true;
     }
 
     @Override
@@ -66,36 +100,4 @@ public class SimpleParameter extends Parameter
         return false;
     }
 
-    @Override
-    protected boolean parse(CommandCall call)
-    {
-        List<ParsedParameter> result = call.propertyValue(ParsedParameters.class);
-        String[] names = this.propertyValue(FixedValues.class);
-        if (names != null)
-        {
-            String name = call.currentToken().toLowerCase(); // previously matched in accepts(..)
-            if (this.propertyValue(Greed.class) == 0)
-            {
-                result.add(ParsedParameter.of(this, call.getManager().read(this, call), name));
-                return true;
-            }
-            call.consume(1); // else consume name
-            // TODO somehow include the name ?
-        }
-        ParsedParameter pParam = this.parseValue(call); // TODO handle greedy params better
-        if (!result.isEmpty() && result.get(result.size() - 1).getParameter().equals(pParam.getParameter()))
-        {
-            ParsedParameter last = result.remove(result.size() - 1);
-            String joined = last.getParsedValue() + " " + pParam.getParsedValue();
-            pParam = ParsedParameter.of(pParam.getParameter(), joined, joined);
-        }
-        result.add(pParam);
-        return true;
-    }
-
-    protected ParsedParameter parseValue(CommandCall call)
-    {
-        int consumed = call.consumed();
-        return ParsedParameter.of(this, call.getManager().read(this, call), call.tokensSince(consumed));
-    }
 }

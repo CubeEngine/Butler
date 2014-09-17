@@ -22,16 +22,14 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
+import de.cubeisland.engine.command.CommandCall;
+import de.cubeisland.engine.command.old.ReaderException;
+import de.cubeisland.engine.command.parameter.Parameter;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import de.cubeisland.engine.command.CommandCall;
-import de.cubeisland.engine.command.old.ReaderException;
-import de.cubeisland.engine.command.parameter.Parameter;
-import de.cubeisland.engine.command.parameter.property.ValueReader;
-import de.cubeisland.engine.command.parameter.property.ValueType;
 
 public class ReaderManager
 {
@@ -63,10 +61,13 @@ public class ReaderManager
         ArgumentReader reader = getReader(type);
         if (reader == null)
         {
-            for (Class<?> next : READERS.keySet()) {
-                if (type.isAssignableFrom(next)) {
+            for (Class<?> next : READERS.keySet())
+            {
+                if (type.isAssignableFrom(next))
+                {
                     reader = READERS.get(next);
-                    if (reader != null) {
+                    if (reader != null)
+                    {
                         registerReader(reader, type);
                         break;
                     }
@@ -99,7 +100,7 @@ public class ReaderManager
     @SuppressWarnings("unchecked")
     public Object read(Parameter param, CommandCall call) throws ReaderException
     {
-       return this.read(param.propertyValue(ValueReader.class), param.propertyValue(ValueType.class), call);
+        return this.read(param.getReaderType(), param.getType(), call);
     }
 
     public Object read(Class<?> readerClass, Class<?> type, CommandCall call)

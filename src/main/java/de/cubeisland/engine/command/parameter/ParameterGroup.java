@@ -42,6 +42,7 @@ public class ParameterGroup extends Parameter
 {
     public ParameterGroup(List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
     {
+        super(null, null); // TODO Type & Reader
         this.setProperty(new FlagGroup(flags));
         this.setProperty(new NonPositionalGroup(nonPositional));
         this.setProperty(new PositionalGroup(positional));

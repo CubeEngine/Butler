@@ -39,14 +39,7 @@ import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
-import de.cubeisland.engine.command.parameter.property.Description;
-import de.cubeisland.engine.command.parameter.property.FixedPosition;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
-import de.cubeisland.engine.command.parameter.property.Greed;
-import de.cubeisland.engine.command.parameter.property.Required;
-import de.cubeisland.engine.command.parameter.property.ValueLabel;
-import de.cubeisland.engine.command.parameter.property.ValueReader;
-import de.cubeisland.engine.command.parameter.property.ValueType;
+import de.cubeisland.engine.command.parameter.property.*;
 
 public class MethodicCommand extends DispatcherCommand
 {
@@ -120,7 +113,18 @@ public class MethodicCommand extends DispatcherCommand
 
     private Parameter createParameter(Param param)
     {
-        SimpleParameter parameter = new SimpleParameter();
+        Class type = param.type();
+        Class reader = param.reader();
+        if (reader == Void.class)
+        {
+            reader = type;
+            if (Enum.class.isAssignableFrom(type))
+            {
+                reader = Enum.class;
+            }
+        }
+
+        SimpleParameter parameter = new SimpleParameter(type, reader);
         int greed = param.greed();
         parameter.setProperty(new Greed(greed));
         String label = param.label();
@@ -133,18 +137,6 @@ public class MethodicCommand extends DispatcherCommand
         {
             parameter.setProperty(new FixedValues(names));
         }
-        Class type = param.type();
-        Class reader = param.reader();
-        if (reader == Void.class)
-        {
-            reader = type;
-            if (Enum.class.isAssignableFrom(type))
-            {
-                reader = Enum.class;
-            }
-        }
-        parameter.setProperty(new ValueType(type));
-        parameter.setProperty(new ValueReader(reader));
 
         parameter.setProperty(param.req() ? Required.REQUIRED : Required.OPTIONAL);
 

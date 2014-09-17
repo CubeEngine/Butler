@@ -24,12 +24,15 @@ package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandCall;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
+import de.cubeisland.engine.command.parameter.property.ValueReader;
 
 public class FlagParameter extends Parameter
 {
     public FlagParameter(String name, String longName)
     {
-        this.setProperty(new FixedValues(new String[]{name, longName}));
+        super(Boolean.class, ValueReader.class);
+        this.setProperty(new ValueReader(new FlagReader(name, longName))); // Set Custom FlagReader!
+        this.setProperty(new FixedValues(new String[]{name, longName})); // Fixed Values
     }
 
     public final String name()
@@ -63,9 +66,12 @@ public class FlagParameter extends Parameter
     @Override
     protected boolean parse(CommandCall call)
     {
-        String token = call.currentToken();
-        call.consume(1);
-        call.propertyValue(ParsedParameters.class).add(ParsedParameter.of(this, token, token));
+        ParsedParameter parsedParameter = this.parseValue(call);
+        if (parsedParameter.getParsedValue() == null)
+        {
+            throw new IllegalArgumentException("Invalid CommandCall! Flag should be validated but was not valid.");
+        }
+        call.propertyValue(ParsedParameters.class).add(parsedParameter);
         return true;
     }
 }

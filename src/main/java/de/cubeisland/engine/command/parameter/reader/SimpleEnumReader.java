@@ -25,6 +25,9 @@ package de.cubeisland.engine.command.parameter.reader;
 import de.cubeisland.engine.command.CommandCall;
 import de.cubeisland.engine.command.old.ReaderException;
 
+/**
+ * A Reader for UpperCased Enum names
+ */
 public class SimpleEnumReader implements ArgumentReader
 {
     @Override
@@ -43,6 +46,7 @@ public class SimpleEnumReader implements ArgumentReader
             {
                 if (anEnum.name().equals(token))
                 {
+                    call.consume(1);
                     return anEnum;
                 }
             }

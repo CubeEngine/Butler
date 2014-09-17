@@ -25,22 +25,49 @@ package de.cubeisland.engine.command.parameter;
 import de.cubeisland.engine.command.CommandCall;
 import de.cubeisland.engine.command.PropertyHolder;
 import de.cubeisland.engine.command.parameter.property.Required;
+import de.cubeisland.engine.command.parameter.property.ValueReader;
+import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
 
 /**
  * The Base for Parameters with a Set of ParameterProperties
+ * <p>This Parameter Supports the ValueReader Property, which provides an ArgumentReader Object to use instead of preregistered ones</p>
  */
 public abstract class Parameter extends PropertyHolder
 {
-    protected Parameter()
+    private final Class<?> type;
+    private final Class<?> readerType;
+
+    protected Parameter(Class<?> type, Class<?> reader)
     {
+        this.type = type;
+        this.readerType = reader;
         this.setProperty(Required.REQUIRED);
+    }
+
+    /**
+     * Returns the Type of this parameters value
+     *
+     * @return the type of the value
+     */
+    public Class<?> getType()
+    {
+        return this.type;
+    }
+
+    /**
+     * Returns the Type of the Reader for this parameter
+     *
+     * @return the reader type
+     */
+    public Class<?> getReaderType()
+    {
+        return this.readerType;
     }
 
     /**
      * Checks if the parameter is applicable to the current CommandCall
      *
      * @param call the CommandCall
-     *
      * @return whether the parameter can be parsed
      */
     protected abstract boolean accepts(CommandCall call);
@@ -49,14 +76,41 @@ public abstract class Parameter extends PropertyHolder
      * Is called after #parse is called but only when accepted prior
      *
      * @param call the CommandCall
-     *
      * @return the parsed parameter
      */
     protected abstract boolean parse(CommandCall call);
 
+    /**
+     * Tries to consume tokens of the CommandCall and parse this parameter
+     *
+     * @param call the CommandCall
+     * @return whether tokens were consumed
+     */
     public final boolean parseParameter(CommandCall call)
     {
         return this.accepts(call) && this.parse(call);
+    }
+
+    /**
+     * Parses this parameter using given CommandCall
+     *
+     * @param call the CommandCall
+     * @return the ParsedParameter
+     */
+    protected ParsedParameter parseValue(CommandCall call)
+    {
+        int consumed = call.consumed();
+        ArgumentReader reader = call.propertyValue(ValueReader.class);
+        Object read;
+        if (reader != null)
+        {
+            read = reader.read(call.getManager(), this.type, call);
+        }
+        else
+        {
+            read = call.getManager().read(this, call);
+        }
+        return ParsedParameter.of(this, read, call.tokensSince(consumed));
     }
 
     //TODO  Static Reader ? replace them with named param with no consuming / caution when parsing we'll need to map to alias name not actual name!

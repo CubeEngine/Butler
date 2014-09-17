@@ -40,7 +40,7 @@
 package de.cubeisland.engine.command;
 
 /**
- * This exception will be catched by the executor.
+ * This exception will be caught by the executor.
  * Its message will be send to the command sender.
  */
 public class CommandException extends RuntimeException

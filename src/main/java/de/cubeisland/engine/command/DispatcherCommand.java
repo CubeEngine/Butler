@@ -120,7 +120,7 @@ public class DispatcherCommand implements CommandDispatcher
             {
                 if (alias.startsWith(tokens[0].toLowerCase()))
                 {
-                    result.add(String.join(" ", previousTokens) + " " + alias);
+                    result.add(StringUtils.join(" ", previousTokens) + " " + alias);
                 }
             }
         }

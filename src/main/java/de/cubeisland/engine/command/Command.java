@@ -39,19 +39,35 @@
  */
 package de.cubeisland.engine.command;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
+/**
+ * This annotation marks a target Element that represents a command
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Command
 {
+    /**
+     * Returns the name of the command
+     *
+     * @return the name of the command
+     */
     String name() default "";
+
+    /**
+     * Returns the aliases of the command
+     *
+     * @return the aliases of the command
+     */
     String[] alias() default {};
+
+    /**
+     * Returns the description of the command
+     *
+     * @return the description of the command
+     */
     String desc();
 }
 
