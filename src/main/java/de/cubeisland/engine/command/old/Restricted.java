@@ -37,37 +37,17 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old.exception;
+package de.cubeisland.engine.command.old;
 
-public class IncorrectArgumentException extends CommandException
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Restricted
 {
-    private String name;
-    private Integer index;
-
-    public IncorrectArgumentException(String name, Throwable cause)
-    {
-        super(cause);
-        this.name = name;
-    }
-
-    public IncorrectArgumentException(Integer index, Throwable cause)
-    {
-        super(cause);
-        this.index = index;
-    }
-
-    public boolean isNamedArgument()
-    {
-        return this.index == null;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public Integer getIndex()
-    {
-        return index;
-    }
+    Class[] value();
+    String msg() default "";
 }

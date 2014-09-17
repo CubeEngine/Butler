@@ -37,17 +37,31 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old.base.method;
+package de.cubeisland.engine.command.old;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Restricted
+/**
+ * This exception will be catched by the executor.
+ * Its message will be send to the command sender.
+ */
+public class CommandException extends RuntimeException
 {
-    Class[] value();
-    String msg() default "";
+    public CommandException()
+    {
+        super();
+    }
+
+    public CommandException(String message)
+    {
+        super(message);
+    }
+
+    public CommandException(Throwable cause)
+    {
+        super(cause);
+    }
+
+    public CommandException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 }

@@ -13,8 +13,9 @@ import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GRE
 
 public class MethodicCommandTest extends TestCase
 {
-    public static final String COMMAND_TEXT = "I get matched as one String by this greedy parameter";
-    private MethodicCommand cmd;
+    public static final String COMMAND_TEXT_1 = "I get matched as one String by this greedy parameter";
+    private MethodicCommand cmd1;
+    private MethodicCommand cmd2;
     private ReaderManager readerManager;
 
     @Override
@@ -22,22 +23,32 @@ public class MethodicCommandTest extends TestCase
     {
         readerManager = new ReaderManager();
         readerManager.registerDefaultReader();
-        cmd = new MethodicBuilder().build(this, MethodicCommandTest.class.getMethod("runMethodic",
-                                                                                    ParameterizedContext.class));
+        cmd1 = new MethodicBuilder().build(this, MethodicCommandTest.class.getMethod("cmd1", ParameterizedContext.class));
+        cmd2 = new MethodicBuilder().build(this, MethodicCommandTest.class.getMethod("cmd2", ParameterizedContext.class));
     }
 
 
     public void testCmd() throws Exception
     {
-        assertTrue(cmd.run(new CommandCall(COMMAND_TEXT, readerManager, Locale.getDefault()),
-                           Collections.<String>emptyList()));
+        assertTrue(cmd1.run(new CommandCall(COMMAND_TEXT_1, readerManager, Locale.getDefault()), Collections.<String>emptyList()));
+        assertTrue(cmd2.run(new CommandCall("First Second Second too", readerManager, Locale.getDefault()), Collections.<String>emptyList()));
     }
 
-    @Command(desc = "A Simple TestCommand")
+    @Command(desc = "TestCommand 1")
     @Params(positional = @Param(greed = INFINITE_GREED))
-    public boolean runMethodic(ParameterizedContext ctx)
+    public boolean cmd1(ParameterizedContext ctx)
     {
-        assertEquals(ctx.getStrings(0), COMMAND_TEXT);
+        assertEquals(ctx.getStrings(0), COMMAND_TEXT_1);
+        return true;
+    }
+
+    @Command(desc = "TestCommand 2")
+    @Params(positional = {@Param(),
+                          @Param(greed = INFINITE_GREED)})
+    public boolean cmd2(ParameterizedContext ctx)
+    {
+        assertEquals(ctx.getString(0), "First");
+        assertEquals(ctx.getStrings(1), "Second Second too");
         return true;
     }
 }

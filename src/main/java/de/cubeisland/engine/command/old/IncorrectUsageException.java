@@ -37,14 +37,34 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old.exception;
+package de.cubeisland.engine.command.old;
 
-public class TooFewArgumentsException extends IncorrectUsageException
+/**
+ * This exception is thrown when a user performed an invalid command.
+ * Use invalidUsage to throw an exception inside a command. The exception will be caught.
+ */
+public class IncorrectUsageException extends CommandException
 {
-    /*
-    public TooFewArgumentsException(CommandSender sender)
+    private final boolean displayUsage;
+    
+    public IncorrectUsageException()
     {
-        super(sender.getTranslation(MessageType.NEGATIVE, "You've given too few arguments.")); // TODO move message to exception handler
+        this(null, true);
     }
-    */
+
+    public IncorrectUsageException(String message)
+    {
+        this(message, true);
+    }
+
+    public IncorrectUsageException(String message, boolean displayUsage)
+    {
+        super(message);
+        this.displayUsage = displayUsage;
+    }
+
+    public boolean getDisplayUsage()
+    {
+        return displayUsage;
+    }
 }

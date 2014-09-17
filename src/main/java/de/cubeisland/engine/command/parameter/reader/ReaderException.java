@@ -39,7 +39,7 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.old.exception.CommandException;
+import de.cubeisland.engine.command.old.CommandException;
 
 public class ReaderException extends CommandException
 {

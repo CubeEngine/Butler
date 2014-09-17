@@ -40,7 +40,7 @@
 package de.cubeisland.engine.command.parameter.reader;
 
 import de.cubeisland.engine.command.CommandCall;
-import de.cubeisland.engine.command.old.exception.ReaderException;
+import de.cubeisland.engine.command.old.ReaderException;
 
 public final class StringReader implements ArgumentReader
 {

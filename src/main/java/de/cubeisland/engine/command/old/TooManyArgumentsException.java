@@ -37,31 +37,14 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old.exception;
+package de.cubeisland.engine.command.old;
 
-/**
- * This exception will be catched by the executor.
- * Its message will be send to the command sender.
- */
-public class CommandException extends RuntimeException
+public class TooManyArgumentsException extends IncorrectUsageException
 {
-    public CommandException()
+    /*
+    public TooManyArgumentsException(CommandSender sender)
     {
-        super();
+        super(sender.getTranslation(MessageType.NEGATIVE, "You've given too many arguments."));  // TODO move message to exception handler
     }
-
-    public CommandException(String message)
-    {
-        super(message);
-    }
-
-    public CommandException(Throwable cause)
-    {
-        super(cause);
-    }
-
-    public CommandException(String message, Throwable cause)
-    {
-        super(message, cause);
-    }
+    */
 }

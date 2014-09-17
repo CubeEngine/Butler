@@ -38,7 +38,7 @@ public class SimpleListReader implements ArgumentReader
     }
 
     @Override
-    public Object read(ReaderManager manager, Class type, CommandCall call) throws de.cubeisland.engine.command.old.exception.ReaderException
+    public Object read(ReaderManager manager, Class type, CommandCall call) throws de.cubeisland.engine.command.old.ReaderException
     {
         List<Object> result = new ArrayList<>();
         String[] tokens = call.currentToken().split(delimiter);
