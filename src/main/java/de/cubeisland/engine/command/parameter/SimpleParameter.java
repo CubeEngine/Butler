@@ -22,11 +22,11 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.CommandCall;
+import java.util.List;
+
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Greed;
-
-import java.util.List;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 
 /**
  * A Parameter implementation.
@@ -43,14 +43,14 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected boolean parse(CommandCall call)
+    protected boolean parse(TokenizedInvocation call)
     {
-        List<ParsedParameter> result = call.propertyValue(ParsedParameters.class);
-        String[] names = this.propertyValue(FixedValues.class);
+        List<ParsedParameter> result = call.valueFor(ParsedParameters.class);
+        String[] names = this.valueFor(FixedValues.class);
         if (names != null)
         {
             String name = call.currentToken().toLowerCase(); // previously matched in accepts(..)
-            if (this.propertyValue(Greed.class) == 0)
+            if (this.valueFor(Greed.class) == 0)
             {
                 result.add(ParsedParameter.of(this, call.getManager().read(this, call), name));
                 return true;
@@ -70,12 +70,12 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected boolean accepts(CommandCall call)
+    protected boolean accepts(TokenizedInvocation call)
     {
         // Just checking if the parameter is possible here
-        int greed = this.propertyValue(Greed.class); // cannot be null as greed is preset if not set manually
-        int remainingTokens = call.tokens().length - call.consumed();
-        String[] names = this.propertyValue(FixedValues.class);
+        int greed = this.valueFor(Greed.class); // cannot be null as greed is preset if not set manually
+        int remainingTokens = call.tokens().size() - call.consumed();
+        String[] names = this.valueFor(FixedValues.class);
         if (names != null)
         {
             remainingTokens--; // the name consumes a token

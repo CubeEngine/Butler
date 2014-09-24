@@ -23,11 +23,16 @@
 package de.cubeisland.engine.command;
 
 /**
- * A Property
- *
- * @param <ValueT> the type of the Property
+ * CommandFilter are run before a command is run
  */
-public interface Property<ValueT>
+public interface CommandFilter
 {
-    public ValueT value();
+    /**
+     * Runs this CommandFilter
+     *
+     * @param call the call
+     *
+     * @return whether the command can be processed further
+     */
+    boolean run(CommandInvocation call);
 }

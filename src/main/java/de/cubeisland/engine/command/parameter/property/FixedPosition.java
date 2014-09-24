@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.AbstractProperty;
+import de.cubeisland.engine.command.property.AbstractProperty;
 
 /**
  * The Parameter has to be used at a fixed position in the commandline

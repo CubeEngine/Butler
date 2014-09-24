@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter;
+package de.cubeisland.engine.command.methodic.context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,22 +28,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.cubeisland.engine.command.CommandCall;
-import de.cubeisland.engine.command.CommandContext;
+import de.cubeisland.engine.command.parameter.FlagParameter;
+import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.parameter.ParsedParameter;
+import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 
-public class ParameterizedContext extends CommandContext
+public class ParameterizedContext extends BaseCommandContext
 {
     private final Map<Integer, ParsedParameter> positional = new HashMap<>();
     private final Map<String, ParsedParameter> nameBased = new HashMap<>();
     private final Map<String, ParsedParameter> flags = new HashMap<>();
 
-    public ParameterizedContext(CommandCall call, List<String> parentCalls)
+    public ParameterizedContext(TokenizedInvocation call)
     {
-        super(call, parentCalls);
+        super(call);
 
-        for (ParsedParameter parsed : call.propertyValue(ParsedParameters.class))
+        for (ParsedParameter parsed : call.valueFor(ParsedParameters.class))
         {
             Parameter parameter = parsed.getParameter();
             if (parameter instanceof FlagParameter)
@@ -52,8 +55,8 @@ public class ParameterizedContext extends CommandContext
             }
             else
             {
-                Integer pos = parameter.propertyValue(FixedPosition.class);
-                String[] fixedValues = parameter.propertyValue(FixedValues.class);
+                Integer pos = parameter.valueFor(FixedPosition.class);
+                String[] fixedValues = parameter.valueFor(FixedValues.class);
                 if (fixedValues == null && pos == null)
                 {
                     throw new IllegalStateException(

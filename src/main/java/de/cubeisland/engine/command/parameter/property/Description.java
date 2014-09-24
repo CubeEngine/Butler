@@ -22,15 +22,21 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.AbstractProperty;
+import de.cubeisland.engine.command.methodic.parametric.Desc;
+import de.cubeisland.engine.command.property.AbstractProperty;
 
 /**
- * A short Description of a Parameter
+ * A Description
  */
 public class Description extends AbstractProperty<String>
 {
     public Description(String string)
     {
         super(string);
+    }
+
+    public static Description of(Desc annotation)
+    {
+        return new Description(annotation.value());
     }
 }

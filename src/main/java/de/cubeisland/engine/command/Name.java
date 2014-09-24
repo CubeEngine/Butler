@@ -20,13 +20,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command;
 
 import de.cubeisland.engine.command.property.AbstractProperty;
 
-public class MethodIndex extends AbstractProperty<Integer>
+/**
+ * A name
+ */
+public class Name extends AbstractProperty<String>
 {
-    public MethodIndex(Integer value)
+    public Name(String value)
     {
         super(value);
     }

@@ -20,14 +20,34 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.property.AbstractProperty;
+import java.util.Locale;
+import java.util.UUID;
 
-public class MethodIndex extends AbstractProperty<Integer>
+/**
+ * A CommandSource able to execute commands;
+ */
+public interface CommandSource
 {
-    public MethodIndex(Integer value)
-    {
-        super(value);
-    }
+    /**
+     * Returns the name of this CommandSource
+     *
+     * @return the name
+     */
+    String getName();
+
+    /**
+     * Returns the UUID of this CommandSource.
+     *
+     * @return the uuid
+     */
+    UUID getUUID();
+
+    /**
+     * Returns the locale of this CommandSource or if not known the default Locale
+     *
+     * @return the locale
+     */
+    Locale getLocale();
 }

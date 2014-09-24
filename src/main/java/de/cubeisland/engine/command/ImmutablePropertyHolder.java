@@ -22,37 +22,21 @@
  */
 package de.cubeisland.engine.command;
 
+import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.property.PropertyHolder;
+
 /**
- * A simple Implementation of the {@link de.cubeisland.engine.command.CommandDescriptor}
+ * A PropertyHolder whose properties cannot be changed after being set
  */
-public class SimpleCommandDescriptor implements CommandDescriptor
+public class ImmutablePropertyHolder extends PropertyHolder
 {
-    private String name;
-    private String description;
-    private String[] aliases;
-
-    public SimpleCommandDescriptor(String name, String description, String[] aliases)
-    {
-        this.name = name;
-        this.description = description;
-        this.aliases = aliases;
-    }
-
     @Override
-    public String getName()
+    public void setProperty(Property property)
     {
-        return name;
-    }
-
-    @Override
-    public String[] getAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public String getDescription()
-    {
-        return this.description;
+        if (this.hasProperty(property.getClass()))
+        {
+            throw new IllegalArgumentException("The property %s is already set and cannot be changed!"); // TODO custom exception
+        }
+        super.setProperty(property);
     }
 }

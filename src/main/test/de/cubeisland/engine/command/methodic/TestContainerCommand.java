@@ -20,14 +20,34 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.methodic;
 
-import de.cubeisland.engine.command.property.AbstractProperty;
+import de.cubeisland.engine.command.CommandBuilder;
+import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
+import de.cubeisland.engine.command.methodic.parametric.Greed;
+import de.cubeisland.engine.command.methodic.parametric.Index;
 
-public class MethodIndex extends AbstractProperty<Integer>
+import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
+
+@Command(desc = "a description")
+public class TestContainerCommand extends BasicContainerCommand
 {
-    public MethodIndex(Integer value)
+    public TestContainerCommand(CommandBuilder<BasicMethodicCommand> commandBuilder)
     {
-        super(value);
+        super(commandBuilder);
+    }
+
+    @Command(desc = "a methodic command")
+    @Params(positional = @Param(greed = INFINITE_GREED))
+    public boolean methodic(ParameterizedContext ctx)
+    {
+        return ctx.getStrings(0).equals(ctx.getCall().getCommandLine());
+    }
+
+    @Command(desc = "a parametric command")
+    public boolean parametric(BaseCommandContext ctx, @Index @Greed(INFINITE_GREED)String aString)
+    {
+        return aString.equals(ctx.getCall().getCommandLine());
     }
 }

@@ -39,16 +39,16 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.CommandCall;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 import de.cubeisland.engine.command.old.ReaderException;
 
 public final class StringReader implements ArgumentReader
 {
     @Override
-    public Object read(ReaderManager manager, Class type, CommandCall call) throws ReaderException
+    public Object read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws ReaderException
     {
-        String result = call.currentToken();
-        call.consume(1);
+        String result = invocation.currentToken();
+        invocation.consume(1);
         return result;
     }
 }

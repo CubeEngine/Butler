@@ -22,8 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.AbstractProperty;
-import de.cubeisland.engine.command.Property;
+import de.cubeisland.engine.command.property.AbstractProperty;
+import de.cubeisland.engine.command.property.Property;
 
 /**
  * Specifies how many tokens the Parameter will consume

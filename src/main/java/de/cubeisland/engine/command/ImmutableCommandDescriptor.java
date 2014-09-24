@@ -20,26 +20,52 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.methodic.parametric.Optional;
-import de.cubeisland.engine.command.property.AbstractProperty;
+import java.util.Set;
+
+import de.cubeisland.engine.command.parameter.UsageGenerator;
+import de.cubeisland.engine.command.parameter.property.Description;
 
 /**
- * Defines if the Parameter is required or not
+ * A simple Implementation of the {@link de.cubeisland.engine.command.CommandDescriptor}
  */
-public class Required extends AbstractProperty<Boolean>
+public class ImmutableCommandDescriptor extends ImmutablePropertyHolder implements CommandDescriptor
 {
-    public static final Required REQUIRED = new Required(true);
-    public static final Required OPTIONAL = new Required(false);
-
-    private Required(Boolean value)
+    @Override
+    public String getName()
     {
-        super(value);
+        return valueFor(Name.class);
     }
 
-    public static Required of(Optional annotation)
+    @Override
+    public Set<String> getAliases()
     {
-        return OPTIONAL;
+        return valueFor(Alias.class);
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return valueFor(Description.class);
+    }
+
+    @Override
+    public String getUsage(CommandSource source)
+    {
+        String usage = this.valueFor(FixedUsage.class);
+        if (usage == null)
+        {
+            UsageGenerator usageGenerator = this.valueFor(UsageProvider.class);
+            if (usageGenerator != null)
+            {
+                usage = usageGenerator.generateUsage(source, this.valueFor(Parameters.class));
+            }
+        }
+        if (usage == null)
+        {
+            usage = "no usage";
+        }
+        return usage;
     }
 }

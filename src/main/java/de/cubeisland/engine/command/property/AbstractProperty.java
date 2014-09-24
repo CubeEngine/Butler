@@ -20,18 +20,40 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.selfbuilding;
-
-import de.cubeisland.engine.command.DispatcherCommand;
+package de.cubeisland.engine.command.property;
 
 /**
- * A self-building ContainerCommand
+ * A base implementation for a ParameterProperty
  */
-public class ContainerCommand extends DispatcherCommand
+public abstract class AbstractProperty<ValueT> implements Property<ValueT>
 {
-    public ContainerCommand(MutableCommandDescriptor descriptor)
+    private final ValueT value;
+
+    protected AbstractProperty(ValueT value)
     {
-        super(descriptor);
-        new SelfbuildingBuilder().buildCommands(this); // Reads name alias and description from Command Annotation on implementing class
+        if (!this.checkValue(value))
+        {
+            throw new IllegalArgumentException(
+                "The value " + value.toString() + " is not allowed for " + this.getClass().getName());
+        }
+        this.value = value;
+    }
+
+    /**
+     * Checks if given value is allowed
+     *
+     * @param value the value to check
+     *
+     * @throws IllegalArgumentException if the value is not allowed
+     */
+    protected boolean checkValue(ValueT value)
+    {
+        return true;
+    }
+
+    @Override
+    public ValueT value()
+    {
+        return this.value;
     }
 }

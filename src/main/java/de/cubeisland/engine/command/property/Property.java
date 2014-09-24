@@ -20,41 +20,14 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
-
-import java.util.List;
+package de.cubeisland.engine.command.property;
 
 /**
- * A CommandContext for a CommandCall
+ * A Property
+ *
+ * @param <ValueT> the type of the Property
  */
-public class CommandContext
+public interface Property<ValueT>
 {
-    private final CommandCall call;
-    private final List<String> parentCalls;
-
-    public CommandContext(CommandCall call, List<String> parentCalls)
-    {
-        this.call = call;
-        this.parentCalls = parentCalls;
-    }
-
-    /**
-     * Returns the CommandCall
-     *
-     * @return the CommandCall
-     */
-    public CommandCall getCall()
-    {
-        return call;
-    }
-
-    /**
-     * Returns the parent calls
-     *
-     * @return the parent calls
-     */
-    public List<String> getParentCalls()
-    {
-        return parentCalls;
-    }
+    public ValueT value();
 }

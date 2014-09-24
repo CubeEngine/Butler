@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.property;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class PropertyHolder
      *
      * @param property the property to set
      */
-    public final void setProperty(Property property)
+    public void setProperty(Property property)
     {
         this.properties.put(property.getClass(), property);
     }
@@ -59,14 +59,13 @@ public class PropertyHolder
      *
      * @param propertyT the property
      * @param <ValueT> the values Type
-     * @param <PropertyT> the properties Type
      * @return the value of the property or null if not given
      */
     @SuppressWarnings("unchecked")
-    public final <ValueT, PropertyT extends Property<ValueT>> ValueT propertyValue(Class<PropertyT> propertyT)
+    public final <ValueT> ValueT valueFor(Class<? extends Property<ValueT>> propertyT)
     {
-        PropertyT property = (PropertyT)this.properties.get(propertyT);
-        return property == null ? null : property.value();
+        Property property = this.properties.get(propertyT);
+        return property == null ? null : (ValueT)property.value();
     }
 
     /**

@@ -22,38 +22,19 @@
  */
 package de.cubeisland.engine.command;
 
+import java.util.Set;
+
+import de.cubeisland.engine.command.property.AbstractProperty;
+
+import static java.util.Collections.unmodifiableSet;
+
 /**
- * A base implementation for a ParameterProperty
+ * A set of aliases
  */
-public abstract class AbstractProperty<ValueT> implements Property<ValueT>
+public class Alias extends AbstractProperty<Set<String>>
 {
-    private final ValueT value;
-
-    protected AbstractProperty(ValueT value)
+    public Alias(Set<String> value)
     {
-        if (!this.checkValue(value))
-        {
-            throw new IllegalArgumentException(
-                "The value " + value.toString() + " is not allowed for " + this.getClass().getName());
-        }
-        this.value = value;
-    }
-
-    /**
-     * Checks if given value is allowed
-     *
-     * @param value the value to check
-     *
-     * @throws IllegalArgumentException if the value is not allowed
-     */
-    protected boolean checkValue(ValueT value)
-    {
-        return true;
-    }
-
-    @Override
-    public ValueT value()
-    {
-        return this.value;
+        super(unmodifiableSet(value));
     }
 }

@@ -22,21 +22,17 @@
  */
 package de.cubeisland.engine.command;
 
-import java.util.List;
-
 /**
  * A command that can be run
  */
-public interface CommandBase extends CommandCompleter
+public interface CommandBase<CallT extends CommandInvocation> extends CommandCompleter<CallT>
 {
     /**
-     * Handles the CommandCall
-     *
+     * Runs the command with given CommandCall
      * @param call the CommandCall
-     * @param parentCalls the parent commands
-     * @return true if the command was executed succesfully
+     * @return whether the command ran or not
      */
-    boolean run(CommandCall call, List<String> parentCalls);
+    boolean run(CallT call);
 
     /**
      * Returns the Descriptor of this command

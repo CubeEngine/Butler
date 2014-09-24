@@ -20,14 +20,32 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.property.AbstractProperty;
+import java.util.List;
 
-public class MethodIndex extends AbstractProperty<Integer>
+/**
+ * A CommandInvocation with a CommandSource, a CommandLine and a List of parent Calls
+ */
+public interface CommandInvocation
 {
-    public MethodIndex(Integer value)
-    {
-        super(value);
-    }
+    /**
+     * Returns the CommandSource that initialized this Call
+     * @return the CommandSource
+     */
+    public CommandSource getCommandSource();
+
+    /**
+     * Returns the commandline this Call was initialized with
+     *
+     * @return the commandline
+     */
+    public String getCommandLine();
+
+    /**
+     * Returns a list of the previous calls
+     *
+     * @return the parent calls
+     */
+    public List<String> getParentCalls();
 }

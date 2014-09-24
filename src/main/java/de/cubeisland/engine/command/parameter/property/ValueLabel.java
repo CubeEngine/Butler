@@ -22,7 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.AbstractProperty;
+import de.cubeisland.engine.command.methodic.parametric.Label;
+import de.cubeisland.engine.command.property.AbstractProperty;
 
 /**
  * The label for the value of a parameter
@@ -32,5 +33,10 @@ public class ValueLabel extends AbstractProperty<String>
     public ValueLabel(String string)
     {
         super(string);
+    }
+
+    public static ValueLabel of(Label annotation)
+    {
+        return new ValueLabel(annotation.value());
     }
 }

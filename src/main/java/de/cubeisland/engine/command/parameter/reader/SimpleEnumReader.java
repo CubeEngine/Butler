@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.CommandCall;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 import de.cubeisland.engine.command.old.ReaderException;
 
 /**
@@ -32,25 +32,25 @@ public class SimpleEnumReader implements ArgumentReader
 {
     @Override
     @SuppressWarnings("unchecked")
-    public Object read(ReaderManager manager, Class type, CommandCall call) throws ReaderException
+    public Object read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws ReaderException
     {
         if (manager.hasReader(type))
         {
-            return manager.read(type, type, call);
+            return manager.read(type, type, invocation);
         }
         if (Enum.class.isAssignableFrom(type))
         {
             Enum<?>[] enumConstants = ((Class<? extends Enum<?>>)type).getEnumConstants();
-            String token = call.currentToken().replace(" ", "_").toUpperCase();
+            String token = invocation.currentToken().replace(" ", "_").toUpperCase();
             for (Enum<?> anEnum : enumConstants)
             {
                 if (anEnum.name().equals(token))
                 {
-                    call.consume(1);
+                    invocation.consume(1);
                     return anEnum;
                 }
             }
-            throw new IllegalArgumentException("Could not find \"" + call.currentToken() + "\" in Enum");
+            throw new IllegalArgumentException("Could not find \"" + invocation.currentToken() + "\" in Enum");
         }
         throw new UnsupportedOperationException();
     }

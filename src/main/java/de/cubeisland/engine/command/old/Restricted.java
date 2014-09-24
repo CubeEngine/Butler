@@ -44,10 +44,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import de.cubeisland.engine.command.CommandSource;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Restricted
 {
-    Class[] value();
+    Class<? extends CommandSource>[] value();
     String msg() default "";
 }

@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Provides a Method to build commands from an Object
  */
-public interface CommandBuilder
+public interface CommandBuilder<CommandT extends CommandBase>
 {
     /**
      * Returns a list of commands built from the object
@@ -35,5 +35,5 @@ public interface CommandBuilder
      * @param object the object to build commands from
      * @return a list of created commandsd
      */
-    List<CommandBase> buildCommands(Object object);
+    List<CommandT> buildCommands(Object object);
 }

@@ -22,8 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.CommandCall;
-import de.cubeisland.engine.command.PropertyHolder;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.property.PropertyHolder;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
@@ -70,7 +70,7 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return whether the parameter can be parsed
      */
-    protected abstract boolean accepts(CommandCall call);
+    protected abstract boolean accepts(TokenizedInvocation call);
 
     /**
      * Is called after #parse is called but only when accepted prior
@@ -78,7 +78,7 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return the parsed parameter
      */
-    protected abstract boolean parse(CommandCall call);
+    protected abstract boolean parse(TokenizedInvocation call);
 
     /**
      * Tries to consume tokens of the CommandCall and parse this parameter
@@ -86,7 +86,7 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return whether tokens were consumed
      */
-    public final boolean parseParameter(CommandCall call)
+    public final boolean parseParameter(TokenizedInvocation call)
     {
         return this.accepts(call) && this.parse(call);
     }
@@ -97,10 +97,10 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return the ParsedParameter
      */
-    protected ParsedParameter parseValue(CommandCall call)
+    protected ParsedParameter parseValue(TokenizedInvocation call)
     {
         int consumed = call.consumed();
-        ArgumentReader reader = call.propertyValue(ValueReader.class);
+        ArgumentReader reader = call.valueFor(ValueReader.class);
         Object read;
         if (reader != null)
         {

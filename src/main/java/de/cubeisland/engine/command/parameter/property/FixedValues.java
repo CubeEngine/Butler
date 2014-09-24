@@ -22,7 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.AbstractProperty;
+import de.cubeisland.engine.command.methodic.parametric.Names;
+import de.cubeisland.engine.command.property.AbstractProperty;
 
 /**
  * A set of fixed value for a Parameter
@@ -37,5 +38,10 @@ public class FixedValues extends AbstractProperty<String[]>
         {
             value[i] = value[i].toLowerCase();
         }
+    }
+
+    public static FixedValues of(Names annotation)
+    {
+        return new FixedValues(annotation.value());
     }
 }

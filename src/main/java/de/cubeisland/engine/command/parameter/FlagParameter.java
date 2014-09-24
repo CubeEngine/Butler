@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.CommandCall;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 
@@ -37,22 +37,22 @@ public class FlagParameter extends Parameter
 
     public final String name()
     {
-        return this.propertyValue(FixedValues.class)[0];
+        return this.valueFor(FixedValues.class)[0];
     }
 
     public final String longName()
     {
-        return this.propertyValue(FixedValues.class)[1];
+        return this.valueFor(FixedValues.class)[1];
     }
 
     @Override
-    protected boolean accepts(CommandCall call)
+    protected boolean accepts(TokenizedInvocation call)
     {
         String token = call.currentToken();
         if (token.startsWith("-"))
         {
             token = token.substring(1);
-            for (String name : this.propertyValue(FixedValues.class))
+            for (String name : this.valueFor(FixedValues.class))
             {
                 if (name.equalsIgnoreCase(token))
                 {
@@ -64,14 +64,14 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected boolean parse(CommandCall call)
+    protected boolean parse(TokenizedInvocation call)
     {
         ParsedParameter parsedParameter = this.parseValue(call);
         if (parsedParameter.getParsedValue() == null)
         {
             throw new IllegalArgumentException("Invalid CommandCall! Flag should be validated but was not valid.");
         }
-        call.propertyValue(ParsedParameters.class).add(parsedParameter);
+        call.valueFor(ParsedParameters.class).add(parsedParameter);
         return true;
     }
 }

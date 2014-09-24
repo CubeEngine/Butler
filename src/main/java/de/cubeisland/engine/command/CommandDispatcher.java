@@ -27,16 +27,16 @@ import java.util.Set;
 /**
  * Handles command dispatching
  */
-public interface CommandDispatcher extends CommandBase
+public interface CommandDispatcher<CallT extends CommandInvocation> extends CommandBase<CallT>
 {
     /**
      * Registers a command to this dispatcher
      *
-     * @param command
+     * @param command the command to register
      */
-    void registerCommand(CommandBase command);
+    void registerCommand(CommandBase<CallT> command);
     /*
-    get alias from cmd / also get replacement policy
+     also get replacement policy
      */
 
     /**
@@ -44,15 +44,15 @@ public interface CommandDispatcher extends CommandBase
      *
      * @return the registered commands
      */
-    Set<CommandBase> getCommands();
+    Set<CommandBase<CallT>> getCommands();
 
     /**
-     * Returns whether this dispatcher has a command with given alias
+     * Returns whether this dispatcher has a command registered with given alias
      *
      * @param alias the alias
      * @return true if a command is registered for given alias
      */
-    boolean contains(String alias);
+    boolean hasCommand(String alias);
 
     /**
      * Returns a registered command for given alias
@@ -60,5 +60,5 @@ public interface CommandDispatcher extends CommandBase
      * @param alias the alias
      * @return the command for given alias
      */
-    CommandBase get(String alias);
+    CommandBase<CallT> getCommand(String alias);
 }

@@ -22,8 +22,12 @@
  */
 package de.cubeisland.engine.command;
 
+import java.util.Set;
+
+import de.cubeisland.engine.command.property.Property;
+
 /**
- * An Object describing a command
+ * Provides general information about a command
  */
 public interface CommandDescriptor
 {
@@ -39,7 +43,16 @@ public interface CommandDescriptor
      *
      * @return the aliases
      */
-    String[] getAliases();
+    Set<String> getAliases();
+
+    /**
+     * Gets the usage of the command
+     *
+     * @param source the source to get the usage for
+     *
+     * @return the usage string
+     */
+    String getUsage(CommandSource source);
 
     /**
      * Returns the description of the command
@@ -47,4 +60,14 @@ public interface CommandDescriptor
      * @return the description
      */
     String getDescription();
+
+    /**
+     * Returns the value of given property class
+     *
+     * @param clazz    the class
+     * @param <ValueT> the Type of the value
+     *
+     * @return the value or null if not found
+     */
+    <ValueT> ValueT valueFor(Class<? extends Property<ValueT>> clazz);
 }

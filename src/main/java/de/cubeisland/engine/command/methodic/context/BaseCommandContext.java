@@ -20,33 +20,52 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.selfbuilding;
+package de.cubeisland.engine.command.methodic.context;
 
-import de.cubeisland.engine.command.CommandDescriptor;
+import java.util.List;
+
+import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 
 /**
- * A CommandDescriptor that can be changed after creation
+ * A CommandContext for an Invocation of a MethodicCommand
  */
-public interface MutableCommandDescriptor extends CommandDescriptor
+public class BaseCommandContext
 {
-    /**
-     * Sets the commands name
-     *
-     * @param name the name
-     */
-    void setName(String name);
+    private final TokenizedInvocation call;
+
+    public BaseCommandContext(TokenizedInvocation call)
+    {
+        this.call = call;
+    }
 
     /**
-     * Sets the commands aliases
+     * Returns the CommandCall
      *
-     * @param aliases the aliases
+     * @return the CommandCall
      */
-    void setAliases(String[] aliases);
+    public TokenizedInvocation getCall()
+    {
+        return call;
+    }
 
     /**
-     * Sets the commands description
+     * Returns the parent calls
      *
-     * @param description the description
+     * @return the parent calls
      */
-    void setDescription(String description);
+    public List<String> getParentCalls()
+    {
+        return call.getParentCalls();
+    }
+
+    /**
+     * Returns the source of the commands invocation
+     *
+     * @return the CommandSource
+     */
+    public CommandSource getSource()
+    {
+        return call.getCommandSource();
+    }
 }

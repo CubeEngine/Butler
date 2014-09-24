@@ -22,15 +22,185 @@
  */
 package de.cubeisland.engine.command.methodic.parametric;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import de.cubeisland.engine.command.CommandDescriptor;
+import de.cubeisland.engine.command.ImmutableCommandDescriptor;
+import de.cubeisland.engine.command.Parameters;
+import de.cubeisland.engine.command.methodic.Command;
+import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
+import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.parameter.ParameterGroup;
+import de.cubeisland.engine.command.parameter.SimpleParameter;
+import de.cubeisland.engine.command.parameter.property.Description;
+import de.cubeisland.engine.command.parameter.property.FixedPosition;
+import de.cubeisland.engine.command.parameter.property.FixedValues;
+import de.cubeisland.engine.command.parameter.property.MethodIndex;
+import de.cubeisland.engine.command.parameter.property.Required;
+import de.cubeisland.engine.command.parameter.property.ValueLabel;
+import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 
 public class ParametricBuilder extends MethodicBuilder
 {
-    @Override
-    protected ParametricCommand build(Object holder, Method method)
+    private final Map<Class<? extends Annotation>, Method> parameterProperties = new HashMap<>();
+
+    public ParametricBuilder()
     {
-        return new ParametricCommand(holder, method);
+        this.addParameterProperty(Label.class, ValueLabel.class);
+        this.addParameterProperty(Names.class, FixedValues.class);
+        this.addParameterProperty(Optional.class, Required.class);
+        this.addParameterProperty(Desc.class, Description.class);
     }
+
+    @Override
+    protected boolean isApplicable(Method method)
+    {
+        if (method.isAnnotationPresent(Command.class))
+        {
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if (parameterTypes.length > 1 && BaseCommandContext.class.isAssignableFrom(parameterTypes[0]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addParameterProperty(Class<? extends Annotation> annotClass, Class<? extends Property> propertyClass)
+    {
+        try
+        {
+            Method method = propertyClass.getMethod("of", annotClass);
+            if (method.getReturnType() == propertyClass && Modifier.isStatic(method.getModifiers()))
+            {
+                this.parameterProperties.put(annotClass, method);
+                return;
+            }
+        }
+        catch (NoSuchMethodException ignored)
+        {}
+        throw new IllegalArgumentException("The Property needs to have a static Method of having the Annotation Class as Parameter and return an instance of the Property");
+    }
+
+    private Property propertyOf(Annotation annotation)
+    {
+        Method method = this.parameterProperties.get(annotation.getClass());
+        if (method == null)
+        {
+            return null;
+        }
+        try
+        {
+            return (Property)method.invoke(null, annotation);
+        }
+        catch (IllegalAccessException | InvocationTargetException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    protected BasicParametricCommand build(Command annotation, Method method, Object holder)
+    {
+        ImmutableCommandDescriptor descriptor = buildCommandDescriptor(annotation, method, holder);
+        descriptor.setProperty(new Parameters(buildParameters(descriptor, method)));
+        return new BasicParametricCommand(descriptor);
+    }
+
+    @Override
+    protected ParameterGroup buildParameters(CommandDescriptor descriptor, Method method)
+    {
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        List<Parameter> flagsList = new ArrayList<>();
+        List<Parameter> nPosList = new ArrayList<>();
+        List<Parameter> posList = new ArrayList<>();
+        // TODO check if first is a context (NOT Parameterized!!!)
+        for (int i = 1; i < parameterTypes.length; i++)
+        {
+            Class<?> parameter = parameterTypes[i];
+            Annotation[] annotations = paramAnnotations[i];
+            Parameter param = this.createParameter(descriptor, parameter, annotations);
+            param.setProperty(new MethodIndex(i));
+            for (Annotation annotation : annotations) // Find type of Annotation to assign to correct list
+            {
+                if (annotation instanceof Flag)
+                {
+                    flagsList.add(param);
+                    param = null;
+                    break;
+                }
+                else if (annotation instanceof Index)
+                {
+                    param.setProperty(new FixedPosition(posList.size()));
+                    posList.add(param);
+                    param = null;
+                    break;
+                }
+            }
+            if (param != null) // if not Flag or Positional its a non-Positional
+            {
+                nPosList.add(param);
+            }
+        }
+        return new ParameterGroup(flagsList, nPosList, posList);
+    }
+
+    protected SimpleParameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations)
+    {
+        if (Group.class.isAssignableFrom(clazz))
+        {
+            // TODO Groups
+            return null;
+        }
+
+
+        List<Property> properties = new ArrayList<>();
+        Class<?> reader = clazz;
+        int greed = 1;
+        for (Annotation annotation : annotations)
+        {
+            Property property = this.propertyOf(annotation);
+            if (property != null)
+            {
+                properties.add(property);
+                continue;
+            }
+            if (annotation instanceof Greed)
+            {
+                greed = ((Greed)annotation).value();
+            }
+
+            else if (annotation instanceof Reader)
+            {
+                reader = ((Reader) annotation).value();
+            }
+            // TODO completer
+        }
+        if (reader == clazz && Enum.class.isAssignableFrom(clazz))
+        {
+            reader = Enum.class;
+        }
+        SimpleParameter parameter = new SimpleParameter(clazz, reader);
+        parameter.setProperties(properties.toArray(new Property[properties.size()]));
+        if (parameter.valueFor(Required.class) == null)
+        {
+            parameter.setProperty(Required.REQUIRED);
+        }
+        if (greed != 1)
+        {
+            parameter.setProperty(new de.cubeisland.engine.command.parameter.property.Greed(greed));
+        }
+        return parameter;
+    }
+
 }

@@ -24,7 +24,7 @@ package de.cubeisland.engine.command.parameter.property;
 
 import java.lang.reflect.Field;
 
-import de.cubeisland.engine.command.AbstractProperty;
+import de.cubeisland.engine.command.property.AbstractProperty;
 
 public class FieldHolder extends AbstractProperty<Field>
 {

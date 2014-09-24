@@ -26,7 +26,7 @@ package de.cubeisland.engine.command.parameter.reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.cubeisland.engine.command.CommandCall;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 
 public class SimpleListReader implements ArgumentReader
 {
@@ -38,16 +38,15 @@ public class SimpleListReader implements ArgumentReader
     }
 
     @Override
-    public Object read(ReaderManager manager, Class type, CommandCall call) throws de.cubeisland.engine.command.old.ReaderException
+    public Object read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws de.cubeisland.engine.command.old.ReaderException
     {
         List<Object> result = new ArrayList<>();
-        String[] tokens = call.currentToken().split(delimiter);
-        CommandCall tokenCall = call.subTokens(tokens);
+        TokenizedInvocation tokenCall = new TokenizedInvocation(invocation.getCommandSource(), invocation.currentToken(), delimiter, invocation.getManager());
         while (!tokenCall.isConsumed())
         {
             result.add(manager.read(type, type, tokenCall));
         }
-        call.consume(1);
+        invocation.consume(1);
         return result;
     }
 }

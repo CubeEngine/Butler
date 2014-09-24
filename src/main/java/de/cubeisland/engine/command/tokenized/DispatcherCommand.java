@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.tokenized;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,23 +30,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.cubeisland.engine.command.CommandBase;
+import de.cubeisland.engine.command.CommandDescriptor;
+import de.cubeisland.engine.command.CommandDispatcher;
+import de.cubeisland.engine.command.StringUtils;
+
 /**
  * A Command that can dispatch sub-commands
  */
-public class DispatcherCommand implements CommandDispatcher
+public class DispatcherCommand implements CommandDispatcher<TokenizedInvocation>
 {
-    private final Map<String, CommandBase> commands = new HashMap<>();
     private final CommandDescriptor descriptor;
+
+    private final Map<String, CommandBase<TokenizedInvocation>> commands = new HashMap<>();
 
     public DispatcherCommand(CommandDescriptor descriptor)
     {
         this.descriptor = descriptor;
     }
 
-    @Override
-    public void registerCommand(CommandBase command)
+    protected DispatcherCommand()
     {
-        // TODO in CE autoregister child ? for Help
+        this.descriptor = this.selfDescribe();
+    }
+
+    protected CommandDescriptor selfDescribe()
+    {
+        return this.descriptor;
+    }
+
+    @Override
+    public void registerCommand(CommandBase<TokenizedInvocation> command)
+    {
         CommandDescriptor descriptor = command.getDescriptor();
         CommandBase replaced = this.commands.put(descriptor.getName().toLowerCase(), command);
         if (replaced != null)
@@ -59,81 +74,83 @@ public class DispatcherCommand implements CommandDispatcher
             replaced = this.commands.put(alias.toLowerCase(), command);
             if (replaced != null)
             {
-                // TODO replacedment Policy
+                // TODO replacement Policy
                 // for now always replace
             }
         }
     }
 
+
     @Override
-    public Set<CommandBase> getCommands()
+    public Set<CommandBase<TokenizedInvocation>> getCommands()
     {
         return Collections.unmodifiableSet(new HashSet<>(this.commands.values()));
     }
 
     @Override
-    public boolean contains(String alias)
+    public boolean hasCommand(String alias)
     {
         return this.commands.containsKey(alias.toLowerCase());
     }
 
     @Override
-    public CommandBase get(String alias)
+    public CommandBase<TokenizedInvocation> getCommand(String alias)
     {
         return this.commands.get(alias.toLowerCase());
     }
 
     @Override
-    public boolean run(CommandCall call, List<String> parentCalls)
+    public boolean run(TokenizedInvocation call)
+    {
+        if (!call.tokens().isEmpty())
+        {
+            CommandBase<TokenizedInvocation> command = this.getCommand(call.currentToken());
+            if (command != null)
+            {
+                return command.run(call.subCall());
+            }
+        }
+        return this.handleNotFound(call);
+    }
+
+    protected boolean handleNotFound(TokenizedInvocation call)
     {
         // TODO override in CE to get Help subcmd when empty args OR cmd not found to show possible sub-cmds (did you mean... ?) OR delegation
-        String[] tokens = call.tokens();
-        if (tokens.length == 0)
-        {
-            return false;
-        }
-        CommandBase command = this.get(tokens[0]);
-        if (command == null)
-        {
-            return false;
-        }
-        List<String> newParentCalls = new ArrayList<>(parentCalls);
-        newParentCalls.add(tokens[0]);
-        return command.run(call.subCall(), newParentCalls);
+        return false;
     }
 
     @Override
-    public List<String> getSuggestions(CommandCall call, List<String> previousTokens)
+    public List<String> getSuggestions(TokenizedInvocation call)
     {
-        String[] tokens = call.tokens();
+        List<String> tokens = call.tokens();
         List<String> result = new ArrayList<>();
-        if (tokens.length == 0)
+        if (tokens.isEmpty())
         {
             for (CommandBase command : this.getCommands())
             {
                 result.add(command.getDescriptor().getName());
             }
         }
-        else if (tokens.length == 1)
+        else if (tokens.size() == 1)
         {
+            String curToken = call.currentToken().toLowerCase();
             for (String alias : this.commands.keySet())
             {
-                if (alias.startsWith(tokens[0].toLowerCase()))
+                if (alias.startsWith(curToken))
                 {
-                    result.add(StringUtils.join(" ", previousTokens) + " " + alias);
+                    result.add(StringUtils.join(" ", call.getParentCalls()) + " " + alias);
                 }
             }
         }
         else
         {
-            CommandBase command = this.get(tokens[0]);
+            String curToken = call.currentToken();
+            CommandBase<TokenizedInvocation> command = this.getCommand(curToken);
             if (command == null)
             {
                 return result; // Nothing to tab
             }
-            ArrayList<String> newParentCalls = new ArrayList<>(previousTokens);
-            newParentCalls.add(tokens[0]);
-            return command.getSuggestions(call.subCall(), newParentCalls);
+            return command.getSuggestions(call.subCall());
         }
         return result;
     }

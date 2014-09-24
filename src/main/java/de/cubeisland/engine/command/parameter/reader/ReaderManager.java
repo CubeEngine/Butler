@@ -22,14 +22,14 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.CommandCall;
-import de.cubeisland.engine.command.old.ReaderException;
-import de.cubeisland.engine.command.parameter.Parameter;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import de.cubeisland.engine.command.old.ReaderException;
+import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 
 public class ReaderManager
 {
@@ -98,12 +98,12 @@ public class ReaderManager
     }
 
     @SuppressWarnings("unchecked")
-    public Object read(Parameter param, CommandCall call) throws ReaderException
+    public Object read(Parameter param, TokenizedInvocation call) throws ReaderException
     {
         return this.read(param.getReaderType(), param.getType(), call);
     }
 
-    public Object read(Class<?> readerClass, Class<?> type, CommandCall call)
+    public Object read(Class<?> readerClass, Class<?> type, TokenizedInvocation call)
     {
         ArgumentReader reader = resolveReader(readerClass);
         if (reader == null)

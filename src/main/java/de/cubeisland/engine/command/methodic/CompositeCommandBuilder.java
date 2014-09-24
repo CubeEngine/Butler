@@ -20,36 +20,37 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.old;
+package de.cubeisland.engine.command.methodic;
 
-import java.util.Locale;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * A CommandSource able to execute commands;
- */
-public interface CommandSource<PermT>
+import de.cubeisland.engine.command.CommandBuilder;
+
+public class CompositeCommandBuilder implements CommandBuilder<BasicMethodicCommand>
 {
-    /**
-     * Returns the name of this CommandSource
-     *
-     * @return the name
-     */
-    String getName();
+    private final List<CommandBuilder<BasicMethodicCommand>> list;
 
-    /**
-     * Returns the UUID of this CommandSource.
-     *
-     * @return the uuid
-     */
-    UUID getUUID();
+    public CompositeCommandBuilder(List<CommandBuilder<BasicMethodicCommand>> list)
+    {
+        this.list = list;
+    }
 
-    /**
-     * Returns the locale of this CommandSource or if not known the default Locale
-     *
-     * @return the locale
-     */
-    Locale getLocale();
+    @SafeVarargs
+    public CompositeCommandBuilder(CommandBuilder<BasicMethodicCommand>... builders)
+    {
+        this(Arrays.asList(builders));
+    }
 
-    boolean isAuthorized(PermT check);
+    @Override
+    public List<BasicMethodicCommand> buildCommands(Object holder)
+    {
+        List<BasicMethodicCommand> commands = new ArrayList<>();
+        for (CommandBuilder<BasicMethodicCommand> builder : list)
+        {
+            commands.addAll(builder.buildCommands(holder));
+        }
+        return commands;
+    }
 }
