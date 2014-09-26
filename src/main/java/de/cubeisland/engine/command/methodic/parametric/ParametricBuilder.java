@@ -37,6 +37,7 @@ import de.cubeisland.engine.command.Parameters;
 import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
+import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
@@ -47,7 +48,6 @@ import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 import de.cubeisland.engine.command.property.Property;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 
 public class ParametricBuilder extends MethodicBuilder
 {
@@ -93,7 +93,7 @@ public class ParametricBuilder extends MethodicBuilder
 
     private Property propertyOf(Annotation annotation)
     {
-        Method method = this.parameterProperties.get(annotation.getClass());
+        Method method = this.parameterProperties.get(annotation.annotationType());
         if (method == null)
         {
             return null;

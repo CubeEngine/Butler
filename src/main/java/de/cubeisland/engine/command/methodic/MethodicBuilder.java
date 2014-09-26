@@ -96,11 +96,11 @@ public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
     protected ImmutableCommandDescriptor buildCommandDescriptor(Command annotation, Method method, Object object)
     {
         ImmutableCommandDescriptor descriptor = new ImmutableCommandDescriptor();
-        descriptor.setProperty(new UsageProvider(usageGenerator));
         descriptor.setProperty(new Name(annotation.name().isEmpty() ? method.getName() : annotation.name()));
         descriptor.setProperty(new Description(annotation.desc()));
         descriptor.setProperty(new Alias(new HashSet<>(Arrays.asList(annotation.alias()))));
         descriptor.setProperty(new InvokableMethodProperty(method, object));
+        descriptor.setProperty(new UsageProvider(usageGenerator));
         return descriptor;
     }
 
