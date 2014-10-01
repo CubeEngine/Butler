@@ -30,8 +30,8 @@ import java.util.Locale;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.StringUtils;
-import de.cubeisland.engine.command.property.PropertyHolder;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+import de.cubeisland.engine.command.property.PropertyHolder;
 
 import static de.cubeisland.engine.command.StringUtils.join;
 
@@ -107,10 +107,14 @@ public class TokenizedInvocation extends PropertyHolder implements CommandInvoca
      * Consumes given amount of tokens
      *
      * @param amount the amount of tokens to consume
+     *
+     * @return the first consumed token
      */
-    public void consume(int amount)
+    public String consume(int amount)
     {
+        String token = this.currentToken();
         this.consumed += amount;
+        return token;
     }
 
     /**

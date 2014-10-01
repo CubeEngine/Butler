@@ -33,11 +33,12 @@ import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
 import de.cubeisland.engine.command.tokenized.DispatcherCommand;
+import de.cubeisland.engine.command.tokenized.SelfDescribing;
 
 /**
  * A ContainerCommand able to dispatch methodic commands
  */
-public class BasicContainerCommand extends DispatcherCommand
+public class BasicContainerCommand extends DispatcherCommand implements SelfDescribing
 {
     public BasicContainerCommand(CommandBuilder<BasicMethodicCommand> commandBuilder)
     {
@@ -48,7 +49,7 @@ public class BasicContainerCommand extends DispatcherCommand
     }
 
     @Override
-    protected ImmutableCommandDescriptor selfDescribe() // TODO interface
+    public ImmutableCommandDescriptor selfDescribe()
     {
         Command command = this.getClass().getAnnotation(Command.class);
         if (command == null)

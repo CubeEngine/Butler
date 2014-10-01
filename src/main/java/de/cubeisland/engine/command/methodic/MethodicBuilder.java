@@ -33,7 +33,6 @@ import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
-import de.cubeisland.engine.command.Parameters;
 import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
@@ -41,6 +40,7 @@ import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
+import de.cubeisland.engine.command.parameter.UsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
@@ -89,7 +89,7 @@ public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
     protected BasicMethodicCommand build(Command annotation, Method method, Object holder)
     {
         ImmutableCommandDescriptor descriptor = buildCommandDescriptor(annotation, method, holder);
-        descriptor.setProperty(new Parameters(buildParameters(descriptor, method)));
+        descriptor.setProperty(buildParameters(descriptor, method));
         return new BasicMethodicCommand(descriptor);
     }
 
@@ -99,7 +99,7 @@ public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
         descriptor.setProperty(new Name(annotation.name().isEmpty() ? method.getName() : annotation.name()));
         descriptor.setProperty(new Description(annotation.desc()));
         descriptor.setProperty(new Alias(new HashSet<>(Arrays.asList(annotation.alias()))));
-        descriptor.setProperty(new InvokableMethodProperty(method, object));
+        descriptor.setProperty(new InvokableMethod(method, object));
         descriptor.setProperty(new UsageProvider(usageGenerator));
         return descriptor;
     }

@@ -20,34 +20,11 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
-
-import de.cubeisland.engine.command.property.Property;
-import de.cubeisland.engine.command.property.PropertyHolder;
+package de.cubeisland.engine.command.tokenized;
 
 /**
- * A PropertyHolder whose properties cannot be changed after being set
+ * This Exception is thrown whenever a command has no CommandDescriptor
  */
-public class ImmutablePropertyHolder extends PropertyHolder
+public class MissingCommandDescriptorException extends RuntimeException
 {
-    @Override
-    public void setProperty(Property property)
-    {
-        if (this.hasProperty(property.getClass()))
-        {
-            throw new PropertyAlreadySetException("The property %s is already set and cannot be changed!");
-        }
-        super.setProperty(property);
-    }
-
-    /**
-     * This exception is thrown whenever a property is set more than one time
-     */
-    public static class PropertyAlreadySetException extends RuntimeException
-    {
-        public PropertyAlreadySetException(String s)
-        {
-            super(s);
-        }
-    }
 }

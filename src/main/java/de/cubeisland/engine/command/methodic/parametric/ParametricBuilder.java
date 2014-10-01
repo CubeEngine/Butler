@@ -33,7 +33,6 @@ import java.util.Map;
 
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
-import de.cubeisland.engine.command.Parameters;
 import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
@@ -112,7 +111,7 @@ public class ParametricBuilder extends MethodicBuilder
     protected BasicParametricCommand build(Command annotation, Method method, Object holder)
     {
         ImmutableCommandDescriptor descriptor = buildCommandDescriptor(annotation, method, holder);
-        descriptor.setProperty(new Parameters(buildParameters(descriptor, method)));
+        descriptor.setProperty(buildParameters(descriptor, method));
         return new BasicParametricCommand(descriptor);
     }
 

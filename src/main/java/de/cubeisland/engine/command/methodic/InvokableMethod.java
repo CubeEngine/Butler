@@ -25,60 +25,58 @@ package de.cubeisland.engine.command.methodic;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import de.cubeisland.engine.command.property.AbstractProperty;
+import de.cubeisland.engine.command.property.Property;
 
-public class InvokableMethodProperty extends AbstractProperty<InvokableMethodProperty.InvokableMethod>
+/**
+ * A Method and its Holder
+ */
+public class InvokableMethod implements Property<InvokableMethod>
 {
-    public InvokableMethodProperty(Method method, Object holder)
+    private final Method method;
+    private final Object holder;
+
+    public InvokableMethod(Method method, Object holder)
     {
-        super(new InvokableMethod(method, holder));
+        this.method = method;
+        this.holder = holder;
+    }
+
+    @Override
+    public InvokableMethod value()
+    {
+        return this;
     }
 
     /**
-     * A Method and its Holder
+     * Returns the Method
+     *
+     * @return the Method
      */
-    public static class InvokableMethod
+    public Method getMethod()
     {
-        private final Method method;
-        private final Object holder;
+        return method;
+    }
 
-        public InvokableMethod(Method method, Object holder)
-        {
-            this.method = method;
-            this.holder = holder;
-        }
+    /**
+     * Returns the Holder
+     *
+     * @return the holder
+     */
+    public Object getHolder()
+    {
+        return holder;
+    }
 
-        /**
-         * Returns the Method
-         *
-         * @return the Method
-         */
-        public Method getMethod()
-        {
-            return method;
-        }
-
-        /**
-         * Returns the Holder
-         *
-         * @return the holder
-         */
-        public Object getHolder()
-        {
-            return holder;
-        }
-
-        /**
-         * Invokes the Method with given arguments
-         *
-         * @param args the arguments
-         *
-         * @return the returned object
-         */
-        @SuppressWarnings("unchecked")
-        public <T> T invoke(Object... args) throws InvocationTargetException, IllegalAccessException
-        {
-            return (T)method.invoke(holder, args);
-        }
+    /**
+     * Invokes the Method with given arguments
+     *
+     * @param args the arguments
+     *
+     * @return the returned object
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T invoke(Object... args) throws InvocationTargetException, IllegalAccessException
+    {
+        return (T)method.invoke(holder, args);
     }
 }

@@ -47,7 +47,7 @@ public class ParameterUsageGeneratorTest extends TestCase
     {
         for (BasicMethodicCommand command : commands)
         {
-            assertEquals(command.getDescriptor().getUsage(null), command.getDescriptor().getDescription());
+            assertEquals(command.getDescriptor().getDescription(), command.getDescriptor().getUsage(null));
         }
     }
 

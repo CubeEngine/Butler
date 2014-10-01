@@ -35,9 +35,8 @@ public interface CommandDispatcher<CallT extends CommandInvocation> extends Comm
      * @param command the command to register
      */
     void registerCommand(CommandBase<CallT> command);
-    /*
-     also get replacement policy
-     */
+     //TODO also get replacement policy
+    // TODO unregister command
 
     /**
      * Returns the commands registered for this dispatcher

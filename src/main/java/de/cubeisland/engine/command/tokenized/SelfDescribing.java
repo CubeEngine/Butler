@@ -20,15 +20,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.tokenized;
 
-import de.cubeisland.engine.command.parameter.ParameterGroup;
-import de.cubeisland.engine.command.property.AbstractProperty;
+import de.cubeisland.engine.command.CommandDescriptor;
 
-public class Parameters extends AbstractProperty<ParameterGroup>
+public interface SelfDescribing
 {
-    public Parameters(ParameterGroup value)
-    {
-        super(value);
-    }
+    /**
+     * Creates a new CommandDescriptor from the information available on the implementing class itself
+     *
+     * @return a new CommandDescriptor
+     */
+    CommandDescriptor selfDescribe();
 }

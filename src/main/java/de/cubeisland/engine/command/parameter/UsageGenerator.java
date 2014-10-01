@@ -23,6 +23,7 @@
 package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.property.Property;
 
 /**
  * Provides the ability to generate a usage for a {@link ParameterGroup}

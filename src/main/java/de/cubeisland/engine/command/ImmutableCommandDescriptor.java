@@ -24,6 +24,7 @@ package de.cubeisland.engine.command;
 
 import java.util.Set;
 
+import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.UsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
 
@@ -59,7 +60,7 @@ public class ImmutableCommandDescriptor extends ImmutablePropertyHolder implemen
             UsageGenerator usageGenerator = this.valueFor(UsageProvider.class);
             if (usageGenerator != null)
             {
-                usage = usageGenerator.generateUsage(source, this.valueFor(Parameters.class));
+                usage = usageGenerator.generateUsage(source, this.valueFor(ParameterGroup.class));
             }
         }
         if (usage == null)

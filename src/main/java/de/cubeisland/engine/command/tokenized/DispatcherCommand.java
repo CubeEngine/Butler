@@ -40,28 +40,37 @@ import de.cubeisland.engine.command.StringUtils;
  */
 public class DispatcherCommand implements CommandDispatcher<TokenizedInvocation>
 {
+    // TODO reference to first cmd dispatcher (for registration of alias at base level)
+
     private final CommandDescriptor descriptor;
 
     private final Map<String, CommandBase<TokenizedInvocation>> commands = new HashMap<>();
 
     public DispatcherCommand(CommandDescriptor descriptor)
     {
+        if (descriptor == null)
+        {
+            throw new MissingCommandDescriptorException();
+        }
         this.descriptor = descriptor;
     }
 
     protected DispatcherCommand()
     {
-        this.descriptor = this.selfDescribe();
-    }
-
-    protected CommandDescriptor selfDescribe()
-    {
-        return this.descriptor;
+        if (this instanceof SelfDescribing)
+        {
+            this.descriptor = ((SelfDescribing)this).selfDescribe();
+        }
+        else
+        {
+            throw new MissingCommandDescriptorException();
+        }
     }
 
     @Override
     public void registerCommand(CommandBase<TokenizedInvocation> command)
     {
+        // TODO set parent command of registered command
         CommandDescriptor descriptor = command.getDescriptor();
         CommandBase replaced = this.commands.put(descriptor.getName().toLowerCase(), command);
         if (replaced != null)
@@ -122,6 +131,7 @@ public class DispatcherCommand implements CommandDispatcher<TokenizedInvocation>
     @Override
     public List<String> getSuggestions(TokenizedInvocation call)
     {
+        // TODO register a completer for this command instead?
         List<String> tokens = call.tokens();
         List<String> result = new ArrayList<>();
         if (tokens.isEmpty())

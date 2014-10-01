@@ -68,4 +68,15 @@ public class BaseCommandContext
     {
         return call.getCommandSource();
     }
+
+    /**
+     * Returns whether the source is of given type
+     *
+     * @param clazz the type
+     * @return whether the source is of given type
+     */
+    public boolean isSource(Class<? extends CommandSource> clazz)
+    {
+        return clazz.isAssignableFrom(this.getSource().getClass());
+    }
 }

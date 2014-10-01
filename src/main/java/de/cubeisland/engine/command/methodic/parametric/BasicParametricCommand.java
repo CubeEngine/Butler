@@ -26,12 +26,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
-import de.cubeisland.engine.command.methodic.InvokableMethodProperty.InvokableMethod;
-import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
+import de.cubeisland.engine.command.methodic.InvokableMethod;
+import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 
 public class BasicParametricCommand extends BasicMethodicCommand
@@ -46,7 +45,7 @@ public class BasicParametricCommand extends BasicMethodicCommand
     {
         try
         {
-            InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethodProperty.class);
+            InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethod.class);
             Object[] args = new Object[invokableMethod.getMethod().getParameterTypes().length];
             args[0] = commandContext;
             for (ParsedParameter parameter : commandContext.getCall().valueFor(ParsedParameters.class))

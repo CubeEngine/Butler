@@ -25,6 +25,7 @@ package de.cubeisland.engine.command.parameter;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.cubeisland.engine.command.property.Property;
 import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
@@ -38,7 +39,7 @@ import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GRE
 /**
  * A ParameterGroup providing grouped Parameters
  */
-public class ParameterGroup extends Parameter
+public class ParameterGroup extends Parameter implements Property<ParameterGroup>
 {
     public ParameterGroup(List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
     {
@@ -134,5 +135,11 @@ public class ParameterGroup extends Parameter
             searchList.remove(toRemove); // No reuse
         }
         return parsed;
+    }
+
+    @Override
+    public ParameterGroup value()
+    {
+        return this;
     }
 }

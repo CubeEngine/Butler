@@ -37,11 +37,13 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old;
+package de.cubeisland.engine.command.completer;
 
 import java.util.List;
 
-public interface Completer
+import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+
+public interface Completer<ContextT extends BaseCommandContext>
 {
-    List<String> complete(Object context, String token);
+    List<String> complete(ContextT context, String token);
 }

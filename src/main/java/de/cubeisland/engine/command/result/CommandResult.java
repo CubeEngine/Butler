@@ -37,9 +37,21 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old;
+package de.cubeisland.engine.command.result;
 
-public interface CommandResult
+import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+
+/**
+ * A result to be processed after the command was executed
+ *
+ * @param <ContextT> the type of the CommandContext
+ */
+public interface CommandResult<ContextT extends BaseCommandContext>
 {
-    public void show(Object context);
+    /**
+     * Processes this CommandResult
+     *
+     * @param context the context that was used by the command before
+     */
+    public void process(ContextT context);
 }

@@ -26,9 +26,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandDescriptor;
-import de.cubeisland.engine.command.Parameters;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
+import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.tokenized.DispatcherCommand;
 import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
@@ -47,7 +47,7 @@ public class BasicMethodicCommand extends DispatcherCommand
         if (!ran)
         {
             call.setProperty(new ParsedParameters());
-            this.getDescriptor().valueFor(Parameters.class).parseParameter(call);
+            this.getDescriptor().valueFor(ParameterGroup.class).parseParameter(call);
             ran = this.run(this.buildContext(call));
         }
         return ran;
@@ -71,7 +71,7 @@ public class BasicMethodicCommand extends DispatcherCommand
     {
         try
         {
-            Object result = this.getDescriptor().valueFor(InvokableMethodProperty.class).invoke(commandContext);
+            Object result = this.getDescriptor().valueFor(InvokableMethod.class).invoke(commandContext);
             if (result == null)
             {
                 return true;
