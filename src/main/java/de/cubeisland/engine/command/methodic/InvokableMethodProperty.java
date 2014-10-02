@@ -22,32 +22,47 @@
  */
 package de.cubeisland.engine.command.methodic;
 
-import de.cubeisland.engine.command.CommandBuilder;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
-import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
-import de.cubeisland.engine.command.methodic.parametric.Greed;
-import de.cubeisland.engine.command.methodic.parametric.Index;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
+import de.cubeisland.engine.command.property.Property;
 
-@Command(desc = "a description")
-public class TestContainerCommand extends BasicContainerCommand
+/**
+ * A Method and its Holder
+ */
+public class InvokableMethodProperty implements InvokableMethod, Property<InvokableMethod>
 {
-    public TestContainerCommand(CommandBuilder<BasicMethodicCommand> commandBuilder)
+    private final Method method;
+    private final Object holder;
+
+    public InvokableMethodProperty(Method method, Object holder)
     {
-        super(commandBuilder);
+        this.method = method;
+        this.holder = holder;
     }
 
-    @Command(desc = "a methodic command")
-    @Params(positional = @Param(greed = INFINITE_GREED))
-    public boolean methodic(ParameterizedContext ctx)
+    @Override
+    public InvokableMethod value()
     {
-        return ctx.getStrings(0).equals(ctx.getCall().getCommandLine());
+        return this;
     }
 
-    @Command(desc = "a parametric command")
-    public boolean parametric(BaseCommandContext ctx, @Index @Greed(INFINITE_GREED)String aString)
+    @Override
+    public Method getMethod()
     {
-        return aString.equals(ctx.getCall().getCommandLine());
+        return method;
+    }
+
+    @Override
+    public Object getHolder()
+    {
+        return holder;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T invoke(Object... args) throws InvocationTargetException, IllegalAccessException
+    {
+        return (T)method.invoke(holder, args);
     }
 }

@@ -28,7 +28,7 @@ import java.util.List;
 
 import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
 
-public class SimpleListReader implements ArgumentReader
+public class SimpleListReader implements ArgumentReader<List>
 {
     private String delimiter;
 
@@ -38,7 +38,7 @@ public class SimpleListReader implements ArgumentReader
     }
 
     @Override
-    public Object read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws de.cubeisland.engine.command.old.ReaderException
+    public List read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws de.cubeisland.engine.command.old.ReaderException
     {
         List<Object> result = new ArrayList<>();
         TokenizedInvocation tokenCall = new TokenizedInvocation(invocation.getCommandSource(), invocation.currentToken(), delimiter, invocation.getManager());

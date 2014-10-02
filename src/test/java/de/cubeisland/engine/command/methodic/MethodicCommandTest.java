@@ -22,6 +22,7 @@
  */
 package de.cubeisland.engine.command.methodic;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,10 +45,9 @@ public class MethodicCommandTest extends TestCase
 {
     private ReaderManager readerManager;
 
-    private List<BasicMethodicCommand> commands;
+    private List<BasicMethodicCommand> commands = new ArrayList<>();
     private List<String> commandLines = new ArrayList<>();
 
-    private CompositeCommandBuilder builder;
 
     private CommandSource source = new CommandSource()
     {
@@ -71,12 +71,22 @@ public class MethodicCommandTest extends TestCase
     };
 
     @Override
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception
     {
         readerManager = new ReaderManager();
         readerManager.registerDefaultReader();
-        builder = new CompositeCommandBuilder(new MethodicBuilder(), new ParametricBuilder());
-        this.commands = builder.buildCommands(this);
+        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new MethodicBuilder(),
+                                                                                       new ParametricBuilder());
+        for (Method method : MethodicBuilder.getMethods(this.getClass()))
+        {
+            BasicMethodicCommand cmd = builder.buildCommand(new InvokableMethodProperty(method, this));
+            if (cmd != null)
+            {
+                commands.add(cmd);
+            }
+        }
+
         this.commandLines.add("I get matched as one String by this greedy parameter");
         this.commandLines.add("First Second Second too");
 
@@ -98,13 +108,14 @@ public class MethodicCommandTest extends TestCase
     @Params(positional = @Param(greed = INFINITE_GREED))
     public boolean methodic1(ParameterizedContext ctx)
     {
-        assertEquals(ctx.getStrings(0), ctx.getCall().getCommandLine());
+        assertEquals(ctx.getStrings(0), ctx.getInvocation().getCommandLine());
         return true;
     }
 
     @Command(desc = "TestCommand 2")
-    @Params(positional = {@Param(),
-                          @Param(greed = INFINITE_GREED)})
+    @Params(positional = {
+        @Param(), @Param(greed = INFINITE_GREED)
+    })
     public boolean methodic2(ParameterizedContext ctx)
     {
         assertEquals(ctx.getString(0), "First");
@@ -116,7 +127,7 @@ public class MethodicCommandTest extends TestCase
     @Command(desc = "A Simple TestCommand")
     public boolean parametric1(BaseCommandContext ctx, @Index @Greed(INFINITE_GREED) String aString)
     {
-        assertEquals(aString, ctx.getCall().getCommandLine());
+        assertEquals(aString, ctx.getInvocation().getCommandLine());
         return true;
     }
 
@@ -130,6 +141,7 @@ public class MethodicCommandTest extends TestCase
 
     enum TestEnum
     {
-        VALUE1, VALUE2
+        VALUE1,
+        VALUE2
     }
 }

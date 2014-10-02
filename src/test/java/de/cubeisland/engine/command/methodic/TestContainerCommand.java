@@ -22,34 +22,32 @@
  */
 package de.cubeisland.engine.command.methodic;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import de.cubeisland.engine.command.CommandBuilder;
+import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
+import de.cubeisland.engine.command.methodic.parametric.Greed;
+import de.cubeisland.engine.command.methodic.parametric.Index;
 
-/**
- * A Method and its holder
- */
-public interface InvokableMethod
+import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
+
+@Command(desc = "a description")
+public class TestContainerCommand extends MethodicCommandContainer<Void, InvokableMethod>
 {
-    /**
-     * Returns the Method
-     *
-     * @return the Method
-     */
-    Method getMethod();
+    public TestContainerCommand(CommandBuilder<BasicMethodicCommand, InvokableMethod> builder)
+    {
+        super(builder, null);
+    }
 
-    /**
-     * Returns the Holder
-     *
-     * @return the holder
-     */
-    Object getHolder();
+    @Command(desc = "a methodic command")
+    @Params(positional = @Param(greed = INFINITE_GREED))
+    public boolean methodic(ParameterizedContext ctx)
+    {
+        return ctx.getStrings(0).equals(ctx.getInvocation().getCommandLine());
+    }
 
-    /**
-     * Invokes the Method with given arguments
-     *
-     * @param args the arguments
-     *
-     * @return the returned object
-     */
-    <T> T invoke(Object... args) throws InvocationTargetException, IllegalAccessException;
+    @Command(desc = "a parametric command")
+    public boolean parametric(BaseCommandContext ctx, @Index @Greed(INFINITE_GREED)String aString)
+    {
+        return aString.equals(ctx.getInvocation().getCommandLine());
+    }
 }

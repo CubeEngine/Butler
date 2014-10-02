@@ -30,7 +30,7 @@ import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 /**
  * An ArgumentReader for Flags
  */
-public class FlagReader implements ArgumentReader
+public class FlagReader implements ArgumentReader<Boolean>
 {
     private final String name;
     private final String longName;
@@ -42,7 +42,7 @@ public class FlagReader implements ArgumentReader
     }
 
     @Override
-    public Object read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws ReaderException
+    public Boolean read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws ReaderException
     {
         String flag = invocation.currentToken();
         if (flag.startsWith("-"))

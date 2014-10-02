@@ -22,35 +22,37 @@
  */
 package de.cubeisland.engine.command.methodic;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandBuilder;
 
-public class CompositeCommandBuilder implements CommandBuilder<BasicMethodicCommand>
+public class CompositeCommandBuilder<OriginT> implements CommandBuilder<BasicMethodicCommand, OriginT>
 {
-    private final List<CommandBuilder<BasicMethodicCommand>> list;
+    private final List<CommandBuilder<BasicMethodicCommand, OriginT>> list;
 
-    public CompositeCommandBuilder(List<CommandBuilder<BasicMethodicCommand>> list)
+    public CompositeCommandBuilder(List<CommandBuilder<BasicMethodicCommand, OriginT>> list)
     {
         this.list = list;
     }
 
     @SafeVarargs
-    public CompositeCommandBuilder(CommandBuilder<BasicMethodicCommand>... builders)
+    public CompositeCommandBuilder(CommandBuilder<BasicMethodicCommand, OriginT>... builders)
     {
         this(Arrays.asList(builders));
     }
 
     @Override
-    public List<BasicMethodicCommand> buildCommands(Object holder)
+    public BasicMethodicCommand buildCommand(OriginT origin)
     {
-        List<BasicMethodicCommand> commands = new ArrayList<>();
-        for (CommandBuilder<BasicMethodicCommand> builder : list)
+        for (CommandBuilder<BasicMethodicCommand, OriginT> builder : list)
         {
-            commands.addAll(builder.buildCommands(holder));
+            BasicMethodicCommand command = builder.buildCommand(origin);
+            if (command != null)
+            {
+                return command;
+            }
         }
-        return commands;
+        return null;
     }
 }

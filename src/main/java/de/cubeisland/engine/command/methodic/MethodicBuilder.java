@@ -26,7 +26,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.cubeisland.engine.command.Alias;
 import de.cubeisland.engine.command.CommandBuilder;
@@ -40,7 +42,6 @@ import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
-import de.cubeisland.engine.command.parameter.UsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
@@ -48,22 +49,15 @@ import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 
-public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
+public class MethodicBuilder<OriginT extends InvokableMethod> implements CommandBuilder<BasicMethodicCommand, OriginT>
 {
     protected ParameterUsageGenerator usageGenerator = new ParameterUsageGenerator();
 
     @Override
-    public List<BasicMethodicCommand> buildCommands(Object object)
+    public BasicMethodicCommand buildCommand(OriginT origin)
     {
-        List<BasicMethodicCommand> list = new ArrayList<>();
-        for (Method method : object.getClass().getMethods())
-        {
-            if (this.isApplicable(method))
-            {
-                list.add(this.build(method.getAnnotation(Command.class), method, object));
-            }
-        }
-        return list;
+        Method method = origin.getMethod();
+        return this.isApplicable(method) ? this.build(method.getAnnotation(Command.class), origin) : null;
     }
 
     /**
@@ -86,26 +80,27 @@ public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
         return false;
     }
 
-    protected BasicMethodicCommand build(Command annotation, Method method, Object holder)
+    protected BasicMethodicCommand build(Command annotation, OriginT origin)
     {
-        ImmutableCommandDescriptor descriptor = buildCommandDescriptor(annotation, method, holder);
-        descriptor.setProperty(buildParameters(descriptor, method));
+        ImmutableCommandDescriptor descriptor = buildCommandDescriptor(annotation, origin);
+        descriptor.setProperty(buildParameters(descriptor, origin));
         return new BasicMethodicCommand(descriptor);
     }
 
-    protected ImmutableCommandDescriptor buildCommandDescriptor(Command annotation, Method method, Object object)
+    protected ImmutableCommandDescriptor buildCommandDescriptor(Command annotation, OriginT origin)
     {
         ImmutableCommandDescriptor descriptor = new ImmutableCommandDescriptor();
-        descriptor.setProperty(new Name(annotation.name().isEmpty() ? method.getName() : annotation.name()));
+        descriptor.setProperty(new Name(annotation.name().isEmpty() ? origin.getMethod().getName() : annotation.name()));
         descriptor.setProperty(new Description(annotation.desc()));
         descriptor.setProperty(new Alias(new HashSet<>(Arrays.asList(annotation.alias()))));
-        descriptor.setProperty(new InvokableMethod(method, object));
+        descriptor.setProperty(new InvokableMethodProperty(origin.getMethod(), origin.getHolder()));
         descriptor.setProperty(new UsageProvider(usageGenerator));
         return descriptor;
     }
 
-    protected ParameterGroup buildParameters(CommandDescriptor descriptor, Method method)
+    protected ParameterGroup buildParameters(CommandDescriptor descriptor, OriginT origin)
     {
+        Method method = origin.getMethod();
         Flags flags = method.getAnnotation(Flags.class);
         List<Parameter> flagsList = new ArrayList<>();
         if (flags != null)
@@ -122,11 +117,11 @@ public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
         {
             for (Param param : params.nonpositional())
             {
-                nPosList.add(this.createParameter(param));
+                nPosList.add(this.createParameter(param, origin));
             }
             for (Param param : params.positional())
             {
-                Parameter parameter = this.createParameter(param);
+                Parameter parameter = this.createParameter(param, origin);
                 // TODO set valuelabel if not set but "needed"
                 parameter.setProperty(new FixedPosition(posList.size()));
                 posList.add(parameter);
@@ -135,7 +130,7 @@ public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
         return new ParameterGroup(flagsList, nPosList, posList);
     }
 
-    private Parameter createParameter(Param param)
+    private Parameter createParameter(Param param, OriginT origin)
     {
         Class type = param.type();
         Class reader = param.reader();
@@ -172,5 +167,17 @@ public class MethodicBuilder implements CommandBuilder<BasicMethodicCommand>
 
         // TODO completer
         return parameter;
+    }
+
+    public static Set<Method> getMethods(Class holder)
+    {
+        HashSet<Method> methods = new LinkedHashSet<>();
+        methods.addAll(Arrays.asList(holder.getMethods()));
+        for (Method method : methods)
+        {
+            method.setAccessible(true);
+        }
+        methods.addAll(Arrays.asList(holder.getDeclaredMethods()));
+        return methods;
     }
 }

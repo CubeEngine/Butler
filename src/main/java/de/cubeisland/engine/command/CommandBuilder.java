@@ -22,18 +22,16 @@
  */
 package de.cubeisland.engine.command;
 
-import java.util.List;
-
 /**
- * Provides a Method to build commands from an Object
+ * Provides a Method to build a command from an Origin
  */
-public interface CommandBuilder<CommandT extends CommandBase>
+public interface CommandBuilder<CommandT extends CommandBase, OriginT>
 {
     /**
-     * Returns a list of commands built from the object
+     * Builds a new command
      *
-     * @param object the object to build commands from
-     * @return a list of created commandsd
+     * @param origin the origin of the command
+     * @return the command
      */
-    List<CommandT> buildCommands(Object object);
+    CommandT buildCommand(OriginT origin);
 }

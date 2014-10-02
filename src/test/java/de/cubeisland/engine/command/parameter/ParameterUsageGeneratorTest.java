@@ -22,27 +22,42 @@
  */
 package de.cubeisland.engine.command.parameter;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
 import de.cubeisland.engine.command.methodic.Command;
+import de.cubeisland.engine.command.methodic.InvokableMethod;
+import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
+import de.cubeisland.engine.command.methodic.MethodicBuilder;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.parametric.Index;
 import de.cubeisland.engine.command.methodic.parametric.Label;
 import de.cubeisland.engine.command.methodic.parametric.Optional;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 public class ParameterUsageGeneratorTest extends TestCase
 {
-    private List<BasicMethodicCommand> commands;
+    private List<BasicMethodicCommand> commands = new ArrayList<>();
 
     @Override
     public void setUp() throws Exception
     {
-        this.commands = new ParametricBuilder().buildCommands(this);
+        ParametricBuilder<InvokableMethod> builder = new ParametricBuilder<>();
+        for (Method method : MethodicBuilder.getMethods(this.getClass()))
+        {
+            BasicMethodicCommand cmd = builder.buildCommand(new InvokableMethodProperty(method, this));
+            if (cmd != null)
+            {
+                commands.add(cmd);
+            }
+        }
     }
 
+    @Test
     public void testGenerator() throws Exception
     {
         for (BasicMethodicCommand command : commands)

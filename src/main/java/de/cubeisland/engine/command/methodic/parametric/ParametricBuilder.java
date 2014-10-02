@@ -35,6 +35,7 @@ import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
+import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.Parameter;
@@ -48,7 +49,7 @@ import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 import de.cubeisland.engine.command.property.Property;
 
-public class ParametricBuilder extends MethodicBuilder
+public class ParametricBuilder<OriginT extends InvokableMethod> extends MethodicBuilder<OriginT>
 {
     private final Map<Class<? extends Annotation>, Method> parameterProperties = new HashMap<>();
 
@@ -108,16 +109,17 @@ public class ParametricBuilder extends MethodicBuilder
     }
 
     @Override
-    protected BasicParametricCommand build(Command annotation, Method method, Object holder)
+    protected BasicParametricCommand build(Command annotation, OriginT origin)
     {
-        ImmutableCommandDescriptor descriptor = buildCommandDescriptor(annotation, method, holder);
-        descriptor.setProperty(buildParameters(descriptor, method));
+        ImmutableCommandDescriptor descriptor = buildCommandDescriptor(annotation, origin);
+        descriptor.setProperty(buildParameters(descriptor, origin));
         return new BasicParametricCommand(descriptor);
     }
 
     @Override
-    protected ParameterGroup buildParameters(CommandDescriptor descriptor, Method method)
+    protected ParameterGroup buildParameters(CommandDescriptor descriptor, OriginT origin)
     {
+        Method method = origin.getMethod();
         Annotation[][] paramAnnotations = method.getParameterAnnotations();
         Class<?>[] parameterTypes = method.getParameterTypes();
         List<Parameter> flagsList = new ArrayList<>();
@@ -126,9 +128,9 @@ public class ParametricBuilder extends MethodicBuilder
         // TODO check if first is a context (NOT Parameterized!!!)
         for (int i = 1; i < parameterTypes.length; i++)
         {
-            Class<?> parameter = parameterTypes[i];
+            Class<?> paramType = parameterTypes[i];
             Annotation[] annotations = paramAnnotations[i];
-            Parameter param = this.createParameter(descriptor, parameter, annotations);
+            Parameter param = this.createParameter(descriptor, paramType, annotations, origin);
             param.setProperty(new MethodIndex(i));
             for (Annotation annotation : annotations) // Find type of Annotation to assign to correct list
             {
@@ -154,7 +156,8 @@ public class ParametricBuilder extends MethodicBuilder
         return new ParameterGroup(flagsList, nPosList, posList);
     }
 
-    protected SimpleParameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations)
+    protected SimpleParameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations,
+                                              OriginT origin)
     {
         if (Group.class.isAssignableFrom(clazz))
         {

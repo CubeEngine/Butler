@@ -22,6 +22,7 @@
  */
 package de.cubeisland.engine.command.methodic;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -38,14 +39,42 @@ import de.cubeisland.engine.command.tokenized.SelfDescribing;
 /**
  * A ContainerCommand able to dispatch methodic commands
  */
-public class BasicContainerCommand extends DispatcherCommand implements SelfDescribing
+public class MethodicCommandContainer<OriginT, SubOriginT> extends DispatcherCommand implements SelfDescribing
 {
-    public BasicContainerCommand(CommandBuilder<BasicMethodicCommand> commandBuilder)
+    public MethodicCommandContainer(CommandBuilder<BasicMethodicCommand, SubOriginT> builder, OriginT origin)
     {
-        for (BasicMethodicCommand command : commandBuilder.buildCommands(this))
+       this.registerSubCommands(builder, origin);
+    }
+
+    /**
+     * Finds and registers the SubCommands of this CommandContainer
+     *
+     * @param builder the builder to use
+     * @param origin the origin of this command
+     */
+    protected void registerSubCommands(CommandBuilder<BasicMethodicCommand, SubOriginT> builder, OriginT origin)
+    {
+        for (Method method : MethodicBuilder.getMethods(this.getClass()))
         {
-            this.registerCommand(command);
+            BasicMethodicCommand command = builder.buildCommand(getSubOrigin(method, origin));
+            if (command != null)
+            {
+                this.registerCommand(command);
+            }
         }
+    }
+
+    /**
+     * Returns the origin for the sub command
+     *
+     * @param method the method of the sub command
+     * @param origin the origin of this command
+     * @return the Origin for the sub command
+     */
+    @SuppressWarnings("unchecked")
+    protected SubOriginT getSubOrigin(Method method, OriginT origin)
+    {
+        return (SubOriginT)new InvokableMethodProperty(method, this);
     }
 
     @Override

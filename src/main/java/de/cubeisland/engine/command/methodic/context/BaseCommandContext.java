@@ -32,11 +32,11 @@ import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
  */
 public class BaseCommandContext
 {
-    private final TokenizedInvocation call;
+    private final TokenizedInvocation invocation;
 
-    public BaseCommandContext(TokenizedInvocation call)
+    public BaseCommandContext(TokenizedInvocation invocation)
     {
-        this.call = call;
+        this.invocation = invocation;
     }
 
     /**
@@ -44,9 +44,9 @@ public class BaseCommandContext
      *
      * @return the CommandCall
      */
-    public TokenizedInvocation getCall()
+    public TokenizedInvocation getInvocation()
     {
-        return call;
+        return invocation;
     }
 
     /**
@@ -54,9 +54,9 @@ public class BaseCommandContext
      *
      * @return the parent calls
      */
-    public List<String> getParentCalls()
+    public List<String> getParentInvocations()
     {
-        return call.getParentCalls();
+        return invocation.getParentCalls();
     }
 
     /**
@@ -66,7 +66,7 @@ public class BaseCommandContext
      */
     public CommandSource getSource()
     {
-        return call.getCommandSource();
+        return invocation.getCommandSource();
     }
 
     /**

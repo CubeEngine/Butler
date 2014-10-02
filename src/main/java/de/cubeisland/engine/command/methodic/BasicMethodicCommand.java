@@ -71,7 +71,7 @@ public class BasicMethodicCommand extends DispatcherCommand
     {
         try
         {
-            Object result = this.getDescriptor().valueFor(InvokableMethod.class).invoke(commandContext);
+            Object result = this.getDescriptor().valueFor(InvokableMethodProperty.class).invoke(commandContext);
             if (result == null)
             {
                 return true;
