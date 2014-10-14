@@ -23,7 +23,6 @@
 package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandSource;
-import de.cubeisland.engine.command.property.Property;
 
 /**
  * Provides the ability to generate a usage for a {@link ParameterGroup}
@@ -39,4 +38,7 @@ public abstract class UsageGenerator
      * @return the generated usage string
      */
     public abstract String generateUsage(CommandSource source, ParameterGroup parameters);
+
+
+    // TODO add cmd labels and prefixes to usage
 }

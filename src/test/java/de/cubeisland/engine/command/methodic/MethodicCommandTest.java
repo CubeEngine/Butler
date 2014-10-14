@@ -36,7 +36,7 @@ import de.cubeisland.engine.command.methodic.parametric.Greed;
 import de.cubeisland.engine.command.methodic.parametric.Index;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 import junit.framework.TestCase;
 
 import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
@@ -58,7 +58,7 @@ public class MethodicCommandTest extends TestCase
         }
 
         @Override
-        public UUID getUUID()
+        public UUID getUniqueId()
         {
             return null;
         }
@@ -100,7 +100,7 @@ public class MethodicCommandTest extends TestCase
         Iterator<String> iterator = commandLines.iterator();
         for (BasicMethodicCommand command : commands)
         {
-            assertTrue(command.run(new TokenizedInvocation(source, iterator.next(), readerManager)));
+            assertTrue(command.run(new CommandInvocation(source, iterator.next(), readerManager)));
         }
     }
 

@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.property.PropertyHolder;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
@@ -70,7 +70,8 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return whether the parameter can be parsed
      */
-    protected abstract boolean accepts(TokenizedInvocation call);
+    // TODO also add permission checks etc. (hide the fact that the command "could" be correct but only permissions are missing)
+    protected abstract boolean accepts(CommandInvocation call);
 
     /**
      * Is called after #parse is called but only when accepted prior
@@ -78,7 +79,7 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return the parsed parameter
      */
-    protected abstract boolean parse(TokenizedInvocation call);
+    protected abstract boolean parse(CommandInvocation call);
 
     /**
      * Tries to consume tokens of the CommandCall and parse this parameter
@@ -86,7 +87,7 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return whether tokens were consumed
      */
-    public final boolean parseParameter(TokenizedInvocation call)
+    public final boolean parseParameter(CommandInvocation call)
     {
         return this.accepts(call) && this.parse(call);
     }
@@ -97,7 +98,7 @@ public abstract class Parameter extends PropertyHolder
      * @param call the CommandCall
      * @return the ParsedParameter
      */
-    protected ParsedParameter parseValue(TokenizedInvocation call)
+    protected ParsedParameter parseValue(CommandInvocation call)
     {
         int consumed = call.consumed();
         ArgumentReader reader = call.valueFor(ValueReader.class);

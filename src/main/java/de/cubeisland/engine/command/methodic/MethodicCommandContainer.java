@@ -33,15 +33,15 @@ import de.cubeisland.engine.command.Name;
 import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
-import de.cubeisland.engine.command.tokenized.DispatcherCommand;
-import de.cubeisland.engine.command.tokenized.SelfDescribing;
+import de.cubeisland.engine.command.DispatcherCommand;
+import de.cubeisland.engine.command.SelfDescribing;
 
 /**
  * A ContainerCommand able to dispatch methodic commands
  */
-public class MethodicCommandContainer<OriginT, SubOriginT> extends DispatcherCommand implements SelfDescribing
+public class MethodicCommandContainer<OriginT, SubConmmandOriginT> extends DispatcherCommand implements SelfDescribing
 {
-    public MethodicCommandContainer(CommandBuilder<BasicMethodicCommand, SubOriginT> builder, OriginT origin)
+    public MethodicCommandContainer(CommandBuilder<BasicMethodicCommand, SubConmmandOriginT> builder, OriginT origin)
     {
        this.registerSubCommands(builder, origin);
     }
@@ -52,14 +52,14 @@ public class MethodicCommandContainer<OriginT, SubOriginT> extends DispatcherCom
      * @param builder the builder to use
      * @param origin the origin of this command
      */
-    protected void registerSubCommands(CommandBuilder<BasicMethodicCommand, SubOriginT> builder, OriginT origin)
+    protected void registerSubCommands(CommandBuilder<BasicMethodicCommand, SubConmmandOriginT> builder, OriginT origin)
     {
         for (Method method : MethodicBuilder.getMethods(this.getClass()))
         {
             BasicMethodicCommand command = builder.buildCommand(getSubOrigin(method, origin));
             if (command != null)
             {
-                this.registerCommand(command);
+                this.addCommand(command);
             }
         }
     }
@@ -72,9 +72,9 @@ public class MethodicCommandContainer<OriginT, SubOriginT> extends DispatcherCom
      * @return the Origin for the sub command
      */
     @SuppressWarnings("unchecked")
-    protected SubOriginT getSubOrigin(Method method, OriginT origin)
+    protected SubConmmandOriginT getSubOrigin(Method method, OriginT origin)
     {
-        return (SubOriginT)new InvokableMethodProperty(method, this);
+        return (SubConmmandOriginT)new InvokableMethodProperty(method, this);
     }
 
     @Override

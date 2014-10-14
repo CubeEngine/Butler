@@ -28,7 +28,7 @@ import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class ParameterizedContext extends BaseCommandContext
     private final Map<String, ParsedParameter> nameBased = new HashMap<>();
     private final Map<String, ParsedParameter> flags = new HashMap<>();
 
-    public ParameterizedContext(TokenizedInvocation call)
+    public ParameterizedContext(CommandInvocation call)
     {
         super(call);
 

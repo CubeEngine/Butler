@@ -25,16 +25,16 @@ package de.cubeisland.engine.command.methodic.context;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandSource;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 
 /**
  * A CommandContext for an Invocation of a MethodicCommand
  */
 public class BaseCommandContext
 {
-    private final TokenizedInvocation invocation;
+    private final CommandInvocation invocation;
 
-    public BaseCommandContext(TokenizedInvocation invocation)
+    public BaseCommandContext(CommandInvocation invocation)
     {
         this.invocation = invocation;
     }
@@ -44,7 +44,7 @@ public class BaseCommandContext
      *
      * @return the CommandCall
      */
-    public TokenizedInvocation getInvocation()
+    public CommandInvocation getInvocation()
     {
         return invocation;
     }
@@ -56,7 +56,7 @@ public class BaseCommandContext
      */
     public List<String> getParentInvocations()
     {
-        return invocation.getParentCalls();
+        return invocation.getLabels();
     }
 
     /**

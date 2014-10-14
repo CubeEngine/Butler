@@ -49,6 +49,8 @@ import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 
+// TODO BaseAlias + Alias pre/suffix arguments
+// AliasCommand
 public class MethodicBuilder<OriginT extends InvokableMethod> implements CommandBuilder<BasicMethodicCommand, OriginT>
 {
     protected ParameterUsageGenerator usageGenerator = new ParameterUsageGenerator();

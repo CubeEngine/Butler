@@ -25,16 +25,16 @@ package de.cubeisland.engine.command;
 import java.util.List;
 
 /**
- * Provides a method allowing tab completion for commands
+ * Provides a method that allows getting suggestions for tab completion in commands
  */
-public interface CommandCompleter<CallT extends CommandInvocation>
+public interface CommandCompleter
 {
     /**
      * Returns a list of suggestions based on given CommandCall
      *
-     * @param call the CommandCall
+     * @param invocation the invocation
      *
-     * @return a list of suggestions
+     * @return a list of suggestions or null if not applicable
      */
-    List<String> getSuggestions(CallT call);
+    List<String> getSuggestions(CommandInvocation invocation);
 }

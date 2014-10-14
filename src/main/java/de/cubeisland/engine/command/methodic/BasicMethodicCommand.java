@@ -30,8 +30,8 @@ import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
-import de.cubeisland.engine.command.tokenized.DispatcherCommand;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.DispatcherCommand;
 
 public class BasicMethodicCommand extends DispatcherCommand
 {
@@ -41,20 +41,20 @@ public class BasicMethodicCommand extends DispatcherCommand
     }
 
     @Override
-    public boolean run(TokenizedInvocation call)
+    public boolean run(CommandInvocation invocation)
     {
-        boolean ran = super.run(call);
+        boolean ran = super.run(invocation);
         if (!ran)
         {
-            call.setProperty(new ParsedParameters());
-            this.getDescriptor().valueFor(ParameterGroup.class).parseParameter(call);
-            ran = this.run(this.buildContext(call));
+            invocation.setProperty(new ParsedParameters());
+            this.getDescriptor().valueFor(ParameterGroup.class).parseParameter(invocation);
+            ran = this.run(this.buildContext(invocation));
         }
         return ran;
     }
 
     @Override
-    public List<String> getSuggestions(TokenizedInvocation call)
+    public List<String> getSuggestions(CommandInvocation call)
     {
         // TODO parse Parameters til last parameter then tabcomplete
         return super.getSuggestions(call);
@@ -69,6 +69,38 @@ public class BasicMethodicCommand extends DispatcherCommand
      */
     protected boolean run(BaseCommandContext commandContext)
     {
+        // TODO check if allowed to run
+        /*
+
+    public void checkContext(CommandContext ctx) throws CommandException
+    {
+        if (ctx.getCommand().isCheckperm() && !ctx.getCommand().isAuthorized(ctx.getSource()))
+        {
+            throw new PermissionDeniedException(ctx.getCommand().getPermission());
+        }
+        super.checkContext(ctx); // After general perm check -> check bounds etc.
+        CtxDescriptor descriptor = ctx.getCommand().getContextFactory().descriptor();
+        // TODO also check perm for indexed Parameters
+        for (NamedParameter named : descriptor.getNamedGroups().listAll())
+        {
+            if (named instanceof PermissibleNamedParameter && ctx.hasNamed(named.getName()) &&
+                !((PermissibleNamedParameter)named).checkPermission(ctx.getSource()))
+            {
+                throw new PermissionDeniedException(((PermissibleNamedParameter)named).getPermission());
+            }
+        }
+
+        for (FlagParameter flag : descriptor.getFlags())
+        {
+            if (flag instanceof PermissibleFlag && ctx.hasFlag(flag.getName())
+                && !((PermissibleFlag)flag).checkPermission(ctx.getSource()))
+            {
+                throw new PermissionDeniedException(((PermissibleFlag)flag).getPermission());
+            }
+        }
+    }
+
+         */
         try
         {
             Object result = this.getDescriptor().valueFor(InvokableMethodProperty.class).invoke(commandContext);
@@ -92,7 +124,7 @@ public class BasicMethodicCommand extends DispatcherCommand
         return false;
     }
 
-    protected BaseCommandContext buildContext(TokenizedInvocation call)
+    protected BaseCommandContext buildContext(CommandInvocation call)
     {
         // TODO check with method which context is allowed
         return new ParameterizedContext(call);

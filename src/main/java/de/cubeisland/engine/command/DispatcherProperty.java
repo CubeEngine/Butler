@@ -20,11 +20,31 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.tokenized;
+package de.cubeisland.engine.command;
+
+import de.cubeisland.engine.command.property.Property;
 
 /**
- * This Exception is thrown whenever a command has no CommandDescriptor
+ * Holds the dispatcher for a command
  */
-public class MissingCommandDescriptorException extends RuntimeException
+public class DispatcherProperty implements Property<DispatcherProperty>
 {
+    private Dispatcher dispatcher = null;
+
+    public Dispatcher getDispatcher()
+    {
+        return dispatcher;
+    }
+
+    public DispatcherProperty setDispatcher(Dispatcher dispatcher)
+    {
+        this.dispatcher = dispatcher;
+        return this;
+    }
+
+    @Override
+    public DispatcherProperty value()
+    {
+        return this;
+    }
 }

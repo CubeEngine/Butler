@@ -33,6 +33,11 @@ import de.cubeisland.engine.command.parameter.property.Description;
  */
 public class ImmutableCommandDescriptor extends ImmutablePropertyHolder implements CommandDescriptor
 {
+    public ImmutableCommandDescriptor()
+    {
+        this.setProperty(new DispatcherProperty());
+    }
+
     @Override
     public String getName()
     {

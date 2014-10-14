@@ -32,7 +32,7 @@ import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 
 public class BasicParametricCommand extends BasicMethodicCommand
 {
@@ -80,9 +80,9 @@ public class BasicParametricCommand extends BasicMethodicCommand
     }
 
     @Override
-    protected BaseCommandContext buildContext(TokenizedInvocation call)
+    protected BaseCommandContext buildContext(CommandInvocation invocation)
     {
         // TODO if method needs ParameterizedContext give it
-        return new BaseCommandContext(call);
+        return new BaseCommandContext(invocation);
     }
 }

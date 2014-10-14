@@ -20,17 +20,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.completer;
+package de.cubeisland.engine.command;
 
-import java.util.List;
+import de.cubeisland.engine.command.CommandDescriptor;
 
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
-
-public class ChildCompleter implements Completer<BaseCommandContext>
+public interface SelfDescribing
 {
-    @Override
-    public List<String> complete(BaseCommandContext context, String token)
-    {
-        return null; // TODO
-    }
+    /**
+     * Creates a new CommandDescriptor from the information available on the implementing class itself
+     *
+     * @return a new CommandDescriptor
+     */
+    CommandDescriptor selfDescribe();
 }

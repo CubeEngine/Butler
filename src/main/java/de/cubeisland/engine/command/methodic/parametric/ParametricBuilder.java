@@ -134,7 +134,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
             param.setProperty(new MethodIndex(i));
             for (Annotation annotation : annotations) // Find type of Annotation to assign to correct list
             {
-                if (annotation instanceof Flag)
+                if (annotation instanceof Flag) // TODO instead create "FlagParameter" ??
                 {
                     flagsList.add(param);
                     param = null;
@@ -159,6 +159,9 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
     protected SimpleParameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations,
                                               OriginT origin)
     {
+        // TODO what about flags?
+
+
         if (Group.class.isAssignableFrom(clazz))
         {
             // TODO Groups

@@ -22,30 +22,205 @@
  */
 package de.cubeisland.engine.command;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+
+import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+import de.cubeisland.engine.command.property.PropertyHolder;
+
+import static de.cubeisland.engine.command.StringUtils.join;
 
 /**
- * A CommandInvocation with a CommandSource, a CommandLine and a List of parent Calls
+ * The invocation of a command
+ * Its tokens can be consumed on after the other.
+ * Quoted Strings are parsed as one token
  */
-public interface CommandInvocation
+public class CommandInvocation extends PropertyHolder
 {
+    private final CommandSource commandSource;
+    private final String commandLine;
+    private final List<String> labels = new ArrayList<>();
+
+    private final List<String> tokens;
+    private final ReaderManager manager;
+
+    private int consumed = 0;
+
+    public CommandInvocation(CommandSource source, String commandLine, String delim, ReaderManager manager)
+    {
+        this.commandSource = source;
+        this.commandLine = commandLine;
+        this.tokens = tokenize(commandLine, delim);
+        this.manager = manager;
+    }
+
+    public CommandInvocation(CommandSource source, String commandLine, ReaderManager manager)
+    {
+        this(source, commandLine, " ", manager);
+    }
+
+    protected List<String> tokenize(String commandLine, String delim)
+    {
+        String[] rawTokens = commandLine.split(delim);
+        List<String> stringParsed = new ArrayList<>();
+        for (int offset = 0; offset < rawTokens.length; )
+        {
+            StringBuilder sb = new StringBuilder();
+            offset += StringUtils.parseString(sb, rawTokens, offset);
+            stringParsed.add(sb.toString());
+        }
+        return stringParsed;
+    }
+
     /**
-     * Returns the CommandSource that initialized this Call
-     * @return the CommandSource
+     * Returns the String the Call got created with
+     *
+     * @return the CallString
      */
-    public CommandSource getCommandSource();
+    public List<String> tokens()
+    {
+        return tokens;
+    }
+
+    /**
+     * Returns the ReaderManager
+     *
+     * @return the readerManager
+     */
+    public ReaderManager getManager()
+    {
+        return manager;
+    }
+
+    /**
+     * Returns the Locale to be used for this CommandCall
+     *
+     * @return the locale
+     */
+    public Locale getLocale()
+    {
+        return commandSource.getLocale();
+    }
+
+    /**
+     * Consumes given amount of tokens
+     *
+     * @param amount the amount of tokens to consume
+     *
+     * @return the first consumed token
+     */
+    public String consume(int amount)
+    {
+        String token = this.currentToken();
+        this.consumed += amount;
+        return token;
+    }
+
+    /**
+     * Returns the amount of tokens consumed
+     *
+     * @return the amount of tokens consumed
+     */
+    public int consumed()
+    {
+        return consumed;
+    }
+
+    /**
+     * Returns the current token
+     *
+     * @return the current token
+     */
+    public String currentToken()
+    {
+        return this.tokens.get(this.consumed);
+    }
+
+    /**
+     * Returns the token at given index
+     *
+     * @param index the index
+     *
+     * @return the token at given index
+     */
+    public String tokenAt(int index)
+    {
+        return this.tokens.get(index);
+    }
+
+    /**
+     * Returns whether all tokens are consumed
+     *
+     * @return true if all tokens are consumed
+     */
+    public boolean isConsumed()
+    {
+        return this.consumed >= this.tokens.size();
+    }
+
+    /**
+     * Returns the consumed tokens joined together since
+     *
+     * @param start the index of the token to start with
+     *
+     * @return the joined tokens
+     */
+    public String tokensSince(int start)
+    {
+
+        return join(" ", this.tokens.subList(start, this.consumed));
+    }
 
     /**
      * Returns the commandline this Call was initialized with
      *
      * @return the commandline
      */
-    public String getCommandLine();
+    public String getCommandLine()
+    {
+        return this.commandLine;
+    }
 
     /**
-     * Returns a list of the previous calls
+     * Returns the CommandSource that initialized this Call
      *
-     * @return the parent calls
+     * @return the CommandSource
      */
-    public List<String> getParentCalls();
+    public CommandSource getCommandSource()
+    {
+        return this.commandSource;
+    }
+
+    public CommandInvocation subInvocation()
+    {
+        this.labels.add(this.consume(1));
+        return this;
+    }
+
+    /**
+     * Returns a list of the commands higher up in the call chain
+     *
+     * @return the labels
+     */
+    public List<String> getLabels()
+    {
+        return Collections.unmodifiableList(this.labels);
+    }
+
+    /**
+     * Gets a copy of this Invocation with other tokens
+     *
+     * @param tokens    the tokens
+     * @param delimiter the delimiter
+     *
+     * @return the new invocation
+     */
+    public CommandInvocation setTokens(String tokens, String delimiter)
+    {
+        CommandInvocation invocation = new CommandInvocation(this.getCommandSource(), tokens, delimiter, this.getManager());
+        invocation.properties.putAll(this.properties);
+        return invocation;
+    }
 }

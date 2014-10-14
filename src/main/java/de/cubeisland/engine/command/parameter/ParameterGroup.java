@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.property.Property;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.property.PropertyHolder;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
@@ -50,13 +51,13 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     }
 
     @Override
-    public boolean accepts(TokenizedInvocation call)
+    public boolean accepts(CommandInvocation call)
     {
         return true;
     }
 
     @Override
-    protected boolean parse(TokenizedInvocation call)
+    protected boolean parse(CommandInvocation call)
     {
         List<Parameter> flags = new ArrayList<>(this.valueFor(FlagGroup.class));
         List<Parameter> nonPositional = new ArrayList<>(this.valueFor(NonPositionalGroup.class));
@@ -113,7 +114,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
      *
      * @return the parsed parameter or null if not applicable
      */
-    private boolean parseMatching(TokenizedInvocation call, List<Parameter> searchList, boolean positonal)
+    private boolean parseMatching(CommandInvocation call, List<Parameter> searchList, boolean positonal)
     {
         boolean parsed = false;
         Parameter toRemove = null;

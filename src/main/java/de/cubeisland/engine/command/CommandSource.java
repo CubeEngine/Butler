@@ -42,7 +42,7 @@ public interface CommandSource
      *
      * @return the uuid
      */
-    UUID getUUID();
+    UUID getUniqueId();
 
     /**
      * Returns the locale of this CommandSource or if not known the default Locale

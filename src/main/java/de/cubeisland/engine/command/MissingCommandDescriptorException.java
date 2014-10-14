@@ -22,42 +22,9 @@
  */
 package de.cubeisland.engine.command;
 
-import java.util.Set;
-
 /**
- * Handles command dispatching
+ * This Exception is thrown whenever a command has no CommandDescriptor
  */
-public interface CommandDispatcher<CallT extends CommandInvocation> extends CommandBase<CallT>
+public class MissingCommandDescriptorException extends RuntimeException
 {
-    /**
-     * Registers a command to this dispatcher
-     *
-     * @param command the command to register
-     */
-    void registerCommand(CommandBase<CallT> command);
-     //TODO also get replacement policy
-    // TODO unregister command
-
-    /**
-     * Returns the commands registered for this dispatcher
-     *
-     * @return the registered commands
-     */
-    Set<CommandBase<CallT>> getCommands();
-
-    /**
-     * Returns whether this dispatcher has a command registered with given alias
-     *
-     * @param alias the alias
-     * @return true if a command is registered for given alias
-     */
-    boolean hasCommand(String alias);
-
-    /**
-     * Returns a registered command for given alias
-     *
-     * @param alias the alias
-     * @return the command for given alias
-     */
-    CommandBase<CallT> getCommand(String alias);
 }

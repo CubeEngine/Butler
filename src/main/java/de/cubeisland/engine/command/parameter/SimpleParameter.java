@@ -26,7 +26,7 @@ import java.util.List;
 
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Greed;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 
 /**
  * A Parameter implementation.
@@ -43,7 +43,7 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected boolean parse(TokenizedInvocation call)
+    protected boolean parse(CommandInvocation call)
     {
         List<ParsedParameter> result = call.valueFor(ParsedParameters.class);
         String[] names = this.valueFor(FixedValues.class);
@@ -70,7 +70,7 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected boolean accepts(TokenizedInvocation call)
+    protected boolean accepts(CommandInvocation call)
     {
         // Just checking if the parameter is possible here
         int greed = this.valueFor(Greed.class); // cannot be null as greed is preset if not set manually

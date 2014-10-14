@@ -80,4 +80,19 @@ public class PropertyHolder
             this.setProperty(property);
         }
     }
+
+    /**
+     * Calls {@link Finalizable#doFinalize(PropertyHolder)} for every Property that is Finalizable.
+     * Allowing properties that depend on others to change accordingly
+     */
+    public void doFinalize()
+    {
+        for (Property property : properties.values())
+        {
+            if (property instanceof Finalizable)
+            {
+                ((Finalizable)property).doFinalize(this);
+            }
+        }
+    }
 }

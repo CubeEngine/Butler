@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 
@@ -46,7 +46,7 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected boolean accepts(TokenizedInvocation call)
+    protected boolean accepts(CommandInvocation call)
     {
         String token = call.currentToken();
         if (token.startsWith("-"))
@@ -64,7 +64,7 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected boolean parse(TokenizedInvocation call)
+    protected boolean parse(CommandInvocation call)
     {
         ParsedParameter parsedParameter = this.parseValue(call);
         if (parsedParameter.getParsedValue() == null)

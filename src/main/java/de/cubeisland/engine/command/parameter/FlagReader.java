@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.old.ReaderException;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
@@ -42,7 +42,7 @@ public class FlagReader implements ArgumentReader<Boolean>
     }
 
     @Override
-    public Boolean read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws ReaderException
+    public Boolean read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException
     {
         String flag = invocation.currentToken();
         if (flag.startsWith("-"))

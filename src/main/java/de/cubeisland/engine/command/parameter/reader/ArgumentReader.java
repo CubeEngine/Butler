@@ -22,10 +22,10 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.old.ReaderException;
 
 public interface ArgumentReader<ObjectT>
 {
-    ObjectT read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws ReaderException;
+    ObjectT read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException;
 }

@@ -29,5 +29,10 @@ package de.cubeisland.engine.command.property;
  */
 public interface Property<ValueT>
 {
-    public ValueT value();
+    /**
+     * Returns the value of the property
+     *
+     * @return the value
+     */
+    ValueT value();
 }

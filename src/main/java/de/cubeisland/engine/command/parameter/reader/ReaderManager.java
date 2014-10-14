@@ -29,10 +29,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import de.cubeisland.engine.command.old.ReaderException;
 import de.cubeisland.engine.command.parameter.Parameter;
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 
 public class ReaderManager
 {
+    public static ReaderManager MANAGER; // TODO PLS REMOVE ME I AM REALLY EVIL
+    public ReaderManager()
+    {
+        MANAGER = this;
+    }
+
     private final Map<Class<?>, ArgumentReader> READERS = new ConcurrentHashMap<>();
 
     public void registerDefaultReader()
@@ -98,18 +104,18 @@ public class ReaderManager
     }
 
     @SuppressWarnings("unchecked")
-    public Object read(Parameter param, TokenizedInvocation call) throws ReaderException
+    public Object read(Parameter param, CommandInvocation invocation) throws ReaderException
     {
-        return this.read(param.getReaderType(), param.getType(), call);
+        return this.read(param.getReaderType(), param.getType(), invocation);
     }
 
-    public Object read(Class<?> readerClass, Class<?> type, TokenizedInvocation call)
+    public Object read(Class<?> readerClass, Class<?> type, CommandInvocation invocation)
     {
         ArgumentReader reader = resolveReader(readerClass);
         if (reader == null)
         {
             throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");
         }
-        return reader.read(this, type, call);
+        return reader.read(this, type, invocation);
     }
 }

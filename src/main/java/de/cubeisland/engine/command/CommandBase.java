@@ -25,14 +25,16 @@ package de.cubeisland.engine.command;
 /**
  * A command that can be run
  */
-public interface CommandBase<CallT extends CommandInvocation> extends CommandCompleter<CallT>
+public interface CommandBase extends CommandCompleter
 {
     /**
-     * Runs the command with given CommandCall
-     * @param call the CommandCall
+     * Runs the command with given CommandInvocation
+     *
+     * @param invocation the invocation
+     *
      * @return whether the command ran or not
      */
-    boolean run(CallT call);
+    boolean run(CommandInvocation invocation);
 
     /**
      * Returns the Descriptor of this command

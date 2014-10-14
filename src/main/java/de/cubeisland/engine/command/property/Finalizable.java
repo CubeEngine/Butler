@@ -20,16 +20,14 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.tokenized;
+package de.cubeisland.engine.command.property;
 
-import de.cubeisland.engine.command.CommandDescriptor;
-
-public interface SelfDescribing
+public interface Finalizable
 {
     /**
-     * Creates a new CommandDescriptor from the information available on the implementing class itself
+     * Gets called when {@link PropertyHolder#doFinalize()} is called
      *
-     * @return a new CommandDescriptor
+     * @param holder the holder of this property
      */
-    CommandDescriptor selfDescribe();
+    void doFinalize(PropertyHolder holder);
 }

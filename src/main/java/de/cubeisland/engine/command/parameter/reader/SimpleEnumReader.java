@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.tokenized.TokenizedInvocation;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.old.ReaderException;
 
 /**
@@ -32,7 +32,7 @@ public class SimpleEnumReader implements ArgumentReader
 {
     @Override
     @SuppressWarnings("unchecked")
-    public Object read(ReaderManager manager, Class type, TokenizedInvocation invocation) throws ReaderException
+    public Object read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException
     {
         if (manager.hasReader(type))
         {
