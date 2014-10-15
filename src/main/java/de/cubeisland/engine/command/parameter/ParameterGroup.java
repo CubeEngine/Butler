@@ -25,8 +25,6 @@ package de.cubeisland.engine.command.parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.cubeisland.engine.command.property.Property;
-import de.cubeisland.engine.command.property.PropertyHolder;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
@@ -34,6 +32,7 @@ import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.group.FlagGroup;
 import de.cubeisland.engine.command.parameter.property.group.NonPositionalGroup;
 import de.cubeisland.engine.command.parameter.property.group.PositionalGroup;
+import de.cubeisland.engine.command.property.Property;
 
 import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
 
@@ -71,6 +70,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             {
                 if (call.consumed() == call.tokens().size() - 1) // ignore empty args except last
                 {
+                    call.consume(1);
                     params.add(ParsedParameter.empty());
                 }
             }
@@ -90,9 +90,12 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
         List<ParsedParameter> toGroup = new ArrayList<>();
         for (ParsedParameter param : params)
         {
-            if (!param.getParameter().hasProperty(MethodIndex.class))
+            if (param.getParameter() != null) // empty param (last?)
             {
-                toGroup.add(param);
+                if (!param.getParameter().hasProperty(MethodIndex.class))
+                {
+                    toGroup.add(param);
+                }
             }
         }
 

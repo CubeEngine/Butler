@@ -22,19 +22,19 @@
  */
 package de.cubeisland.engine.command.methodic.context;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
-import de.cubeisland.engine.command.CommandInvocation;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * A context with parameterized values
@@ -52,6 +52,10 @@ public class ParameterizedContext extends BaseCommandContext
         for (ParsedParameter parsed : call.valueFor(ParsedParameters.class))
         {
             Parameter parameter = parsed.getParameter();
+            if (parameter == null) // empty parameter (last)
+            {
+                continue;
+            }
             if (parameter instanceof FlagParameter)
             {
                 flags.put(((FlagParameter) parameter).name(), parsed);
