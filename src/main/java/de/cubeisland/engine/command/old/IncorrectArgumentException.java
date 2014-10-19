@@ -39,6 +39,8 @@
  */
 package de.cubeisland.engine.command.old;
 
+import de.cubeisland.engine.command.CommandException;
+
 public class IncorrectArgumentException extends CommandException
 {
     private String name;

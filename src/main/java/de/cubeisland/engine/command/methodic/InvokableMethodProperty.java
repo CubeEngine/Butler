@@ -25,7 +25,7 @@ package de.cubeisland.engine.command.methodic;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.util.property.Property;
 
 /**
  * A Method and its Holder

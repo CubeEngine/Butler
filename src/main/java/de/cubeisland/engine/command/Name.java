@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.property.AbstractProperty;
+import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 /**
  * A name

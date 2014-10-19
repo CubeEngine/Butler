@@ -320,7 +320,7 @@ public class ParameterizedContext extends BaseCommandContext
     {
         if (this.hasPositional(index))
         {
-            return (T) this.positional.get(index);
+            return (T) this.positional.get(index).getParsedValue();
         }
         return null;
     }
@@ -355,7 +355,7 @@ public class ParameterizedContext extends BaseCommandContext
     {
         if (this.hasNamed(name))
         {
-            return (T) this.nameBased.get(name);
+            return (T) this.nameBased.get(name).getParsedValue();
         }
         return null;
     }

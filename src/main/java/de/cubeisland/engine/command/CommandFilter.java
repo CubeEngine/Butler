@@ -25,7 +25,7 @@ package de.cubeisland.engine.command;
 /**
  * CommandFilter are run before a command is run
  */
-public interface CommandFilter // TODO use me
+public interface CommandFilter // TODO use me e.g. permissions
 {
     /**
      * Runs this CommandFilter

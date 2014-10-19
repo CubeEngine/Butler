@@ -47,7 +47,7 @@ import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
-import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.util.property.Property;
 
 public class ParametricBuilder<OriginT extends InvokableMethod> extends MethodicBuilder<OriginT>
 {

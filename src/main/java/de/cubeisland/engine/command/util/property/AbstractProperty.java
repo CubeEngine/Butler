@@ -20,14 +20,40 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.util.property;
 
-import de.cubeisland.engine.command.property.AbstractProperty;
-
-public class FixedUsage extends AbstractProperty<String>
+/**
+ * A base implementation for a ParameterProperty
+ */
+public abstract class AbstractProperty<ValueT> implements Property<ValueT>
 {
-    public FixedUsage(String value)
+    private final ValueT value;
+
+    protected AbstractProperty(ValueT value)
     {
-        super(value);
+        if (!this.checkValue(value))
+        {
+            throw new IllegalArgumentException(
+                "The value " + value.toString() + " is not allowed for " + this.getClass().getName());
+        }
+        this.value = value;
+    }
+
+    /**
+     * Checks if given value is allowed
+     *
+     * @param value the value to check
+     *
+     * @throws IllegalArgumentException if the value is not allowed
+     */
+    protected boolean checkValue(ValueT value)
+    {
+        return true;
+    }
+
+    @Override
+    public ValueT value()
+    {
+        return this.value;
     }
 }

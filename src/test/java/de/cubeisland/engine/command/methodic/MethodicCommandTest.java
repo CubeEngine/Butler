@@ -100,7 +100,7 @@ public class MethodicCommandTest extends TestCase
         Iterator<String> iterator = commandLines.iterator();
         for (BasicMethodicCommand command : commands)
         {
-            assertTrue(command.run(new CommandInvocation(source, iterator.next(), readerManager)));
+            assertTrue(command.execute(new CommandInvocation(source, iterator.next(), readerManager)));
         }
     }
 

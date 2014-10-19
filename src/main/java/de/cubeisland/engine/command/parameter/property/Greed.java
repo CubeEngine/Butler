@@ -22,8 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.property.AbstractProperty;
-import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.util.property.AbstractProperty;
+import de.cubeisland.engine.command.util.property.Property;
 
 /**
  * Specifies how many tokens the Parameter will consume
@@ -54,5 +54,10 @@ public class Greed extends AbstractProperty<Integer>
     public static Greed infinite()
     {
         return new Greed(INFINITE_GREED);
+    }
+
+    public static boolean isInfinite(Integer integer)
+    {
+        return integer != null && integer == INFINITE_GREED;
     }
 }

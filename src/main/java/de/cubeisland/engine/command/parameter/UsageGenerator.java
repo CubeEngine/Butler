@@ -22,7 +22,14 @@
  */
 package de.cubeisland.engine.command.parameter;
 
+import java.util.Collections;
+import java.util.Stack;
+
+import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.Dispatcher;
+import de.cubeisland.engine.command.DispatcherProperty;
+import de.cubeisland.engine.command.StringUtils;
 
 /**
  * Provides the ability to generate a usage for a {@link ParameterGroup}
@@ -30,15 +37,47 @@ import de.cubeisland.engine.command.CommandSource;
 public abstract class UsageGenerator
 {
     /**
-     * Generates the usage for given Group of {@link de.cubeisland.engine.command.parameter.Parameter}
+     * Returns the names of the given command and all its dispatchers
+     *
+     * @param descriptor the command
+     *
+     * @return the names
+     */
+    public static Stack<String> getNames(CommandDescriptor descriptor)
+    {
+        Stack<String> cmds = new Stack<>();
+        cmds.push(descriptor.getName());
+        Dispatcher dispatcher = descriptor.valueFor(DispatcherProperty.class).getDispatcher();
+        while (dispatcher != null && dispatcher.getDescriptor() != null)
+        {
+            descriptor = dispatcher.getDescriptor();
+            cmds.add(descriptor.getName());
+            dispatcher = descriptor.valueFor(DispatcherProperty.class).getDispatcher();
+        }
+        return cmds;
+    }
+
+    /**
+     * Generates the usage for given {@link ParameterGroup}
      *
      * @param source     the {@link CommandSource}
      * @param parameters the {@link ParameterGroup}
      *
      * @return the generated usage string
      */
-    public abstract String generateUsage(CommandSource source, ParameterGroup parameters);
+    protected abstract String generateUsage(CommandSource source, ParameterGroup parameters);
 
-
-    // TODO add cmd labels and prefixes to usage
+    /**
+     * Generates the usage for a given CommandDescriptor and CommandSource
+     *
+     * @param source the {@link CommandSource}
+     * @param descriptor the {@link CommandDescriptor}
+     * @return the complete usage String
+     */
+    public final String generateUsage(CommandSource source, CommandDescriptor descriptor)
+    {
+        Stack<String> names = getNames(descriptor);
+        Collections.reverse(names);
+        return StringUtils.join(" ", names) + " " + this.generateUsage(source, descriptor.valueFor(ParameterGroup.class)).trim();
+    }
 }

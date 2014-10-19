@@ -43,24 +43,23 @@ public class ParameterUsageGenerator extends UsageGenerator
 
         for (Parameter parameter : parameters.valueFor(PositionalGroup.class))
         {
-            sb.append(generateParameterUsage(source, parameter));
+            sb.append(generateParameterUsage(source, parameter)).append(" ");
         }
 
         for (Parameter parameter : parameters.valueFor(NonPositionalGroup.class))
         {
-            sb.append(generateParameterUsage(source, parameter));
+            sb.append(generateParameterUsage(source, parameter)).append(" ");
         }
 
         for (Parameter parameter : parameters.valueFor(FlagGroup.class))
         {
             if (parameter instanceof FlagParameter)
             {
-                sb.append(generateFlagUsage(source, (FlagParameter)parameter));
+                sb.append(generateFlagUsage(source, (FlagParameter)parameter)).append(" ");
             }
             else
             {
-                throw new IllegalArgumentException(
-                    "Expected FlagParameter but found " + parameter.getClass().getName());
+                throw new IllegalArgumentException("Expected FlagParameter but found " + parameter.getClass().getName());
             }
         }
 

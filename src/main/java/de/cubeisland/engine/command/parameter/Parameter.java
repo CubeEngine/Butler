@@ -23,7 +23,7 @@
 package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.property.PropertyHolder;
+import de.cubeisland.engine.command.util.property.PropertyHolder;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
@@ -101,7 +101,7 @@ public abstract class Parameter extends PropertyHolder
     protected ParsedParameter parseValue(CommandInvocation call)
     {
         int consumed = call.consumed();
-        ArgumentReader reader = call.valueFor(ValueReader.class);
+        ArgumentReader reader = this.valueFor(ValueReader.class);
         Object read;
         if (reader != null)
         {

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import de.cubeisland.engine.command.old.ReaderException;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.CommandInvocation;
 

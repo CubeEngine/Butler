@@ -39,6 +39,8 @@
  */
 package de.cubeisland.engine.command.old;
 
+import de.cubeisland.engine.command.CommandException;
+
 /**
  * This exception is thrown when a user performed an invalid command.
  * Use invalidUsage to throw an exception inside a command. The exception will be caught.

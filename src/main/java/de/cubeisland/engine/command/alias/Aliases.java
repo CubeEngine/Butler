@@ -20,19 +20,19 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.property;
+package de.cubeisland.engine.command.alias;
+
+import java.util.List;
+
+import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 /**
- * A Property
- *
- * @param <ValueT> the type of the Property
+ * A set of aliases
  */
-public interface Property<ValueT>
+public class Aliases extends AbstractProperty<List<AliasConfiguration>>
 {
-    /**
-     * Returns the value of the property
-     *
-     * @return the value
-     */
-    ValueT value();
+    public Aliases(List<AliasConfiguration> value)
+    {
+        super(value);
+    }
 }

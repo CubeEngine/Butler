@@ -66,11 +66,11 @@ public class ParameterUsageGeneratorTest extends TestCase
         }
     }
 
-    @Command(desc = "<aString>")
+    @Command(desc = "cmd1 <aString>")
     public void cmd1(BaseCommandContext ctx, @Index @Label("aString") String aString)
     {}
 
-    @Command(desc = "[aString]")
+    @Command(desc = "cmd2 [aString]")
     public void cmd2(BaseCommandContext ctx, @Index @Label("aString") @Optional String aString)
     {}
 }

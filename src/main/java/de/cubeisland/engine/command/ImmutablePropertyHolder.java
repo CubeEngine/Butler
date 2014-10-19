@@ -22,8 +22,8 @@
  */
 package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.property.Property;
-import de.cubeisland.engine.command.property.PropertyHolder;
+import de.cubeisland.engine.command.util.property.Property;
+import de.cubeisland.engine.command.util.property.PropertyHolder;
 
 /**
  * A PropertyHolder whose properties cannot be changed after being set

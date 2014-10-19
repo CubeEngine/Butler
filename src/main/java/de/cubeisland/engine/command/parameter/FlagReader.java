@@ -23,8 +23,8 @@
 package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.old.ReaderException;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
+import de.cubeisland.engine.command.parameter.reader.ReaderException;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 
 /**

@@ -23,36 +23,39 @@
 package de.cubeisland.engine.command.methodic;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
-import de.cubeisland.engine.command.Alias;
 import de.cubeisland.engine.command.CommandBuilder;
+import de.cubeisland.engine.command.DispatcherCommand;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
+import de.cubeisland.engine.command.SelfDescribing;
 import de.cubeisland.engine.command.UsageProvider;
+import de.cubeisland.engine.command.alias.Alias;
+import de.cubeisland.engine.command.alias.AliasConfiguration;
+import de.cubeisland.engine.command.alias.Aliases;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
-import de.cubeisland.engine.command.DispatcherCommand;
-import de.cubeisland.engine.command.SelfDescribing;
 
 /**
  * A ContainerCommand able to dispatch methodic commands
  */
-public class MethodicCommandContainer<OriginT, SubConmmandOriginT> extends DispatcherCommand implements SelfDescribing
+public class MethodicCommandContainer<OriginT, SubCommandOriginT> extends DispatcherCommand implements SelfDescribing
 {
-    public MethodicCommandContainer(CommandBuilder<BasicMethodicCommand, SubConmmandOriginT> builder, OriginT origin)
+    private CommandBuilder<BasicMethodicCommand, SubCommandOriginT> builder;
+    private OriginT origin;
+
+    public MethodicCommandContainer(CommandBuilder<BasicMethodicCommand, SubCommandOriginT> builder, OriginT origin)
     {
-       this.registerSubCommands(builder, origin);
+        this.builder = builder;
+        this.origin = origin;
     }
 
     /**
      * Finds and registers the SubCommands of this CommandContainer
-     *
-     * @param builder the builder to use
-     * @param origin the origin of this command
      */
-    protected void registerSubCommands(CommandBuilder<BasicMethodicCommand, SubConmmandOriginT> builder, OriginT origin)
+    public void registerSubCommands()
     {
         for (Method method : MethodicBuilder.getMethods(this.getClass()))
         {
@@ -72,25 +75,43 @@ public class MethodicCommandContainer<OriginT, SubConmmandOriginT> extends Dispa
      * @return the Origin for the sub command
      */
     @SuppressWarnings("unchecked")
-    protected SubConmmandOriginT getSubOrigin(Method method, OriginT origin)
+    protected SubCommandOriginT getSubOrigin(Method method, OriginT origin)
     {
-        return (SubConmmandOriginT)new InvokableMethodProperty(method, this);
+        return (SubCommandOriginT)new InvokableMethodProperty(method, this);
     }
 
     @Override
     public ImmutableCommandDescriptor selfDescribe()
     {
-        Command command = this.getClass().getAnnotation(Command.class);
-        if (command == null)
+        Command annotation = this.getClass().getAnnotation(Command.class);
+        if (annotation == null)
         {
             throw new IllegalArgumentException();
         }
 
         ImmutableCommandDescriptor descriptor = new ImmutableCommandDescriptor();
-        descriptor.setProperty(new Name(command.name()));
-        descriptor.setProperty(new Description(command.desc()));
-        descriptor.setProperty(new Alias(new HashSet<>(Arrays.asList(command.alias()))));
+        descriptor.setProperty(new Name(annotation.name()));
+        descriptor.setProperty(new Description(annotation.desc()));
         descriptor.setProperty(new UsageProvider(new ParameterUsageGenerator()));
+
+        List<AliasConfiguration> aliasList = new ArrayList<>();
+        for (String name : annotation.alias())
+        {
+            aliasList.add(new AliasConfiguration(name));
+        }
+        Alias alias = this.getClass().getAnnotation(Alias.class);
+        if (alias != null)
+        {
+            for (String name : alias.names())
+            {
+                AliasConfiguration aliasConf = new AliasConfiguration(name, alias.parents());
+                aliasConf.setPrefix(alias.prefix());
+                aliasConf.setSuffix(alias.suffix());
+                aliasList.add(aliasConf);
+            }
+        }
+        descriptor.setProperty(new Aliases(aliasList));
+
         return descriptor;
     }
 }

@@ -67,6 +67,7 @@ public interface Dispatcher extends CommandBase
     /**
      * Returns the command for given optional parents and alias.
      * This will return null if any parent or alias is not found.
+     * If no alias is given this will return itself.
      *
      * @param alias zero or more parents and one alias
      *

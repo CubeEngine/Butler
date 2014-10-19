@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.cubeisland.engine.command.parameter.Parameter;
-import de.cubeisland.engine.command.property.AbstractProperty;
+import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 /**
  * A group of Parameters inside another parameter

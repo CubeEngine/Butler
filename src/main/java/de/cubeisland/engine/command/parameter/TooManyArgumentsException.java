@@ -20,40 +20,33 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.property;
-
 /**
- * A base implementation for a ParameterProperty
+ * This file is part of CubeEngine.
+ * CubeEngine is licensed under the GNU General Public License Version 3.
+ *
+ * CubeEngine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * CubeEngine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-public abstract class AbstractProperty<ValueT> implements Property<ValueT>
+package de.cubeisland.engine.command.parameter;
+
+import de.cubeisland.engine.command.old.IncorrectUsageException;
+
+public class TooManyArgumentsException extends IncorrectUsageException
 {
-    private final ValueT value;
-
-    protected AbstractProperty(ValueT value)
+    /*
+    public TooManyArgumentsException(CommandSender sender)
     {
-        if (!this.checkValue(value))
-        {
-            throw new IllegalArgumentException(
-                "The value " + value.toString() + " is not allowed for " + this.getClass().getName());
-        }
-        this.value = value;
+        super(sender.getTranslation(MessageType.NEGATIVE, "You've given too many arguments."));  // TODO move message to exception handler
     }
-
-    /**
-     * Checks if given value is allowed
-     *
-     * @param value the value to check
-     *
-     * @throws IllegalArgumentException if the value is not allowed
-     */
-    protected boolean checkValue(ValueT value)
-    {
-        return true;
-    }
-
-    @Override
-    public ValueT value()
-    {
-        return this.value;
-    }
+    */
 }

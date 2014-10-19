@@ -23,7 +23,7 @@
 package de.cubeisland.engine.command.parameter.property;
 
 import de.cubeisland.engine.command.methodic.parametric.Optional;
-import de.cubeisland.engine.command.property.AbstractProperty;
+import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 /**
  * Defines if the Parameter is required or not

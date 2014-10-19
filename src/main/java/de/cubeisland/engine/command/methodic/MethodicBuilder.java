@@ -30,12 +30,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.cubeisland.engine.command.Alias;
 import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
 import de.cubeisland.engine.command.UsageProvider;
+import de.cubeisland.engine.command.alias.Alias;
+import de.cubeisland.engine.command.alias.AliasConfiguration;
+import de.cubeisland.engine.command.alias.Aliases;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
@@ -94,9 +96,27 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         ImmutableCommandDescriptor descriptor = new ImmutableCommandDescriptor();
         descriptor.setProperty(new Name(annotation.name().isEmpty() ? origin.getMethod().getName() : annotation.name()));
         descriptor.setProperty(new Description(annotation.desc()));
-        descriptor.setProperty(new Alias(new HashSet<>(Arrays.asList(annotation.alias()))));
         descriptor.setProperty(new InvokableMethodProperty(origin.getMethod(), origin.getHolder()));
         descriptor.setProperty(new UsageProvider(usageGenerator));
+
+        List<AliasConfiguration> aliasList = new ArrayList<>();
+        for (String name : annotation.alias())
+        {
+            aliasList.add(new AliasConfiguration(name));
+        }
+        Alias alias = origin.getMethod().getAnnotation(Alias.class);
+        if (alias != null)
+        {
+            for (String name : alias.names())
+            {
+                AliasConfiguration aliasConf = new AliasConfiguration(name, alias.parents());
+                aliasConf.setPrefix(alias.prefix());
+                aliasConf.setSuffix(alias.suffix());
+                aliasList.add(aliasConf);
+            }
+        }
+        descriptor.setProperty(new Aliases(aliasList));
+
         return descriptor;
     }
 

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
-import de.cubeisland.engine.command.property.PropertyHolder;
+import de.cubeisland.engine.command.util.property.PropertyHolder;
 
 import static de.cubeisland.engine.command.StringUtils.join;
 

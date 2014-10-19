@@ -39,6 +39,9 @@
  */
 package de.cubeisland.engine.command.old;
 
+import de.cubeisland.engine.command.CommandException;
+
+// TODO is this one still needed?
 public class MissingParameterException extends CommandException
 {
     private String paramName;

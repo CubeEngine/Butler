@@ -20,54 +20,62 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.alias;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
-import de.cubeisland.engine.command.alias.AliasConfiguration;
-import de.cubeisland.engine.command.alias.Aliases;
-import de.cubeisland.engine.command.parameter.property.Description;
+import de.cubeisland.engine.command.CommandDescriptor;
+import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.DispatcherProperty;
+import de.cubeisland.engine.command.UsageProvider;
+import de.cubeisland.engine.command.util.property.Property;
 
-/**
- * A simple Implementation of the {@link de.cubeisland.engine.command.CommandDescriptor}
- */
-public class ImmutableCommandDescriptor extends ImmutablePropertyHolder implements CommandDescriptor
+public class AliasDescriptor implements CommandDescriptor
 {
-    public ImmutableCommandDescriptor()
+    private final String name;
+    private final CommandDescriptor descriptor;
+    private final DispatcherProperty dispatcher;
+
+    public AliasDescriptor(String name, CommandDescriptor descriptor)
     {
-        this.setProperty(new DispatcherProperty());
+        this.name = name;
+        this.descriptor = descriptor;
+        this.dispatcher = new DispatcherProperty();
     }
 
     @Override
     public String getName()
     {
-        return valueFor(Name.class);
+        return this.name;
     }
 
     @Override
     public Set<String> getAliases()
     {
-        Set<String> aliases = new HashSet<>();
-        for (AliasConfiguration alias : valueFor(Aliases.class))
-        {
-            if (alias.getDispatcher() == null)
-            {
-                aliases.add(alias.getName());
-            }
-        }
-        return aliases;
-    }
-
-    @Override
-    public String getDescription()
-    {
-        return valueFor(Description.class);
+        return Collections.emptySet();
     }
 
     @Override
     public String getUsage(CommandSource source)
     {
         return this.valueFor(UsageProvider.class).generateUsage(source, this);
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return this.descriptor.getDescription();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <ValueT> ValueT valueFor(Class<? extends Property<ValueT>> clazz)
+    {
+        if (DispatcherProperty.class.equals(clazz))
+        {
+            return (ValueT)this.dispatcher;
+        }
+        return this.descriptor.valueFor(clazz);
     }
 }

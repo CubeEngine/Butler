@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.old.ReaderException;
 
 /**
  * Reads a list of Arguments

@@ -34,7 +34,7 @@ public interface CommandBase extends CommandCompleter
      *
      * @return whether the command ran or not
      */
-    boolean run(CommandInvocation invocation);
+    boolean execute(CommandInvocation invocation);
 
     /**
      * Returns the Descriptor of this command

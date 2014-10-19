@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.util.property.Property;
 
 /**
  * Holds the dispatcher for a command

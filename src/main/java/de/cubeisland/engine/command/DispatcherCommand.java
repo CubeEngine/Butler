@@ -31,6 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.cubeisland.engine.command.alias.AliasCommand;
+import de.cubeisland.engine.command.alias.AliasConfiguration;
+import de.cubeisland.engine.command.alias.Aliases;
+import de.cubeisland.engine.command.methodic.MethodicCommandContainer;
+
 /**
  * A Command that can dispatch sub-commands
  */
@@ -69,7 +74,7 @@ public class DispatcherCommand implements Dispatcher
         {
             return this;
         }
-        return dispatcher;
+        return dispatcher.getBaseDispatcher();
     }
 
     @Override
@@ -95,16 +100,33 @@ public class DispatcherCommand implements Dispatcher
         {
             // TODO replacement Policy
             // for now always replace
+            // TODO replacement Policy if command instanceOf AliasCommand
         }
-        for (String alias : descriptor.getAliases())
+        if (!(command instanceof AliasCommand))
         {
-            replaced = this.commands.put(alias.toLowerCase(), command);
-            if (replaced != null)
+            for (AliasConfiguration alias : descriptor.valueFor(Aliases.class))
             {
-                // TODO replacement Policy
-                // for now always replace
+                if (alias.getDispatcher() == null)
+                {
+                    this.addCommand(new AliasCommand(alias, command));
+                }
+                else
+                {
+                    CommandBase aliasDispatcher = this.getBaseDispatcher().getCommand(alias.getDispatcher());
+                    if (aliasDispatcher == null || !(aliasDispatcher instanceof Dispatcher))
+                    {
+                        throw new IllegalArgumentException("Cannot add alias to dispatcher! Command missing or is not a dispatcher.");
+                    }
+                    ((Dispatcher)aliasDispatcher).addCommand(new AliasCommand(alias, command));
+                }
             }
         }
+
+        if (command instanceof MethodicCommandContainer)
+        {
+            ((MethodicCommandContainer)command).registerSubCommands();
+        }
+
         return true;
     }
 
@@ -144,32 +166,104 @@ public class DispatcherCommand implements Dispatcher
             }
             if (cmd instanceof Dispatcher)
             {
-                ((Dispatcher)cmd).getCommand(Arrays.copyOfRange(alias, 1, alias.length - 1));
+                return ((Dispatcher)cmd).getCommand(Arrays.copyOfRange(alias, 1, alias.length));
             }
+        }
+        else
+        {
+            return this;
         }
         return null;
     }
 
     @Override
-    public boolean run(CommandInvocation invocation)
+    public final boolean execute(CommandInvocation invocation)
     {
-        // TODO CommandException handling via property
-
-        if (!invocation.tokens().isEmpty())
+        try
         {
-            CommandBase command = this.getCommand(invocation.currentToken());
-            if (command != null)
+            // TODO check if allowed to run cmd / permission and type
+            this.checkInvocation(invocation);
+
+            if (!invocation.isConsumed())
             {
-                // TODO check if allowed to run cmd
-                return command.run(invocation.subInvocation());
+                CommandBase command = this.getCommand(invocation.currentToken());
+                if (command != null)
+                {
+                    return command.execute(invocation.subInvocation());
+                }
             }
+            return this.selfExecute(invocation);
         }
-        return this.handleNotFound(invocation);
+        catch (Exception e)
+        {
+            this.handleException(e, invocation);
+            return true;
+        }
     }
 
-    protected boolean handleNotFound(CommandInvocation invocation)
+    /**
+     * Checks if given invocation is allowed to be executed
+     *
+     * @param invocation the invocation
+     */
+    protected void checkInvocation(CommandInvocation invocation)
+    {
+        // TODO check if allowed to run
+        /*
+
+        public void checkContext(CommandContext ctx) throws CommandException
+        {
+            if (ctx.getCommand().isCheckperm() && !ctx.getCommand().isAuthorized(ctx.getSource()))
+            {
+                throw new PermissionDeniedException(ctx.getCommand().getPermission());
+            }
+            super.checkContext(ctx); // After general perm check -> check bounds etc.
+            CtxDescriptor descriptor = ctx.getCommand().getContextFactory().descriptor();
+            // TODO also check perm for indexed Parameters
+            for (NamedParameter named : descriptor.getNamedGroups().listAll())
+            {
+                if (named instanceof PermissibleNamedParameter && ctx.hasNamed(named.getName()) &&
+                    !((PermissibleNamedParameter)named).checkPermission(ctx.getSource()))
+                {
+                    throw new PermissionDeniedException(((PermissibleNamedParameter)named).getPermission());
+                }
+            }
+
+            for (FlagParameter flag : descriptor.getFlags())
+            {
+                if (flag instanceof PermissibleFlag && ctx.hasFlag(flag.getName())
+                    && !((PermissibleFlag)flag).checkPermission(ctx.getSource()))
+                {
+                    throw new PermissionDeniedException(((PermissibleFlag)flag).getPermission());
+                }
+            }
+        }
+
+         */
+    }
+
+    /**
+     * Is called whenever an exception occurred while invoking this command
+     * @param e the exception
+     * @param invocation the invocation
+     */
+    protected void handleException(Exception e, CommandInvocation invocation)
+    {
+        e.printStackTrace();
+        // command is this hiw convenient
+        // TODO CommandException handling via property
+    }
+
+    /**
+     * Is called after no command could be found to dispatch
+     *
+     * @param invocation the invocation
+     * @return whether the command ran successfully
+     */
+    protected boolean selfExecute(CommandInvocation invocation)
     {
         // TODO override in CE to get Help subcmd when empty args OR cmd not found to show possible sub-cmds (did you mean... ?) OR delegation
+        // TODO delegation here
         return false;
     }
 

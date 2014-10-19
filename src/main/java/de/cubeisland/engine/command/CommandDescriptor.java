@@ -24,7 +24,7 @@ package de.cubeisland.engine.command;
 
 import java.util.Set;
 
-import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.util.property.Property;
 
 /**
  * Provides general information about a command
@@ -39,7 +39,7 @@ public interface CommandDescriptor
     String getName();
 
     /**
-     * Returns the aliases of the command
+     * Returns the aliases of the command under the same dispatcher
      *
      * @return the aliases
      */
@@ -48,8 +48,7 @@ public interface CommandDescriptor
     /**
      * Gets the usage of the command
      *
-     * @param source the source to get the usage for
-     *
+     * @param source  the source to get the usage for
      * @return the usage string
      */
     String getUsage(CommandSource source);

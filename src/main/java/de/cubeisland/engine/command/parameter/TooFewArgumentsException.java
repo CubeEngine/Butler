@@ -37,14 +37,16 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old;
+package de.cubeisland.engine.command.parameter;
 
-public class TooManyArgumentsException extends IncorrectUsageException
+import de.cubeisland.engine.command.old.IncorrectUsageException;
+
+public class TooFewArgumentsException extends IncorrectUsageException
 {
     /*
-    public TooManyArgumentsException(CommandSender sender)
+    public TooFewArgumentsException(CommandSender sender)
     {
-        super(sender.getTranslation(MessageType.NEGATIVE, "You've given too many arguments."));  // TODO move message to exception handler
+        super(sender.getTranslation(MessageType.NEGATIVE, "You've given too few arguments.")); // TODO move message to exception handler
     }
     */
 }

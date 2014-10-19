@@ -37,19 +37,24 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old;
+package de.cubeisland.engine.command.alias;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import de.cubeisland.engine.command.CommandSource;
-
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Restricted
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface Alias
 {
-    Class<? extends CommandSource>[] value();
-    String msg() default "";
+    String[] names();
+
+    String prefix() default "";
+
+    String suffix() default "";
+
+    String[] parents() default {};
 }

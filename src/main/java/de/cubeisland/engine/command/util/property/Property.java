@@ -20,21 +20,19 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
-
-import java.util.Set;
-
-import de.cubeisland.engine.command.property.AbstractProperty;
-
-import static java.util.Collections.unmodifiableSet;
+package de.cubeisland.engine.command.util.property;
 
 /**
- * A set of aliases
+ * A Property
+ *
+ * @param <ValueT> the type of the Property
  */
-public class Alias extends AbstractProperty<Set<String>>
+public interface Property<ValueT>
 {
-    public Alias(Set<String> value)
-    {
-        super(unmodifiableSet(value));
-    }
+    /**
+     * Returns the value of the property
+     *
+     * @return the value
+     */
+    ValueT value();
 }

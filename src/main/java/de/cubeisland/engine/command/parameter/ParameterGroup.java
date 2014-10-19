@@ -32,7 +32,7 @@ import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.group.FlagGroup;
 import de.cubeisland.engine.command.parameter.property.group.NonPositionalGroup;
 import de.cubeisland.engine.command.parameter.property.group.PositionalGroup;
-import de.cubeisland.engine.command.property.Property;
+import de.cubeisland.engine.command.util.property.Property;
 
 import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
 
@@ -68,9 +68,9 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
         {
             if (call.currentToken().isEmpty())
             {
-                if (call.consumed() == call.tokens().size() - 1) // ignore empty args except last
+                call.consume(1); // ignore empty args
+                if (call.consumed() == call.tokens().size()) // except last
                 {
-                    call.consume(1);
                     params.add(ParsedParameter.empty());
                 }
             }
@@ -79,7 +79,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 if (!this.parseMatching(call, flags, false) && !this.parseMatching(call, nonPositional, false)
                     && !this.parseMatching(call, positional, true))
                 {
-                    throw new IllegalArgumentException(); // TODO CmdException cannot parse input!!! too many arguments
+                    throw new TooManyArgumentsException();
                 }
 
             }
@@ -103,6 +103,14 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
         {
             // TODO create groupObject from toGroup and add to params
             // FieldHolder.class Property
+        }
+
+        for (Parameter parameter : positional)
+        {
+            if (parameter.valueFor(Required.class) && parameter.valueFor(Greed.class) != INFINITE_GREED) // TODO infinite greed better
+            {
+                throw new TooFewArgumentsException();
+            }
         }
 
         return true;
@@ -134,7 +142,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 break;
             }
         }
-        if (toRemove != null && toRemove.valueFor(Greed.class) != INFINITE_GREED) // TODO handle greedy param better
+        if (parsed && !Greed.isInfinite(toRemove.valueFor(Greed.class))) // TODO handle greedy param better
         {
             searchList.remove(toRemove); // No reuse
         }

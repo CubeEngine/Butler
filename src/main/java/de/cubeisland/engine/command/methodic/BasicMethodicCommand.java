@@ -41,9 +41,9 @@ public class BasicMethodicCommand extends DispatcherCommand
     }
 
     @Override
-    public boolean run(CommandInvocation invocation)
+    public boolean selfExecute(CommandInvocation invocation)
     {
-        boolean ran = super.run(invocation);
+        boolean ran = super.selfExecute(invocation);
         if (!ran)
         {
             invocation.setProperty(new ParsedParameters());
@@ -69,38 +69,6 @@ public class BasicMethodicCommand extends DispatcherCommand
      */
     protected boolean run(BaseCommandContext commandContext)
     {
-        // TODO check if allowed to run
-        /*
-
-    public void checkContext(CommandContext ctx) throws CommandException
-    {
-        if (ctx.getCommand().isCheckperm() && !ctx.getCommand().isAuthorized(ctx.getSource()))
-        {
-            throw new PermissionDeniedException(ctx.getCommand().getPermission());
-        }
-        super.checkContext(ctx); // After general perm check -> check bounds etc.
-        CtxDescriptor descriptor = ctx.getCommand().getContextFactory().descriptor();
-        // TODO also check perm for indexed Parameters
-        for (NamedParameter named : descriptor.getNamedGroups().listAll())
-        {
-            if (named instanceof PermissibleNamedParameter && ctx.hasNamed(named.getName()) &&
-                !((PermissibleNamedParameter)named).checkPermission(ctx.getSource()))
-            {
-                throw new PermissionDeniedException(((PermissibleNamedParameter)named).getPermission());
-            }
-        }
-
-        for (FlagParameter flag : descriptor.getFlags())
-        {
-            if (flag instanceof PermissibleFlag && ctx.hasFlag(flag.getName())
-                && !((PermissibleFlag)flag).checkPermission(ctx.getSource()))
-            {
-                throw new PermissionDeniedException(((PermissibleFlag)flag).getPermission());
-            }
-        }
-    }
-
-         */
         try
         {
             Object result = this.getDescriptor().valueFor(InvokableMethodProperty.class).invoke(commandContext);
@@ -126,7 +94,7 @@ public class BasicMethodicCommand extends DispatcherCommand
 
     protected BaseCommandContext buildContext(CommandInvocation call)
     {
-        // TODO check with method which context is allowed
+        // TODO check with method which context is allowed / possible
         return new ParameterizedContext(call);
     }
 }
