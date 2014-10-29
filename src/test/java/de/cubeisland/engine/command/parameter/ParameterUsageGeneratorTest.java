@@ -22,28 +22,26 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
-import de.cubeisland.engine.command.methodic.Command;
-import de.cubeisland.engine.command.methodic.InvokableMethod;
-import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
-import de.cubeisland.engine.command.methodic.MethodicBuilder;
+import de.cubeisland.engine.command.methodic.*;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.parametric.Index;
 import de.cubeisland.engine.command.methodic.parametric.Label;
 import de.cubeisland.engine.command.methodic.parametric.Optional;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
-import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ParameterUsageGeneratorTest extends TestCase
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
+public class ParameterUsageGeneratorTest
 {
     private List<BasicMethodicCommand> commands = new ArrayList<>();
 
-    @Override
+    @Before
     public void setUp() throws Exception
     {
         ParametricBuilder<InvokableMethod> builder = new ParametricBuilder<>();
@@ -68,9 +66,11 @@ public class ParameterUsageGeneratorTest extends TestCase
 
     @Command(desc = "cmd1 <aString>")
     public void cmd1(BaseCommandContext ctx, @Index @Label("aString") String aString)
-    {}
+    {
+    }
 
     @Command(desc = "cmd2 [aString]")
     public void cmd2(BaseCommandContext ctx, @Index @Label("aString") @Optional String aString)
-    {}
+    {
+    }
 }

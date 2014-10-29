@@ -22,13 +22,7 @@
  */
 package de.cubeisland.engine.command.methodic;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
-
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
@@ -36,19 +30,23 @@ import de.cubeisland.engine.command.methodic.parametric.Greed;
 import de.cubeisland.engine.command.methodic.parametric.Index;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
-import de.cubeisland.engine.command.CommandInvocation;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class MethodicCommandTest extends TestCase
+public class MethodicCommandTest
 {
     private ReaderManager readerManager;
-
     private List<BasicMethodicCommand> commands = new ArrayList<>();
-    private List<String> commandLines = new ArrayList<>();
-
-
     private CommandSource source = new CommandSource()
     {
         @Override
@@ -70,14 +68,14 @@ public class MethodicCommandTest extends TestCase
         }
     };
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Before
     public void setUp() throws Exception
     {
         readerManager = new ReaderManager();
         readerManager.registerDefaultReader();
         CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new MethodicBuilder(),
-                                                                                       new ParametricBuilder());
+                new ParametricBuilder());
         for (Method method : MethodicBuilder.getMethods(this.getClass()))
         {
             BasicMethodicCommand cmd = builder.buildCommand(new InvokableMethodProperty(method, this));
@@ -87,24 +85,18 @@ public class MethodicCommandTest extends TestCase
             }
         }
 
-        this.commandLines.add("I get matched as one String by this greedy parameter");
-        this.commandLines.add("First Second Second too");
-
-        this.commandLines.add("Also a long String that gets matched completely");
-        this.commandLines.add("Value1 Value2");
     }
 
-
+    @Test
     public void testCmd() throws Exception
     {
-        Iterator<String> iterator = commandLines.iterator();
         for (BasicMethodicCommand command : commands)
         {
-            assertTrue(command.execute(new CommandInvocation(source, iterator.next(), readerManager)));
+            assertTrue(command.execute(new CommandInvocation(source, command.getDescriptor().getDescription(), readerManager)));
         }
     }
 
-    @Command(desc = "TestCommand 1")
+    @Command(desc = "I get matched as one String by this greedy parameter")
     @Params(positional = @Param(greed = INFINITE_GREED))
     public boolean methodic1(ParameterizedContext ctx)
     {
@@ -112,9 +104,9 @@ public class MethodicCommandTest extends TestCase
         return true;
     }
 
-    @Command(desc = "TestCommand 2")
+    @Command(desc = "First Second Second too")
     @Params(positional = {
-        @Param(), @Param(greed = INFINITE_GREED)
+            @Param(), @Param(greed = INFINITE_GREED)
     })
     public boolean methodic2(ParameterizedContext ctx)
     {
@@ -123,15 +115,14 @@ public class MethodicCommandTest extends TestCase
         return true;
     }
 
-
-    @Command(desc = "A Simple TestCommand")
+    @Command(desc = "Also a long String that gets matched completely")
     public boolean parametric1(BaseCommandContext ctx, @Index @Greed(INFINITE_GREED) String aString)
     {
         assertEquals(aString, ctx.getInvocation().getCommandLine());
         return true;
     }
 
-    @Command(desc = "A Simple TestCommand")
+    @Command(desc = "Value1 Value2")
     public boolean parametric2(BaseCommandContext ctx, @Index TestEnum aEnum, @Index TestEnum aEnum2)
     {
         assertEquals(aEnum, TestEnum.VALUE1);
