@@ -27,7 +27,6 @@ import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.methodic.parametric.Greed;
-import de.cubeisland.engine.command.methodic.parametric.Index;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 import org.junit.Before;
@@ -116,14 +115,14 @@ public class MethodicCommandTest
     }
 
     @Command(desc = "Also a long String that gets matched completely")
-    public boolean parametric1(BaseCommandContext ctx, @Index @Greed(INFINITE_GREED) String aString)
+    public boolean parametric1(BaseCommandContext ctx, @Greed(INFINITE_GREED) String aString)
     {
         assertEquals(aString, ctx.getInvocation().getCommandLine());
         return true;
     }
 
     @Command(desc = "Value1 Value2")
-    public boolean parametric2(BaseCommandContext ctx, @Index TestEnum aEnum, @Index TestEnum aEnum2)
+    public boolean parametric2(BaseCommandContext ctx, TestEnum aEnum, TestEnum aEnum2)
     {
         assertEquals(aEnum, TestEnum.VALUE1);
         assertEquals(aEnum2, TestEnum.VALUE2);

@@ -24,7 +24,6 @@ package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.methodic.*;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
-import de.cubeisland.engine.command.methodic.parametric.Index;
 import de.cubeisland.engine.command.methodic.parametric.Label;
 import de.cubeisland.engine.command.methodic.parametric.Optional;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
@@ -65,12 +64,12 @@ public class ParameterUsageGeneratorTest
     }
 
     @Command(desc = "cmd1 <aString>")
-    public void cmd1(BaseCommandContext ctx, @Index @Label("aString") String aString)
+    public void cmd1(BaseCommandContext ctx, @Label("aString") String aString)
     {
     }
 
     @Command(desc = "cmd2 [aString]")
-    public void cmd2(BaseCommandContext ctx, @Index @Label("aString") @Optional String aString)
+    public void cmd2(BaseCommandContext ctx, @Label("aString") @Optional String aString)
     {
     }
 }

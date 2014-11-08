@@ -26,7 +26,6 @@ import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.methodic.parametric.Greed;
-import de.cubeisland.engine.command.methodic.parametric.Index;
 
 import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
 
@@ -46,7 +45,7 @@ public class TestContainerCommand extends MethodicCommandContainer<Void, Invokab
     }
 
     @Command(desc = "a parametric command")
-    public boolean parametric(BaseCommandContext ctx, @Index @Greed(INFINITE_GREED)String aString)
+    public boolean parametric(BaseCommandContext ctx, @Greed(INFINITE_GREED)String aString)
     {
         return aString.equals(ctx.getInvocation().getCommandLine());
     }

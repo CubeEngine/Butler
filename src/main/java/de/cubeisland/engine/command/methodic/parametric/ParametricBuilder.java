@@ -37,7 +37,9 @@ import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
+import de.cubeisland.engine.command.methodic.Param;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
@@ -134,29 +136,29 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
             param.setProperty(new MethodIndex(i));
             for (Annotation annotation : annotations) // Find type of Annotation to assign to correct list
             {
-                if (annotation instanceof Flag) // TODO instead create "FlagParameter" ??
+                if (annotation instanceof Flag)
                 {
                     flagsList.add(param);
                     param = null;
                     break;
                 }
-                else if (annotation instanceof Index)
+                else if (annotation instanceof Names)
                 {
-                    param.setProperty(new FixedPosition(posList.size()));
-                    posList.add(param);
+                    nPosList.add(param);
                     param = null;
                     break;
                 }
             }
-            if (param != null) // if not Flag or Positional its a non-Positional
+            if (param != null)
             {
-                nPosList.add(param);
+                param.setProperty(new FixedPosition(posList.size()));
+                posList.add(param);
             }
         }
         return new ParameterGroup(flagsList, nPosList, posList);
     }
 
-    protected SimpleParameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations,
+    protected Parameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations,
                                               OriginT origin)
     {
         // TODO what about flags?
@@ -172,8 +174,13 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         List<Property> properties = new ArrayList<>();
         Class<?> reader = clazz;
         int greed = 1;
+        Flag flag = null;
         for (Annotation annotation : annotations)
         {
+            if (annotation instanceof Flag)
+            {
+                flag = (Flag)annotation;
+            }
             Property property = this.propertyOf(annotation);
             if (property != null)
             {
@@ -195,7 +202,16 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         {
             reader = Enum.class;
         }
-        SimpleParameter parameter = new SimpleParameter(clazz, reader);
+        Parameter parameter;
+        if (flag == null)
+        {
+            parameter = new SimpleParameter(clazz, reader);
+        }
+        else
+        {
+            parameter = new FlagParameter(flag.name(), flag.longName());
+        }
+
         parameter.setProperties(properties.toArray(new Property[properties.size()]));
         if (parameter.valueFor(Required.class) == null)
         {

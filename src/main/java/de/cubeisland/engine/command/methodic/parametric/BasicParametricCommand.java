@@ -23,16 +23,28 @@
 package de.cubeisland.engine.command.methodic.parametric;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.parameter.FlagParameter;
+import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.parameter.property.group.FlagGroup;
+import de.cubeisland.engine.command.parameter.property.group.NonPositionalGroup;
+import de.cubeisland.engine.command.parameter.property.group.PositionalGroup;
 
 public class BasicParametricCommand extends BasicMethodicCommand
 {
@@ -49,12 +61,40 @@ public class BasicParametricCommand extends BasicMethodicCommand
             InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethodProperty.class);
             Object[] args = new Object[invokableMethod.getMethod().getParameterTypes().length];
             args[0] = commandContext;
-            for (ParsedParameter parameter : commandContext.getInvocation().valueFor(ParsedParameters.class))
+
+            ParameterGroup params = this.getDescriptor().valueFor(ParameterGroup.class);
+            List<Parameter> parameters = params.valueFor(FlagGroup.class);
+            parameters.addAll(params.valueFor(NonPositionalGroup.class));
+            parameters.addAll(params.valueFor(PositionalGroup.class));
+            Collections.sort(parameters, MethodIndex.COMPARATOR);
+
+            List<ParsedParameter> parsedParams = new ArrayList<>(commandContext.getInvocation().valueFor(ParsedParameters.class));
+            for (Parameter parameter : parameters)
             {
-                Integer methodIndex = parameter.getParameter().valueFor(MethodIndex.class);
-                if (methodIndex != null)
+                Integer index = parameter.valueFor(MethodIndex.class);
+                ParsedParameter match = null;
+                for (ParsedParameter parsedParam : parsedParams)
                 {
-                    args[methodIndex] = parameter.getParsedValue();
+                    if (parsedParam.getParameter() == parameter)
+                    {
+                        match = parsedParam;
+                    }
+                }
+                if (match != null)
+                {
+                    parsedParams.remove(match);
+                    args[index] = match.getParsedValue();
+                }
+                else
+                {
+                    if (parameter instanceof FlagParameter)
+                    {
+                        args[index] = false;
+                    }
+                    else
+                    {
+                        args[index] = null;
+                    }
                 }
             }
 

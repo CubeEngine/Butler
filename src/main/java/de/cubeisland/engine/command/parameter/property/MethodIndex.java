@@ -22,10 +22,28 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
+import java.util.Comparator;
+
+import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 public class MethodIndex extends AbstractProperty<Integer>
 {
+    /**
+     * A Comparator for Parameter with MethodIndex.
+     * This Comparator will throw NullPointerException when used with parameters having no MethodIndex
+     */
+    public static final Comparator<Parameter> COMPARATOR = new Comparator<Parameter>()
+    {
+        @Override
+        public int compare(Parameter o1, Parameter o2)
+        {
+            Integer i1 = o1.valueFor(MethodIndex.class);
+            Integer i2 = o2.valueFor(MethodIndex.class);
+            return i1.compareTo(i2); // Null is not allowed where this comparator is used
+        }
+    };
+
     public MethodIndex(Integer value)
     {
         super(value);

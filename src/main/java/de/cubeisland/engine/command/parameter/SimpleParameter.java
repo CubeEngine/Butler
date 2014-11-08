@@ -84,7 +84,7 @@ public class SimpleParameter extends Parameter
             {
                 if (name.equals(lcToken))
                 {
-                    if (greed == 0 || remainingTokens > 1 && (remainingTokens >= greed))
+                    if (greed == 0 || remainingTokens >= 1 && (remainingTokens >= greed))
                     {
                         return true;
                     }

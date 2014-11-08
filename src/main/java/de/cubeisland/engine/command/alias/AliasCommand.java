@@ -30,22 +30,22 @@ import de.cubeisland.engine.command.CommandInvocation;
 
 public class AliasCommand implements CommandBase
 {
-    private AliasConfiguration name;
-    private final CommandBase base;
+    private AliasConfiguration config;
+    private final CommandBase target;
     private CommandDescriptor descriptor;
 
-    public AliasCommand(AliasConfiguration config, CommandBase origin)
+    public AliasCommand(AliasConfiguration config, CommandBase target)
     {
-        this.name = config;
-        this.base = origin;
-        this.descriptor = new AliasDescriptor(config.getName(), origin.getDescriptor());
+        this.config = config;
+        this.target = target;
+        this.descriptor = new AliasDescriptor(config.getName(), target.getDescriptor());
     }
 
     @Override
     public boolean execute(CommandInvocation invocation)
     {
         // TODO prefix & suffix
-        return base.execute(invocation);
+        return target.execute(invocation);
     }
 
     @Override
@@ -57,6 +57,11 @@ public class AliasCommand implements CommandBase
     @Override
     public List<String> getSuggestions(CommandInvocation invocation)
     {
-        return base.getSuggestions(invocation);
+        return target.getSuggestions(invocation);
+    }
+
+    public CommandBase getTarget()
+    {
+        return target;
     }
 }
