@@ -26,12 +26,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandDescriptor;
+import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.DispatcherCommand;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
-import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.DispatcherCommand;
 
 public class BasicMethodicCommand extends DispatcherCommand
 {

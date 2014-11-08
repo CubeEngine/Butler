@@ -22,6 +22,12 @@
  */
 package de.cubeisland.engine.command.methodic;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
@@ -31,12 +37,6 @@ import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
 import static org.junit.Assert.assertEquals;

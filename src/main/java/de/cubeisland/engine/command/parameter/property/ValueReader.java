@@ -22,8 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.util.property.AbstractProperty;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
+import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 public class ValueReader extends AbstractProperty<ArgumentReader>
 {

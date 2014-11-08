@@ -22,17 +22,21 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.methodic.*;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
+import de.cubeisland.engine.command.methodic.Command;
+import de.cubeisland.engine.command.methodic.InvokableMethod;
+import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
+import de.cubeisland.engine.command.methodic.MethodicBuilder;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.parametric.Label;
 import de.cubeisland.engine.command.methodic.parametric.Optional;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 

@@ -23,10 +23,10 @@
 package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.util.property.PropertyHolder;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
+import de.cubeisland.engine.command.util.property.PropertyHolder;
 
 /**
  * The Base for Parameters with a Set of ParameterProperties

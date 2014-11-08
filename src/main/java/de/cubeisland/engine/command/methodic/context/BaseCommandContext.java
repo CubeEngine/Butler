@@ -24,8 +24,8 @@ package de.cubeisland.engine.command.methodic.context;
 
 import java.util.List;
 
-import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.CommandSource;
 
 /**
  * A CommandContext for an Invocation of a MethodicCommand

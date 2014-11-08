@@ -37,7 +37,6 @@ import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
-import de.cubeisland.engine.command.methodic.Param;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;

@@ -39,8 +39,6 @@
  */
 package de.cubeisland.engine.command.methodic;
 
-import java.lang.Void;
-
 import de.cubeisland.engine.command.completer.Completer;
 
 /**
