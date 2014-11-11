@@ -34,6 +34,7 @@ import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
+import de.cubeisland.engine.command.Restricted;
 import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.alias.Alias;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
@@ -117,6 +118,11 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         }
         descriptor.setProperty(new Aliases(aliasList));
 
+        Restricted restricted = origin.getMethod().getAnnotation(Restricted.class);
+        if (restricted != null)
+        {
+            descriptor.setProperty(new Resctriction(restricted));
+        }
         return descriptor;
     }
 

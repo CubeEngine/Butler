@@ -27,7 +27,10 @@ import java.util.List;
 
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.DispatcherCommand;
+import de.cubeisland.engine.command.Restricted;
+import de.cubeisland.engine.command.RestrictedSourceException;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
@@ -46,6 +49,22 @@ public class BasicMethodicCommand extends DispatcherCommand
         boolean ran = super.selfExecute(invocation);
         if (!ran)
         {
+            Restricted restricted = this.getDescriptor().valueFor(Resctriction.class);
+            if (restricted != null)
+            {
+                boolean restrict = true;
+                for (Class<? extends CommandSource> clazz : restricted.value())
+                {
+                    if (clazz.isAssignableFrom(invocation.getCommandSource().getClass()))
+                    {
+                        restrict = false;
+                    }
+                }
+                if (restrict)
+                {
+                    throw new RestrictedSourceException(null); // TODO msg & clazz
+                }
+            }
             invocation.setProperty(new ParsedParameters());
             this.getDescriptor().valueFor(ParameterGroup.class).parseParameter(invocation);
             ran = this.run(this.buildContext(invocation));
@@ -87,7 +106,7 @@ public class BasicMethodicCommand extends DispatcherCommand
         }
         catch (IllegalAccessException | InvocationTargetException e)
         {
-            throw new IllegalArgumentException(e); // TODO
+            this.handleException(e, commandContext.getInvocation());
         }
         return false;
     }

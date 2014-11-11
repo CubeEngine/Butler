@@ -60,7 +60,7 @@ public class BasicParametricCommand extends BasicMethodicCommand
             args[0] = commandContext;
 
             ParameterGroup params = this.getDescriptor().valueFor(ParameterGroup.class);
-            List<Parameter> parameters = params.valueFor(FlagGroup.class);
+            List<Parameter> parameters = new ArrayList<>(params.valueFor(FlagGroup.class));
             parameters.addAll(params.valueFor(NonPositionalGroup.class));
             parameters.addAll(params.valueFor(PositionalGroup.class));
             Collections.sort(parameters, MethodIndex.COMPARATOR);
@@ -111,7 +111,7 @@ public class BasicParametricCommand extends BasicMethodicCommand
         }
         catch (IllegalAccessException | InvocationTargetException e)
         {
-            throw new IllegalArgumentException(e); // TODO
+            this.handleException(e, commandContext.getInvocation());
         }
         return false;
     }

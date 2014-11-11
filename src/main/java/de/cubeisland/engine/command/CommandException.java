@@ -45,10 +45,15 @@ package de.cubeisland.engine.command;
  */
 public class CommandException extends RuntimeException
 {
-    public CommandException()
+    private String[] args;
+
+    public CommandException(String message, String... args)
     {
-        super();
+        super(message);
+        this.args = args;
     }
+
+    public CommandException(){}
 
     public CommandException(String message)
     {
@@ -63,5 +68,10 @@ public class CommandException extends RuntimeException
     public CommandException(String message, Throwable cause)
     {
         super(message, cause);
+    }
+
+    public String[] getArgs()
+    {
+        return args;
     }
 }

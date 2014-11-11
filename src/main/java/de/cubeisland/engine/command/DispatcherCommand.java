@@ -22,6 +22,7 @@
  */
 package de.cubeisland.engine.command;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -247,8 +248,12 @@ public class DispatcherCommand implements Dispatcher
      * @param e the exception
      * @param invocation the invocation
      */
-    protected void handleException(Exception e, CommandInvocation invocation)
+    protected void handleException(Throwable e, CommandInvocation invocation)
     {
+        if (e instanceof InvocationTargetException)
+        {
+            e = e.getCause();
+        }
         e.printStackTrace();
         // command is this hiw convenient
         // TODO CommandException handling via property

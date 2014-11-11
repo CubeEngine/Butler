@@ -43,8 +43,8 @@ import de.cubeisland.engine.command.CommandException;
 
 public class ReaderException extends CommandException
 {
-    public ReaderException(String message)
+    public ReaderException(String message, String... args)
     {
-        super(message);
+        super(message, args);
     }
 }
