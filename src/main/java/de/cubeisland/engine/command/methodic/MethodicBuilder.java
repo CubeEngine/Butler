@@ -34,11 +34,14 @@ import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
-import de.cubeisland.engine.command.Restricted;
+import de.cubeisland.engine.command.filter.CommandFilter;
+import de.cubeisland.engine.command.filter.CommandFilters;
+import de.cubeisland.engine.command.filter.Restricted;
 import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.alias.Alias;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
 import de.cubeisland.engine.command.alias.Aliases;
+import de.cubeisland.engine.command.filter.SourceFilter;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
@@ -118,10 +121,13 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         }
         descriptor.setProperty(new Aliases(aliasList));
 
+        CommandFilters filters = new CommandFilters();
+        descriptor.setProperty(filters);
+
         Restricted restricted = origin.getMethod().getAnnotation(Restricted.class);
         if (restricted != null)
         {
-            descriptor.setProperty(new Resctriction(restricted));
+            filters.addFilter(new SourceFilter(restricted.value(), restricted.msg()));
         }
         return descriptor;
     }

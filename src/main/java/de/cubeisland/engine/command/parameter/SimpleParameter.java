@@ -43,22 +43,22 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected boolean parse(CommandInvocation call)
+    protected void parse(CommandInvocation invocation)
     {
-        List<ParsedParameter> result = call.valueFor(ParsedParameters.class);
+        List<ParsedParameter> result = invocation.valueFor(ParsedParameters.class);
         String[] names = this.valueFor(FixedValues.class);
         if (names != null)
         {
-            String name = call.currentToken().toLowerCase(); // previously matched in accepts(..)
+            String name = invocation.currentToken().toLowerCase(); // previously matched in accepts(..)
             if (this.valueFor(Greed.class) == 0)
             {
-                result.add(ParsedParameter.of(this, call.getManager().read(this, call), name));
-                return true;
+                result.add(ParsedParameter.of(this, invocation.getManager().read(this, invocation), name));
+                return;
             }
-            call.consume(1); // else consume name
+            invocation.consume(1); // else consume name
             // TODO somehow include the name ?
         }
-        ParsedParameter pParam = this.parseValue(call); // TODO handle greedy params better
+        ParsedParameter pParam = this.parseValue(invocation); // TODO handle greedy params better
         if (!result.isEmpty() && result.get(result.size() - 1).getParameter().equals(pParam.getParameter()))
         {
             ParsedParameter last = result.remove(result.size() - 1);
@@ -66,20 +66,20 @@ public class SimpleParameter extends Parameter
             pParam = ParsedParameter.of(pParam.getParameter(), joined, joined);
         }
         result.add(pParam);
-        return true;
+        return;
     }
 
     @Override
-    protected boolean accepts(CommandInvocation call)
+    protected boolean accepts(CommandInvocation invocation)
     {
         // Just checking if the parameter is possible here
         int greed = this.valueFor(Greed.class); // cannot be null as greed is preset if not set manually
-        int remainingTokens = call.tokens().size() - call.consumed();
+        int remainingTokens = invocation.tokens().size() - invocation.consumed();
         String[] names = this.valueFor(FixedValues.class);
         if (names != null)
         {
             remainingTokens--; // the name consumes a token
-            String lcToken = call.currentToken().toLowerCase();
+            String lcToken = invocation.currentToken().toLowerCase();
             for (String name : names)
             {
                 if (name.equals(lcToken))
@@ -100,4 +100,11 @@ public class SimpleParameter extends Parameter
         return false;
     }
 
+    @Override
+    protected List<String> getSuggestions(CommandInvocation invocation)
+    {
+
+        // TODO implement suggestions
+        return null;
+    }
 }

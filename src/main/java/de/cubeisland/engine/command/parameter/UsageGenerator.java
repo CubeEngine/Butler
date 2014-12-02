@@ -51,6 +51,10 @@ public abstract class UsageGenerator
         while (dispatcher != null && dispatcher.getDescriptor() != null)
         {
             descriptor = dispatcher.getDescriptor();
+            if (descriptor.getName().isEmpty())
+            {
+                break;
+            }
             cmds.add(descriptor.getName());
             dispatcher = descriptor.valueFor(DispatcherProperty.class).getDispatcher();
         }
@@ -70,14 +74,28 @@ public abstract class UsageGenerator
     /**
      * Generates the usage for a given CommandDescriptor and CommandSource
      *
-     * @param source the {@link CommandSource}
+     * @param source     the {@link CommandSource}
      * @param descriptor the {@link CommandDescriptor}
+     *
      * @return the complete usage String
      */
     public final String generateUsage(CommandSource source, CommandDescriptor descriptor)
     {
         Stack<String> names = getNames(descriptor);
         Collections.reverse(names);
-        return StringUtils.join(" ", names) + " " + this.generateUsage(source, descriptor.valueFor(ParameterGroup.class)).trim();
+        return getPrefix(source) + StringUtils.join(" ", names) + " " + this.generateUsage(source, descriptor.valueFor(
+            ParameterGroup.class)).trim();
+    }
+
+    /**
+     * Returns a prefix to attach for given CommandSource
+     *
+     * @param source the source
+     *
+     * @return the prefix
+     */
+    protected String getPrefix(CommandSource source)
+    {
+        return "";
     }
 }

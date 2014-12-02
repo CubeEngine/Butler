@@ -37,28 +37,19 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old;
+package de.cubeisland.engine.command.filter;
 
-import de.cubeisland.engine.command.CommandException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-// TODO is this one still needed?
-public class MissingParameterException extends CommandException
+import de.cubeisland.engine.command.CommandSource;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Restricted
 {
-    private String paramName;
-
-    public MissingParameterException(String paramName)
-    {
-        this.paramName = paramName;
-    }
-
-    public MissingParameterException(String paramName, String message)
-    {
-        super(message);
-        this.paramName = paramName;
-    }
-
-    public String getParamName()
-    {
-        return paramName;
-    }
+    Class<? extends CommandSource>[] value();
+    String msg() default "";
 }

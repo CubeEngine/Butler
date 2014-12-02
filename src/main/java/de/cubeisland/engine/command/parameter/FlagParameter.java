@@ -22,6 +22,9 @@
  */
 package de.cubeisland.engine.command.parameter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
@@ -46,9 +49,9 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected boolean accepts(CommandInvocation call)
+    protected boolean accepts(CommandInvocation invocation)
     {
-        String token = call.currentToken();
+        String token = invocation.currentToken();
         if (token.startsWith("-"))
         {
             token = token.substring(1);
@@ -64,14 +67,40 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected boolean parse(CommandInvocation call)
+    protected void parse(CommandInvocation invocation)
     {
-        ParsedParameter parsedParameter = this.parseValue(call);
+        ParsedParameter parsedParameter = this.parseValue(invocation);
         if (parsedParameter.getParsedValue() == null)
         {
             throw new IllegalArgumentException("Invalid CommandCall! Flag should be validated but was not valid.");
         }
-        call.valueFor(ParsedParameters.class).add(parsedParameter);
-        return true;
+        invocation.valueFor(ParsedParameters.class).add(parsedParameter);
+    }
+
+    @Override
+    protected List<String> getSuggestions(CommandInvocation invocation)
+    {
+        if (invocation.tokens().size() - invocation.consumed() == 1)
+        {
+            List<String> list = new ArrayList<>();
+            if (invocation.currentToken().startsWith("-"))
+            {
+                String token = invocation.currentToken().substring(1);
+                if (token.startsWith(this.name()))
+                {
+                    list.add(this.name());
+                }
+                if (token.startsWith(this.longName()))
+                {
+                    list.add(this.longName());
+                }
+            }
+            return list;
+        }
+        if (this.accepts(invocation))
+        {
+            this.parse(invocation);
+        }
+        return null;
     }
 }

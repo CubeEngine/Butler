@@ -20,19 +20,21 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.filter;
+
+import de.cubeisland.engine.command.CommandInvocation;
 
 /**
  * CommandFilter are run before a command is run
  */
-public interface CommandFilter // TODO use me e.g. permissions
+public interface CommandFilter
 {
     /**
      * Runs this CommandFilter
      *
-     * @param call the call
+     * @param invocation the invocation
      *
-     * @return whether the command can be processed further
+     * @throws CommandFilterException when the filter is not passed
      */
-    boolean run(CommandInvocation call);
+    void run(CommandInvocation invocation) throws CommandFilterException;
 }

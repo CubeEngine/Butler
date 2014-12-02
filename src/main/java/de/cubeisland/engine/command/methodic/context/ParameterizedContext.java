@@ -45,11 +45,11 @@ public class ParameterizedContext extends BaseCommandContext
     private final Map<String, ParsedParameter> nameBased = new HashMap<>();
     private final Map<String, ParsedParameter> flags = new HashMap<>();
 
-    public ParameterizedContext(CommandInvocation call)
+    public ParameterizedContext(CommandInvocation invocation)
     {
-        super(call);
+        super(invocation);
 
-        for (ParsedParameter parsed : call.valueFor(ParsedParameters.class))
+        for (ParsedParameter parsed : invocation.valueFor(ParsedParameters.class))
         {
             Parameter parameter = parsed.getParameter();
             if (parameter == null) // empty parameter (last)

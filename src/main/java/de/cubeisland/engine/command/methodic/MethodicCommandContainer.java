@@ -35,6 +35,7 @@ import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.alias.Alias;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
 import de.cubeisland.engine.command.alias.Aliases;
+import de.cubeisland.engine.command.filter.CommandFilters;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
 
@@ -111,7 +112,7 @@ public class MethodicCommandContainer<OriginT, SubCommandOriginT> extends Dispat
             }
         }
         descriptor.setProperty(new Aliases(aliasList));
-
+        descriptor.setProperty(new CommandFilters());
         return descriptor;
     }
 }

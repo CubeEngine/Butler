@@ -22,6 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter;
 
+import java.util.List;
+
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
@@ -65,53 +67,71 @@ public abstract class Parameter extends PropertyHolder
     }
 
     /**
-     * Checks if the parameter is applicable to the current CommandCall
+     * Checks if the parameter is applicable to the current CommandInvocation
      *
-     * @param call the CommandCall
+     * @param invocation the CommandInvocation
+     *
      * @return whether the parameter can be parsed
      */
     // TODO also add permission checks etc. (hide the fact that the command "could" be correct but only permissions are missing)
-    protected abstract boolean accepts(CommandInvocation call);
+    protected abstract boolean accepts(CommandInvocation invocation);
 
     /**
      * Is called after #parse is called but only when accepted prior
      *
-     * @param call the CommandCall
+     * @param invocation the CommandInvocation
+     *
      * @return the parsed parameter
      */
-    protected abstract boolean parse(CommandInvocation call);
+    protected abstract void parse(CommandInvocation invocation);
 
     /**
-     * Tries to consume tokens of the CommandCall and parse this parameter
+     * Returns a List of suggested Strings
      *
-     * @param call the CommandCall
+     * @param invocation the CommandInvocation
+     *
+     * @return the suggestions
+     */
+    protected abstract List<String> getSuggestions(CommandInvocation invocation);
+
+    /**
+     * Tries to consume tokens of the CommandInvocation and parse this parameter
+     *
+     * @param invocation the CommandInvocation
+     *
      * @return whether tokens were consumed
      */
-    public final boolean parseParameter(CommandInvocation call)
+    public final boolean parseParameter(CommandInvocation invocation)
     {
-        return this.accepts(call) && this.parse(call);
+        if (this.accepts(invocation))
+        {
+            this.parse(invocation);
+            return true;
+        }
+        return false;
     }
 
     /**
-     * Parses this parameter using given CommandCall
+     * Parses this parameter using given CommandInvocation
      *
-     * @param call the CommandCall
+     * @param invocation the CommandInvocation
+     *
      * @return the ParsedParameter
      */
-    protected ParsedParameter parseValue(CommandInvocation call)
+    protected ParsedParameter parseValue(CommandInvocation invocation)
     {
-        int consumed = call.consumed();
+        int consumed = invocation.consumed();
         ArgumentReader reader = this.valueFor(ValueReader.class);
         Object read;
         if (reader != null)
         {
-            read = reader.read(call.getManager(), this.type, call);
+            read = reader.read(invocation.getManager(), this.type, invocation);
         }
         else
         {
-            read = call.getManager().read(this, call);
+            read = invocation.getManager().read(this, invocation);
         }
-        return ParsedParameter.of(this, read, call.tokensSince(consumed));
+        return ParsedParameter.of(this, read, invocation.tokensSince(consumed));
     }
 
     //TODO  Static Reader ? replace them with named param with no consuming / caution when parsing we'll need to map to alias name not actual name!

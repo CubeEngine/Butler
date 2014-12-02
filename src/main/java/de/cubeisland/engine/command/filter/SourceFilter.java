@@ -20,26 +20,45 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package de.cubeisland.engine.command.filter;
+
+import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.CommandSource;
+
 /**
- * This file is part of CubeEngine.
- * CubeEngine is licensed under the GNU General Public License Version 3.
- *
- * CubeEngine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * CubeEngine is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
+ * Allows to run a command if the CommandSource is of an allowed type
  */
-package de.cubeisland.engine.command.parameter;
-
-public class TooFewArgumentsException extends IncorrectUsageException
+public class SourceFilter implements CommandFilter
 {
+    private Class<? extends CommandSource>[] sources;
+    private String msg;
 
+    /**
+     * Creates a new SourceFilter
+     *
+     * @param sources the allowed sources
+     * @param msg     the message
+     */
+    public SourceFilter(Class<? extends CommandSource>[] sources, String msg)
+    {
+        this.sources = sources;
+        this.msg = msg;
+    }
+
+    @Override
+    public void run(CommandInvocation invocation) throws CommandFilterException
+    {
+        boolean restrict = true;
+        for (Class<? extends CommandSource> clazz : this.sources)
+        {
+            if (clazz.isAssignableFrom(invocation.getCommandSource().getClass()))
+            {
+                restrict = false;
+            }
+        }
+        if (restrict)
+        {
+            throw new RestrictedSourceException(this.msg, this.sources);
+        }
+    }
 }

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.cubeisland.engine.command.CommandDescriptor;
+import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
@@ -126,7 +127,12 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         List<Parameter> flagsList = new ArrayList<>();
         List<Parameter> nPosList = new ArrayList<>();
         List<Parameter> posList = new ArrayList<>();
-        // TODO check if first is a context (NOT Parameterized!!!)
+
+        if (!BaseCommandContext.class.isAssignableFrom(parameterTypes[0]))
+        {
+            throw new CommandException("Missing CommandContext in Method Signature " + method.getDeclaringClass().getName() + "#" + method.getName());
+        }
+
         for (int i = 1; i < parameterTypes.length; i++)
         {
             Class<?> paramType = parameterTypes[i];

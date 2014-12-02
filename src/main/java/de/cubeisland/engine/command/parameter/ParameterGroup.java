@@ -25,6 +25,7 @@ package de.cubeisland.engine.command.parameter;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
@@ -50,38 +51,50 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     }
 
     @Override
-    public boolean accepts(CommandInvocation call)
+    public boolean accepts(CommandInvocation invocation)
     {
         return true;
     }
 
     @Override
-    protected boolean parse(CommandInvocation call)
+    protected void parse(CommandInvocation invocation)
+    {
+        parse0(invocation, false);
+    }
+
+    private boolean parse0(CommandInvocation invocation, boolean suggestion)
     {
         List<Parameter> flags = new ArrayList<>(this.valueFor(FlagGroup.class));
         List<Parameter> nonPositional = new ArrayList<>(this.valueFor(NonPositionalGroup.class));
         List<Parameter> positional = new ArrayList<>(this.valueFor(PositionalGroup.class));
 
-        List<ParsedParameter> params = call.valueFor(ParsedParameters.class);
+        List<ParsedParameter> params = invocation.valueFor(ParsedParameters.class);
 
-        while (!call.isConsumed())
+        while (!invocation.isConsumed())
         {
-            if (call.currentToken().isEmpty())
+            if (suggestion && invocation.tokens().size() - invocation.consumed() == 1)
             {
-                call.consume(1); // ignore empty args
-                if (call.consumed() == call.tokens().size()) // except last
+                break;
+            }
+            if (invocation.currentToken().isEmpty())
+            {
+                invocation.consume(1); // ignore empty args
+                if (invocation.consumed() == invocation.tokens().size()) // except last
                 {
                     params.add(ParsedParameter.empty());
                 }
             }
             else
             {
-                if (!this.parseMatching(call, flags, false) && !this.parseMatching(call, nonPositional, false)
-                    && !this.parseMatching(call, positional, true))
+                if (!this.parseMatching(invocation, flags, false)
+                 && !this.parseMatching(invocation, nonPositional, false)
+                 && !this.parseMatching(invocation, positional, true))
                 {
-                    throw new TooManyArgumentsException();
+                    if (!suggestion)
+                    {
+                        throw new TooManyArgumentsException();
+                    }
                 }
-
             }
         }
 
@@ -107,9 +120,13 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
         for (Parameter parameter : positional)
         {
-            if (parameter.valueFor(Required.class) && parameter.valueFor(Greed.class) != INFINITE_GREED) // TODO infinite greed better
+            if (parameter.valueFor(Required.class) && parameter.valueFor(Greed.class)
+                != INFINITE_GREED) // TODO infinite greed better
             {
-                throw new TooFewArgumentsException();
+                if (!suggestion)
+                {
+                    throw new TooFewArgumentsException();
+                }
             }
         }
 
@@ -119,20 +136,20 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     /**
      * Creates a parsed Parameter for the current token
      *
-     * @param call       the CommandCall
+     * @param invocation the CommandInvocation
      * @param searchList the list to search the parameter in
      * @param positonal  whether the list is positional or not
      *
      * @return the parsed parameter or null if not applicable
      */
-    private boolean parseMatching(CommandInvocation call, List<Parameter> searchList, boolean positonal)
+    private boolean parseMatching(CommandInvocation invocation, List<Parameter> searchList, boolean positonal)
     {
         boolean parsed = false;
         Parameter toRemove = null;
         for (Parameter parameter : searchList)
         {
             toRemove = parameter;
-            parsed = parameter.parseParameter(call);
+            parsed = parameter.parseParameter(invocation);
             if (parsed)
             {
                 break;
@@ -153,5 +170,19 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     public ParameterGroup value()
     {
         return this;
+    }
+
+    @Override
+    public List<String> getSuggestions(CommandInvocation invocation)
+    {
+        try
+        {
+            parse0(invocation, true);
+        }
+        catch (CommandException ignored)
+        {}
+        // TODO get all parameter that has not consumed tokens and try to get suggestions from it
+        System.out.println("Tab: " + invocation.currentToken());
+        return null;
     }
 }

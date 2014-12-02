@@ -33,6 +33,7 @@ import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
@@ -42,6 +43,7 @@ import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.group.FlagGroup;
 import de.cubeisland.engine.command.parameter.property.group.NonPositionalGroup;
 import de.cubeisland.engine.command.parameter.property.group.PositionalGroup;
+import de.cubeisland.engine.command.result.CommandResult;
 
 public class BasicParametricCommand extends BasicMethodicCommand
 {
@@ -51,6 +53,7 @@ public class BasicParametricCommand extends BasicMethodicCommand
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected boolean run(BaseCommandContext commandContext)
     {
         try
@@ -104,9 +107,9 @@ public class BasicParametricCommand extends BasicMethodicCommand
             {
                 return (Boolean)result;
             }
-            else
+            else if (result instanceof CommandResult)
             {
-                // TODO CommandResult
+                ((CommandResult)result).process(commandContext);
             }
         }
         catch (IllegalAccessException | InvocationTargetException e)

@@ -20,26 +20,47 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package de.cubeisland.engine.command.filter;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import de.cubeisland.engine.command.util.property.Property;
+
 /**
- * This file is part of CubeEngine.
- * CubeEngine is licensed under the GNU General Public License Version 3.
- *
- * CubeEngine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * CubeEngine is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
+ * Contains a List of CommandFilters
  */
-package de.cubeisland.engine.command.parameter;
-
-public class TooFewArgumentsException extends IncorrectUsageException
+public class CommandFilters implements Property<CommandFilters>, Iterable<CommandFilter>
 {
+    private List<CommandFilter> filters = new LinkedList<>();
 
+    @Override
+    public CommandFilters value()
+    {
+        return this;
+    }
+
+    public void addFilter(CommandFilter filter)
+    {
+        this.filters.add(filter);
+    }
+
+    public void removeFilter(Class<? extends CommandFilter> clazz)
+    {
+        Iterator<CommandFilter> it = filters.iterator();
+        while (it.hasNext())
+        {
+            if (it.next().getClass().equals(clazz))
+            {
+                it.remove();
+            }
+        }
+    }
+
+    @Override
+    public Iterator<CommandFilter> iterator()
+    {
+        return this.filters.iterator();
+    }
 }

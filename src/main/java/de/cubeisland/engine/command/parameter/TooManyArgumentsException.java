@@ -39,14 +39,7 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.old.IncorrectUsageException;
-
 public class TooManyArgumentsException extends IncorrectUsageException
 {
-    /*
-    public TooManyArgumentsException(CommandSender sender)
-    {
-        super(sender.getTranslation(MessageType.NEGATIVE, "You've given too many arguments."));  // TODO move message to exception handler
-    }
-    */
+
 }

@@ -22,7 +22,6 @@
  */
 package de.cubeisland.engine.command;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +34,8 @@ import java.util.Set;
 import de.cubeisland.engine.command.alias.AliasCommand;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
 import de.cubeisland.engine.command.alias.Aliases;
+import de.cubeisland.engine.command.filter.CommandFilter;
+import de.cubeisland.engine.command.filter.CommandFilters;
 import de.cubeisland.engine.command.methodic.MethodicCommandContainer;
 
 /**
@@ -209,7 +210,11 @@ public class DispatcherCommand implements Dispatcher
      */
     protected void checkInvocation(CommandInvocation invocation)
     {
-        // TODO check if allowed to run
+        for (CommandFilter filter : this.getDescriptor().valueFor(CommandFilters.class))
+        {
+            filter.run(invocation);
+        }
+
         /*
 
         public void checkContext(CommandContext ctx) throws CommandException
@@ -250,13 +255,12 @@ public class DispatcherCommand implements Dispatcher
      */
     protected void handleException(Throwable e, CommandInvocation invocation)
     {
-        if (e instanceof InvocationTargetException)
+        ExceptionHandler handler = this.getBaseDispatcher().getDescriptor().valueFor(ExceptionHandlerProperty.class);
+        if (handler == null)
         {
-            e = e.getCause();
+            throw new MissingExceptionHandlerException("The Base Dispatcher has no Exception Handler!", e);
         }
-        e.printStackTrace();
-        // command is this hiw convenient
-        // TODO CommandException handling via property
+        handler.handleException(e, this, invocation);
     }
 
     /**
@@ -267,8 +271,6 @@ public class DispatcherCommand implements Dispatcher
      */
     protected boolean selfExecute(CommandInvocation invocation)
     {
-        // TODO override in CE to get Help subcmd when empty args OR cmd not found to show possible sub-cmds (did you mean... ?) OR delegation
-        // TODO delegation here
         return false;
     }
 
@@ -301,7 +303,7 @@ public class DispatcherCommand implements Dispatcher
             CommandBase command = this.getCommand(curToken);
             if (command == null)
             {
-                return result; // Nothing to tab
+                return null; // Nothing to tab
             }
             return command.getSuggestions(invocation.subInvocation());
         }

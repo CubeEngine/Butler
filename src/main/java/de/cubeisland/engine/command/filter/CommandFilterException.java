@@ -20,19 +20,14 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.filter;
 
-public class RestrictedSourceException extends CommandException
+import de.cubeisland.engine.command.CommandException;
+
+public class CommandFilterException extends CommandException
 {
-    private final Class<?> clazz;
-
-    public RestrictedSourceException(Class<?> clazz)
+    public CommandFilterException(String msg)
     {
-        this.clazz = clazz;
-    }
-
-    public Class<?> getClazz()
-    {
-        return clazz;
+        super(msg);
     }
 }

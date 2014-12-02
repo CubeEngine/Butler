@@ -37,39 +37,36 @@
  * You should have received a copy of the GNU General Public License
  * along with CubeEngine.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.cubeisland.engine.command.old;
+package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandException;
 
-public class IncorrectArgumentException extends CommandException
+/**
+ * This exception is thrown when a user performed an invalid command.
+ * Use invalidUsage to throw an exception inside a command. The exception will be caught.
+ */
+public class IncorrectUsageException extends CommandException
 {
-    private String name;
-    private Integer index;
-
-    public IncorrectArgumentException(String name, Throwable cause)
+    private final boolean displayUsage;
+    
+    public IncorrectUsageException()
     {
-        super(cause);
-        this.name = name;
+        this(true, null);
     }
 
-    public IncorrectArgumentException(Integer index, Throwable cause)
+    public IncorrectUsageException(String message)
     {
-        super(cause);
-        this.index = index;
+        this(true, message);
     }
 
-    public boolean isNamedArgument()
+    public IncorrectUsageException(boolean displayUsage, String message, Object... args)
     {
-        return this.index == null;
+        super(message, args);
+        this.displayUsage = displayUsage;
     }
 
-    public String getName()
+    public boolean getDisplayUsage()
     {
-        return name;
-    }
-
-    public Integer getIndex()
-    {
-        return index;
+        return displayUsage;
     }
 }
