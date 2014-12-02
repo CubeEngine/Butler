@@ -22,9 +22,11 @@
  */
 package de.cubeisland.engine.command.parameter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.Name;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Greed;
 
@@ -103,8 +105,20 @@ public class SimpleParameter extends Parameter
     @Override
     protected List<String> getSuggestions(CommandInvocation invocation)
     {
-
-        // TODO implement suggestions
+        List<String> result = new ArrayList<>();
+        String[] fixedValues = this.valueFor(FixedValues.class);
+        if (fixedValues != null) // covers named parameter and fixed values
+        {
+            for (String value : fixedValues)
+            {
+                if (value.startsWith(invocation.currentToken()))
+                {
+                    result.add(value);
+                }
+            }
+            return result;
+        }
+        // TODO implement completer suggestions
         return null;
     }
 }

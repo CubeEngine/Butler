@@ -23,16 +23,15 @@
 package de.cubeisland.engine.command.parameter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.methodic.Param;
 import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
-import de.cubeisland.engine.command.parameter.property.group.FlagGroup;
-import de.cubeisland.engine.command.parameter.property.group.NonPositionalGroup;
-import de.cubeisland.engine.command.parameter.property.group.PositionalGroup;
 import de.cubeisland.engine.command.util.property.Property;
 
 import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
@@ -42,12 +41,20 @@ import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GRE
  */
 public class ParameterGroup extends Parameter implements Property<ParameterGroup>
 {
+    private final List<Parameter> flags;
+    private final List<Parameter> nonPositional;
+    private final List<Parameter> positional;
+
     public ParameterGroup(List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
     {
         super(null, null); // TODO Type & Reader
-        this.setProperty(new FlagGroup(flags));
-        this.setProperty(new NonPositionalGroup(nonPositional));
-        this.setProperty(new PositionalGroup(positional));
+        // TODO make sure flags are only FlagParameter
+        // TODO NonPositionals: if (param.hasProperty(FixedPosition.class) || !param.hasProperty(FixedValues.class)) // Non-Positional & Name to be able to detect when to parse the parameter
+        // TODO Positionals: if (!param.hasProperty(FixedPosition.class))
+
+        this.flags = Collections.unmodifiableList(flags);
+        this.nonPositional = Collections.unmodifiableList(nonPositional);
+        this.positional = Collections.unmodifiableList(positional);
     }
 
     @Override
@@ -64,9 +71,9 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
     private boolean parse0(CommandInvocation invocation, boolean suggestion)
     {
-        List<Parameter> flags = new ArrayList<>(this.valueFor(FlagGroup.class));
-        List<Parameter> nonPositional = new ArrayList<>(this.valueFor(NonPositionalGroup.class));
-        List<Parameter> positional = new ArrayList<>(this.valueFor(PositionalGroup.class));
+        List<Parameter> flags = new ArrayList<>(this.flags);
+        List<Parameter> nonPositional = new ArrayList<>(this.nonPositional);
+        List<Parameter> positional = new ArrayList<>(this.positional);
 
         List<ParsedParameter> params = invocation.valueFor(ParsedParameters.class);
 
@@ -86,9 +93,9 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
             else
             {
-                if (!this.parseMatching(invocation, flags, false)
+                if (!this.parseMatching(invocation, positional, true)
                  && !this.parseMatching(invocation, nonPositional, false)
-                 && !this.parseMatching(invocation, positional, true))
+                 && !this.parseMatching(invocation, flags, false))
                 {
                     if (!suggestion)
                     {
