@@ -29,6 +29,9 @@ import java.util.List;
 import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.methodic.Param;
+import de.cubeisland.engine.command.methodic.UnparsedParameters;
+import de.cubeisland.engine.command.parameter.property.FixedPosition;
+import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
@@ -48,9 +51,27 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     public ParameterGroup(List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
     {
         super(null, null); // TODO Type & Reader
-        // TODO make sure flags are only FlagParameter
-        // TODO NonPositionals: if (param.hasProperty(FixedPosition.class) || !param.hasProperty(FixedValues.class)) // Non-Positional & Name to be able to detect when to parse the parameter
-        // TODO Positionals: if (!param.hasProperty(FixedPosition.class))
+        for (Parameter flag : flags) // Need to be FlagParameter
+        {
+            if (!(flag instanceof FlagParameter))
+            {
+                throw new IllegalArgumentException("Parameter is not a FlagParameter");
+            }
+        }
+        for (Parameter parameter : nonPositional) // Need to have FixedValues but no
+        {
+            if (parameter.hasProperty(FixedPosition.class) || !parameter.hasProperty(FixedValues.class))
+            {
+                throw new IllegalArgumentException("Non Positional Parameter has a fixed Position or no FixedValue");
+            }
+        }
+        for (Parameter parameter : positional)
+        {
+            if (!parameter.hasProperty(FixedPosition.class))
+            {
+                throw new IllegalArgumentException("Positional Parameter has no position");
+            }
+        }
 
         this.flags = Collections.unmodifiableList(flags);
         this.nonPositional = Collections.unmodifiableList(nonPositional);
@@ -137,6 +158,14 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
         }
 
+        if (suggestion)
+        {
+            UnparsedParameters unparsedParameters = invocation.valueFor(UnparsedParameters.class);
+            unparsedParameters.setFlags(flags);
+            unparsedParameters.setNonPositional(nonPositional);
+            unparsedParameters.setPositional(positional);
+        }
+
         return true;
     }
 
@@ -145,11 +174,11 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
      *
      * @param invocation the CommandInvocation
      * @param searchList the list to search the parameter in
-     * @param positonal  whether the list is positional or not
+     * @param positional  whether the list is positional or not
      *
      * @return the parsed parameter or null if not applicable
      */
-    private boolean parseMatching(CommandInvocation invocation, List<Parameter> searchList, boolean positonal)
+    private boolean parseMatching(CommandInvocation invocation, List<Parameter> searchList, boolean positional)
     {
         boolean parsed = false;
         Parameter toRemove = null;
@@ -161,7 +190,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             {
                 break;
             }
-            if (positonal && parameter.valueFor(Required.class))
+            if (positional && parameter.valueFor(Required.class))
             {
                 break;
             }
@@ -188,8 +217,20 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
         }
         catch (CommandException ignored)
         {}
-        // TODO get all parameter that has not consumed tokens and try to get suggestions from it
-        System.out.println("Tab: " + invocation.currentToken());
-        return null;
+        List<String> result = new ArrayList<>();
+        UnparsedParameters unparsedParameters = invocation.valueFor(UnparsedParameters.class);
+        if (!unparsedParameters.getPositional().isEmpty())
+        {
+            result.addAll(unparsedParameters.getPositional().get(0).getSuggestions(invocation));
+        }
+        for (Parameter parameter : unparsedParameters.getNonPositional())
+        {
+            result.addAll(parameter.getSuggestions(invocation));
+        }
+        for (Parameter parameter : unparsedParameters.getFlags())
+        {
+            result.addAll(parameter.getSuggestions(invocation));
+        }
+        return result;
     }
 }

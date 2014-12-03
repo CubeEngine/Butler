@@ -68,7 +68,6 @@ public class SimpleParameter extends Parameter
             pParam = ParsedParameter.of(pParam.getParameter(), joined, joined);
         }
         result.add(pParam);
-        return;
     }
 
     @Override

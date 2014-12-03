@@ -62,6 +62,7 @@ public class BasicMethodicCommand extends DispatcherCommand
         if (suggestions == null)
         {
             invocation.setProperty(new ParsedParameters());
+            invocation.setProperty(new UnparsedParameters());
             return this.getDescriptor().valueFor(ParameterGroup.class).getSuggestions(invocation);
         }
         return suggestions;
