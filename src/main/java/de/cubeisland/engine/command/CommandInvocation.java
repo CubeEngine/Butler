@@ -63,7 +63,7 @@ public class CommandInvocation extends PropertyHolder
 
     protected List<String> tokenize(String commandLine, String delim)
     {
-        String[] rawTokens = commandLine.split(delim);
+        String[] rawTokens = commandLine.split(delim, -1);
         List<String> stringParsed = new ArrayList<>();
         for (int offset = 0; offset < rawTokens.length; )
         {

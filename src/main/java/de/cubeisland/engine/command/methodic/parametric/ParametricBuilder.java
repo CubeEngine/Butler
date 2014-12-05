@@ -34,6 +34,7 @@ import java.util.Map;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
+import de.cubeisland.engine.command.completer.CompleterProperty;
 import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
@@ -196,12 +197,14 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
             {
                 greed = ((Greed)annotation).value();
             }
-
             else if (annotation instanceof Reader)
             {
                 reader = ((Reader) annotation).value();
             }
-            // TODO completer
+            else if (annotation instanceof Complete)
+            {
+                properties.add(new CompleterProperty(((Complete)annotation).value()));
+            }
         }
         if (reader == clazz && Enum.class.isAssignableFrom(clazz))
         {

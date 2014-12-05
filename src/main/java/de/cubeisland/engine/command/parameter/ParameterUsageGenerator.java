@@ -27,9 +27,6 @@ import de.cubeisland.engine.command.StringUtils;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
-import de.cubeisland.engine.command.parameter.property.group.FlagGroup;
-import de.cubeisland.engine.command.parameter.property.group.NonPositionalGroup;
-import de.cubeisland.engine.command.parameter.property.group.PositionalGroup;
 
 /**
  * A simple Implementation of the UsageGenerator
@@ -41,17 +38,18 @@ public class ParameterUsageGenerator extends UsageGenerator
     {
         StringBuilder sb = new StringBuilder();
 
-        for (Parameter parameter : parameters.valueFor(PositionalGroup.class))
+
+        for (Parameter parameter : parameters.getPositional())
         {
             sb.append(generateParameterUsage(source, parameter)).append(" ");
         }
 
-        for (Parameter parameter : parameters.valueFor(NonPositionalGroup.class))
+        for (Parameter parameter : parameters.getNonPositional())
         {
             sb.append(generateParameterUsage(source, parameter)).append(" ");
         }
 
-        for (Parameter parameter : parameters.valueFor(FlagGroup.class))
+        for (Parameter parameter : parameters.getFlags())
         {
             if (parameter instanceof FlagParameter)
             {

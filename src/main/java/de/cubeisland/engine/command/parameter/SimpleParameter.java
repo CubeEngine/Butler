@@ -27,6 +27,10 @@ import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.Name;
+import de.cubeisland.engine.command.completer.Completer;
+import de.cubeisland.engine.command.completer.CompleterProperty;
+import de.cubeisland.engine.command.completer.CompleterProvider;
+import de.cubeisland.engine.command.completer.CompleterProviderProperty;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Greed;
 
@@ -117,7 +121,22 @@ public class SimpleParameter extends Parameter
             }
             return result;
         }
-        // TODO implement completer suggestions
-        return null;
+        Class completerClass = this.valueFor(CompleterProperty.class);
+        if (completerClass == null)
+        {
+            completerClass = this.getType();
+        }
+
+        CompleterProvider provider = invocation.valueFor(CompleterProviderProperty.class);
+        Completer completer = provider.getDefaultCompleter(completerClass);
+        if (completer != null)
+        {
+            result.addAll(completer.getSuggestions(invocation));
+        }
+        else
+        {
+            System.out.println("NO COMPLETER FOUND!!!");
+        }
+        return result;
     }
 }

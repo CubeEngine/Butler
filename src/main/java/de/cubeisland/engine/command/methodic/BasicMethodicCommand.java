@@ -23,6 +23,7 @@
 package de.cubeisland.engine.command.methodic;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandDescriptor;
@@ -57,14 +58,14 @@ public class BasicMethodicCommand extends DispatcherCommand
     @Override
     public List<String> getSuggestions(CommandInvocation invocation)
     {
-
         List<String> suggestions = super.getSuggestions(invocation);
         if (suggestions == null)
         {
-            invocation.setProperty(new ParsedParameters());
-            invocation.setProperty(new UnparsedParameters());
-            return this.getDescriptor().valueFor(ParameterGroup.class).getSuggestions(invocation);
+            suggestions = new ArrayList<>();
         }
+        invocation.setProperty(new ParsedParameters());
+        invocation.setProperty(new UnparsedParameters());
+        suggestions.addAll(this.getDescriptor().valueFor(ParameterGroup.class).getSuggestions(invocation));
         return suggestions;
     }
 

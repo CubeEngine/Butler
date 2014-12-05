@@ -279,21 +279,21 @@ public class DispatcherCommand implements Dispatcher
     {
         List<String> tokens = invocation.tokens();
         List<String> result = new ArrayList<>();
-        if (tokens.isEmpty())
+        if (invocation.isConsumed())
         {
             for (CommandBase command : this.getCommands())
             {
                 result.add(command.getDescriptor().getName());
             }
         }
-        else if (tokens.size() == 1)
+        else if (tokens.size() - invocation.consumed() == 1)
         {
             String curToken = invocation.currentToken().toLowerCase();
             for (String alias : this.commands.keySet())
             {
                 if (alias.startsWith(curToken))
                 {
-                    result.add(StringUtils.join(" ", invocation.getLabels()) + " " + alias);
+                    result.add(alias);
                 }
             }
         }
@@ -355,7 +355,7 @@ public class DispatcherCommand implements Dispatcher
         Completer completer = descriptor.getNamed(lastParameter.getKey()).getCompleter();
         if (completer != null)
         {
-            return completer.complete(context, lastParameter.getValue());
+            return completer.getSuggestions(context, lastParameter.getValue());
         }
         return Collections.emptyList();
     }
@@ -393,7 +393,7 @@ public class DispatcherCommand implements Dispatcher
             Completer indexedCompleter = indexed.getCompleter();
             if (indexedCompleter != null)
             {
-                result.addAll(indexedCompleter.complete(context, last));
+                result.addAll(indexedCompleter.getSuggestions(context, last));
             }
         }
     }

@@ -233,4 +233,19 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
         }
         return result;
     }
+
+    public List<Parameter> getFlags()
+    {
+        return flags;
+    }
+
+    public List<Parameter> getNonPositional()
+    {
+        return nonPositional;
+    }
+
+    public List<Parameter> getPositional()
+    {
+        return positional;
+    }
 }

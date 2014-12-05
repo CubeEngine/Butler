@@ -77,7 +77,7 @@ public abstract class UsageGenerator
      * @param source     the {@link CommandSource}
      * @param descriptor the {@link CommandDescriptor}
      *
-     * @return the complete usage String
+     * @return the getSuggestions usage String
      */
     public final String generateUsage(CommandSource source, CommandDescriptor descriptor)
     {

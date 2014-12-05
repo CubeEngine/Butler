@@ -82,17 +82,21 @@ public class FlagParameter extends Parameter
     {
         if (invocation.tokens().size() - invocation.consumed() == 1)
         {
+            String token = invocation.currentToken();
             List<String> list = new ArrayList<>();
-            if (invocation.currentToken().startsWith("-"))
+            if (token.startsWith("-") || token.isEmpty())
             {
-                String token = invocation.currentToken().substring(1);
-                if (token.startsWith(this.name()))
+                if (token.startsWith("-"))
                 {
-                    list.add(this.name());
+                    token = token.substring(1);
                 }
-                if (token.startsWith(this.longName()))
+                if (this.name().startsWith(token))
                 {
-                    list.add(this.longName());
+                    list.add("-" + this.name());
+                }
+                if (this.longName().startsWith(token))
+                {
+                    list.add("-" + this.longName());
                 }
             }
             return list;

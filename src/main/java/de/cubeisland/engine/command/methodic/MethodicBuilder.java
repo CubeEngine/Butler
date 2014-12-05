@@ -34,6 +34,8 @@ import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
+import de.cubeisland.engine.command.completer.Completer;
+import de.cubeisland.engine.command.completer.CompleterProperty;
 import de.cubeisland.engine.command.filter.CommandFilter;
 import de.cubeisland.engine.command.filter.CommandFilters;
 import de.cubeisland.engine.command.filter.Restricted;
@@ -164,10 +166,10 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         return new ParameterGroup(flagsList, nPosList, posList);
     }
 
-    private Parameter createParameter(Param param, OriginT origin)
+    private Parameter createParameter(Param anot, OriginT origin)
     {
-        Class type = param.type();
-        Class reader = param.reader();
+        Class type = anot.type();
+        Class reader = anot.reader();
         if (reader == Void.class)
         {
             reader = type;
@@ -178,28 +180,31 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         }
 
         SimpleParameter parameter = new SimpleParameter(type, reader);
-        int greed = param.greed();
+        int greed = anot.greed();
         parameter.setProperty(new Greed(greed));
-        String label = param.label();
+        String label = anot.label();
         if (!label.isEmpty())
         {
             parameter.setProperty(new ValueLabel(label));
         }
-        String[] names = param.names();
+        String[] names = anot.names();
         if (names.length != 0)
         {
             parameter.setProperty(new FixedValues(names));
         }
 
-        parameter.setProperty(param.req() ? Required.REQUIRED : Required.OPTIONAL);
+        parameter.setProperty(anot.req() ? Required.REQUIRED : Required.OPTIONAL);
 
-        String desc = param.desc();
+        String desc = anot.desc();
         if (!desc.isEmpty())
         {
             parameter.setProperty(new Description(desc));
         }
 
-        // TODO completer
+        if (Completer.class != anot.completer())
+        {
+            parameter.setProperty(new CompleterProperty(anot.completer()));
+        }
         return parameter;
     }
 

@@ -33,16 +33,12 @@ import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
-import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
-import de.cubeisland.engine.command.parameter.property.group.FlagGroup;
-import de.cubeisland.engine.command.parameter.property.group.NonPositionalGroup;
-import de.cubeisland.engine.command.parameter.property.group.PositionalGroup;
 import de.cubeisland.engine.command.result.CommandResult;
 
 public class BasicParametricCommand extends BasicMethodicCommand
@@ -63,9 +59,9 @@ public class BasicParametricCommand extends BasicMethodicCommand
             args[0] = commandContext;
 
             ParameterGroup params = this.getDescriptor().valueFor(ParameterGroup.class);
-            List<Parameter> parameters = new ArrayList<>(params.valueFor(FlagGroup.class));
-            parameters.addAll(params.valueFor(NonPositionalGroup.class));
-            parameters.addAll(params.valueFor(PositionalGroup.class));
+            List<Parameter> parameters = new ArrayList<>(params.getFlags());
+            parameters.addAll(params.getNonPositional());
+            parameters.addAll(params.getPositional());
             Collections.sort(parameters, MethodIndex.COMPARATOR);
 
             List<ParsedParameter> parsedParams = new ArrayList<>(commandContext.getInvocation().valueFor(ParsedParameters.class));
