@@ -36,7 +36,6 @@ import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
 import de.cubeisland.engine.command.completer.Completer;
 import de.cubeisland.engine.command.completer.CompleterProperty;
-import de.cubeisland.engine.command.filter.CommandFilter;
 import de.cubeisland.engine.command.filter.CommandFilters;
 import de.cubeisland.engine.command.filter.Restricted;
 import de.cubeisland.engine.command.UsageProvider;
@@ -113,7 +112,7 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         Alias alias = origin.getMethod().getAnnotation(Alias.class);
         if (alias != null)
         {
-            for (String name : alias.names())
+            for (String name : alias.value())
             {
                 AliasConfiguration aliasConf = new AliasConfiguration(name, alias.parents());
                 aliasConf.setPrefix(alias.prefix());

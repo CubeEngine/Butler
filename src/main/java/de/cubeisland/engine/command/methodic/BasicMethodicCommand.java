@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandDescriptor;
-import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.DispatcherCommand;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
+import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 
@@ -49,7 +49,7 @@ public class BasicMethodicCommand extends DispatcherCommand
         if (!ran)
         {
             invocation.setProperty(new ParsedParameters());
-            this.getDescriptor().valueFor(ParameterGroup.class).parseParameter(invocation);
+            this.getDescriptor().valueFor(ParameterGroup.class).parse(invocation);
             ran = this.run(this.buildContext(invocation));
         }
         return ran;
@@ -64,7 +64,7 @@ public class BasicMethodicCommand extends DispatcherCommand
             suggestions = new ArrayList<>();
         }
         invocation.setProperty(new ParsedParameters());
-        invocation.setProperty(new UnparsedParameters());
+        invocation.setProperty(new SuggestionParameters(new ArrayList<Parameter>()));
         suggestions.addAll(this.getDescriptor().valueFor(ParameterGroup.class).getSuggestions(invocation));
         return suggestions;
     }

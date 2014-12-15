@@ -67,23 +67,28 @@ public abstract class Parameter extends PropertyHolder
     }
 
     /**
-     * Checks if the parameter is applicable to the current CommandInvocation
+     * Checks if the parameter is allowed to be parsed for the given CommandInvocation
      *
-     * @param invocation the CommandInvocation
+     * @param invocation the invocation
      *
-     * @return whether the parameter can be parsed
+     * @return whether the parameter is allowed to be parsed
      */
     // TODO also add permission checks etc. (hide the fact that the command "could" be correct but only permissions are missing)
-    protected abstract boolean accepts(CommandInvocation invocation);
+    protected abstract boolean isAllowed(CommandInvocation invocation);
 
     /**
-     * Is called after #parse is called but only when accepted prior
+     * Checks if the parameter is possible for the given CommandInvocation
+     * @param invocation the invocation
+     * @return whether the parameter can be parsed
+     */
+    protected abstract boolean isPossible(CommandInvocation invocation);
+
+    /**
+     * Parses the Parameter with given invocation
      *
      * @param invocation the CommandInvocation
-     *
-     * @return the parsed parameter
      */
-    protected abstract void parse(CommandInvocation invocation);
+    public abstract void parse(CommandInvocation invocation);
 
     /**
      * Returns a List of suggested Strings
@@ -93,23 +98,6 @@ public abstract class Parameter extends PropertyHolder
      * @return the suggestions
      */
     protected abstract List<String> getSuggestions(CommandInvocation invocation);
-
-    /**
-     * Tries to consume tokens of the CommandInvocation and parse this parameter
-     *
-     * @param invocation the CommandInvocation
-     *
-     * @return whether tokens were consumed
-     */
-    public final boolean parseParameter(CommandInvocation invocation)
-    {
-        if (this.accepts(invocation))
-        {
-            this.parse(invocation);
-            return true;
-        }
-        return false;
-    }
 
     /**
      * Parses this parameter using given CommandInvocation
@@ -134,6 +122,6 @@ public abstract class Parameter extends PropertyHolder
         return ParsedParameter.of(this, read, invocation.tokensSince(consumed));
     }
 
-    //TODO  Static Reader ? replace them with named param with no consuming / caution when parsing we'll need to map to alias name not actual name!
+    //TODO Static Reader ? replace them with named param with no consuming / caution when parsing we'll need to map to alias name not actual name!
     //TODO completer ?
 }

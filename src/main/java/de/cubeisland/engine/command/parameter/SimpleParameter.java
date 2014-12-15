@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.Name;
 import de.cubeisland.engine.command.completer.Completer;
 import de.cubeisland.engine.command.completer.CompleterProperty;
 import de.cubeisland.engine.command.completer.CompleterProvider;
@@ -49,7 +48,7 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected void parse(CommandInvocation invocation)
+    public void parse(CommandInvocation invocation)
     {
         List<ParsedParameter> result = invocation.valueFor(ParsedParameters.class);
         String[] names = this.valueFor(FixedValues.class);
@@ -75,7 +74,13 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected boolean accepts(CommandInvocation invocation)
+    protected boolean isAllowed(CommandInvocation invocation)
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean isPossible(CommandInvocation invocation)
     {
         // Just checking if the parameter is possible here
         int greed = this.valueFor(Greed.class); // cannot be null as greed is preset if not set manually
@@ -108,19 +113,36 @@ public class SimpleParameter extends Parameter
     @Override
     protected List<String> getSuggestions(CommandInvocation invocation)
     {
+        String token = invocation.currentToken();
         List<String> result = new ArrayList<>();
         String[] fixedValues = this.valueFor(FixedValues.class);
         if (fixedValues != null) // covers named parameter and fixed values
         {
+            if (this.valueFor(Greed.class) == 1)
+            {
+                String lastToken = invocation.tokens().get(invocation.consumed() - 1);
+                for (String value : fixedValues)
+                {
+                    if (value.equalsIgnoreCase(lastToken))
+                    {
+                        return getSuggestions0(result, invocation);
+                    }
+                }
+            }
             for (String value : fixedValues)
             {
-                if (value.startsWith(invocation.currentToken()))
+                if (value.startsWith(token))
                 {
                     result.add(value);
                 }
             }
             return result;
         }
+        return getSuggestions0(result, invocation);
+    }
+
+    private List<String> getSuggestions0(List<String> result, CommandInvocation invocation)
+    {
         Class completerClass = this.valueFor(CompleterProperty.class);
         if (completerClass == null)
         {

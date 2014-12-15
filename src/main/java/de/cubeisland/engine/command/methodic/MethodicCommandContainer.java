@@ -103,7 +103,7 @@ public class MethodicCommandContainer<OriginT, SubCommandOriginT> extends Dispat
         Alias alias = this.getClass().getAnnotation(Alias.class);
         if (alias != null)
         {
-            for (String name : alias.names())
+            for (String name : alias.value())
             {
                 AliasConfiguration aliasConf = new AliasConfiguration(name, alias.parents());
                 aliasConf.setPrefix(alias.prefix());

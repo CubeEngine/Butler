@@ -28,8 +28,7 @@ import java.util.List;
 
 import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.methodic.Param;
-import de.cubeisland.engine.command.methodic.UnparsedParameters;
+import de.cubeisland.engine.command.methodic.SuggestionParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Greed;
@@ -79,13 +78,13 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     }
 
     @Override
-    public boolean accepts(CommandInvocation invocation)
+    public boolean isAllowed(CommandInvocation invocation)
     {
         return true;
     }
 
     @Override
-    protected void parse(CommandInvocation invocation)
+    public void parse(CommandInvocation invocation)
     {
         parse0(invocation, false);
     }
@@ -100,28 +99,62 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
         while (!invocation.isConsumed())
         {
+            List<Parameter> suggestions = suggestParameters(invocation, positional, nonPositional, flags);
+
             if (suggestion && invocation.tokens().size() - invocation.consumed() == 1)
             {
-                break;
+                List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
+                list.clear();
+                list.addAll(suggestions);
+                return true;
             }
-            if (invocation.currentToken().isEmpty())
+
+            boolean parsed = false;
+            RuntimeException exception = null;
+            int consumed = invocation.consumed();
+            for (Parameter parameter : suggestions)
             {
-                invocation.consume(1); // ignore empty args
-                if (invocation.consumed() == invocation.tokens().size()) // except last
+                if (parameter.isPossible(invocation))
                 {
-                    params.add(ParsedParameter.empty());
+                    if (suggestion && invocation.tokens().size() - consumed == 2)
+                    {
+                        if (!(parameter instanceof FlagParameter) && parameter.hasProperty(FixedValues.class) && !parameter.hasProperty(FixedPosition.class))
+                        {
+                            List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
+                            list.clear();
+                            list.add(parameter);
+                            invocation.consume(1);
+                            return true;
+                        }
+                    }
+                    try
+                    {
+                        parameter.parse(invocation);
+                        parsed = true;
+                        if (!Greed.isInfinite(parameter.valueFor(Greed.class)))
+                        {
+                            flags.remove(parameter);
+                            nonPositional.remove(parameter);
+                            positional.remove(parameter);
+                        }
+                        break;
+                    }
+                    catch (RuntimeException e)
+                    {
+                        invocation.reset(consumed);
+                        exception = e;
+                    }
                 }
             }
-            else
+            if (!parsed)
             {
-                if (!this.parseMatching(invocation, positional, true)
-                 && !this.parseMatching(invocation, nonPositional, false)
-                 && !this.parseMatching(invocation, flags, false))
+                if (exception == null)
                 {
-                    if (!suggestion)
-                    {
-                        throw new TooManyArgumentsException();
-                    }
+                    throw new TooManyArgumentsException();
+                }
+                else
+                {
+                    throw exception;
                 }
             }
         }
@@ -158,48 +191,49 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
         }
 
-        if (suggestion)
-        {
-            UnparsedParameters unparsedParameters = invocation.valueFor(UnparsedParameters.class);
-            unparsedParameters.setFlags(flags);
-            unparsedParameters.setNonPositional(nonPositional);
-            unparsedParameters.setPositional(positional);
-        }
-
         return true;
     }
 
     /**
-     * Creates a parsed Parameter for the current token
+     * Gets a list of possible parameters
      *
-     * @param invocation the CommandInvocation
-     * @param searchList the list to search the parameter in
-     * @param positional  whether the list is positional or not
-     *
-     * @return the parsed parameter or null if not applicable
+     * @param invocation    the invocation
+     * @param positional    the positional parameters
+     * @param nonPositional the non positional parameters
+     * @param flags         the flags
      */
-    private boolean parseMatching(CommandInvocation invocation, List<Parameter> searchList, boolean positional)
+    private ArrayList<Parameter> suggestParameters(CommandInvocation invocation, List<Parameter> positional,
+                                                   List<Parameter> nonPositional, List<Parameter> flags)
     {
-        boolean parsed = false;
-        Parameter toRemove = null;
-        for (Parameter parameter : searchList)
+        ArrayList<Parameter> suggestions = new ArrayList<>();
+        if (!positional.isEmpty())
         {
-            toRemove = parameter;
-            parsed = parameter.parseParameter(invocation);
-            if (parsed)
+            if (positional.get(0).isAllowed(invocation))
             {
-                break;
-            }
-            if (positional && parameter.valueFor(Required.class))
-            {
-                break;
+                suggestions.add(positional.get(0));
             }
         }
-        if (parsed && !Greed.isInfinite(toRemove.valueFor(Greed.class))) // TODO handle greedy param better
+        for (Parameter parameter : nonPositional)
         {
-            searchList.remove(toRemove); // No reuse
+            if (parameter.isAllowed(invocation))
+            {
+                suggestions.add(parameter);
+            }
         }
-        return parsed;
+        for (Parameter flag : flags)
+        {
+            if (flag.isAllowed(invocation))
+            {
+                suggestions.add(flag);
+            }
+        }
+        return suggestions;
+    }
+
+    @Override
+    protected boolean isPossible(CommandInvocation invocation)
+    {
+        return true; // TODO correct?
     }
 
     @Override
@@ -216,18 +250,10 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             parse0(invocation, true);
         }
         catch (CommandException ignored)
-        {}
+        {
+        }
         List<String> result = new ArrayList<>();
-        UnparsedParameters unparsedParameters = invocation.valueFor(UnparsedParameters.class);
-        if (!unparsedParameters.getPositional().isEmpty())
-        {
-            result.addAll(unparsedParameters.getPositional().get(0).getSuggestions(invocation));
-        }
-        for (Parameter parameter : unparsedParameters.getNonPositional())
-        {
-            result.addAll(parameter.getSuggestions(invocation));
-        }
-        for (Parameter parameter : unparsedParameters.getFlags())
+        for (Parameter parameter : invocation.valueFor(SuggestionParameters.class))
         {
             result.addAll(parameter.getSuggestions(invocation));
         }

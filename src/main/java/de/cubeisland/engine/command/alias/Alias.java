@@ -50,7 +50,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Alias
 {
-    String[] names();
+    String[] value();
 
     String prefix() default "";
 

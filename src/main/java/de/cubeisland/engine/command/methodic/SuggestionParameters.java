@@ -25,49 +25,13 @@ package de.cubeisland.engine.command.methodic;
 import java.util.List;
 
 import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.util.property.AbstractProperty;
 import de.cubeisland.engine.command.util.property.Property;
 
-public class UnparsedParameters implements Property<UnparsedParameters>
+public class SuggestionParameters extends AbstractProperty<List<Parameter>>
 {
-
-
-    private List<Parameter> flags;
-    private List<Parameter> nonPositional;
-    private List<Parameter> positional;
-
-    @Override
-    public UnparsedParameters value()
+    public SuggestionParameters(List<Parameter> value)
     {
-        return this;
-    }
-
-    public void setFlags(List<Parameter> flags)
-    {
-        this.flags = flags;
-    }
-
-    public List<Parameter> getFlags()
-    {
-        return flags;
-    }
-
-    public void setNonPositional(List<Parameter> nonPositional)
-    {
-        this.nonPositional = nonPositional;
-    }
-
-    public List<Parameter> getNonPositional()
-    {
-        return nonPositional;
-    }
-
-    public void setPositional(List<Parameter> positional)
-    {
-        this.positional = positional;
-    }
-
-    public List<Parameter> getPositional()
-    {
-        return positional;
+        super(value);
     }
 }

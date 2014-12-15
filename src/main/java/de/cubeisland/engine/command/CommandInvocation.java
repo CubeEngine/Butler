@@ -119,6 +119,17 @@ public class CommandInvocation extends PropertyHolder
     }
 
     /**
+     * Resets the consumed parameter counter to given value
+     *
+     * @param consumed the value
+     */
+    public void reset(int consumed)
+    {
+        this.consumed = consumed;
+    }
+
+
+    /**
      * Returns the amount of tokens consumed
      *
      * @return the amount of tokens consumed
@@ -219,7 +230,8 @@ public class CommandInvocation extends PropertyHolder
      */
     public CommandInvocation setTokens(String tokens, String delimiter)
     {
-        CommandInvocation invocation = new CommandInvocation(this.getCommandSource(), tokens, delimiter, this.getManager());
+        CommandInvocation invocation = new CommandInvocation(this.getCommandSource(), tokens, delimiter,
+                                                             this.getManager());
         invocation.properties.putAll(this.properties);
         return invocation;
     }

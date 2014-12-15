@@ -49,7 +49,13 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected boolean accepts(CommandInvocation invocation)
+    protected boolean isAllowed(CommandInvocation invocation)
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean isPossible(CommandInvocation invocation)
     {
         String token = invocation.currentToken();
         if (token.startsWith("-"))
@@ -67,7 +73,7 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected void parse(CommandInvocation invocation)
+    public void parse(CommandInvocation invocation)
     {
         ParsedParameter parsedParameter = this.parseValue(invocation);
         if (parsedParameter.getParsedValue() == null)
@@ -80,31 +86,23 @@ public class FlagParameter extends Parameter
     @Override
     protected List<String> getSuggestions(CommandInvocation invocation)
     {
-        if (invocation.tokens().size() - invocation.consumed() == 1)
+        String token = invocation.tokens().get(invocation.tokens().size() - 1);
+        List<String> list = new ArrayList<>();
+        if (token.startsWith("-") || token.isEmpty())
         {
-            String token = invocation.currentToken();
-            List<String> list = new ArrayList<>();
-            if (token.startsWith("-") || token.isEmpty())
+            if (token.startsWith("-"))
             {
-                if (token.startsWith("-"))
-                {
-                    token = token.substring(1);
-                }
-                if (this.name().startsWith(token))
-                {
-                    list.add("-" + this.name());
-                }
-                if (this.longName().startsWith(token))
-                {
-                    list.add("-" + this.longName());
-                }
+                token = token.substring(1);
             }
-            return list;
+            if (this.name().startsWith(token))
+            {
+                list.add("-" + this.name());
+            }
+            if (this.longName().startsWith(token))
+            {
+                list.add("-" + this.longName());
+            }
         }
-        if (this.accepts(invocation))
-        {
-            this.parse(invocation);
-        }
-        return null;
+        return list;
     }
 }
