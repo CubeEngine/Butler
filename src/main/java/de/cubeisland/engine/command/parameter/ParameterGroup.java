@@ -104,7 +104,6 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             if (suggestion && invocation.tokens().size() - invocation.consumed() == 1)
             {
                 List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
-                list.clear();
                 list.addAll(suggestions);
                 return true;
             }
@@ -116,12 +115,12 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             {
                 if (parameter.isPossible(invocation))
                 {
-                    if (suggestion && invocation.tokens().size() - consumed == 2)
+                    if (suggestion && invocation.tokens().size() - consumed == 2) // TODO adapt to parameters of parametergroup (cummulative greed)(normal named param is 2)
                     {
                         if (!(parameter instanceof FlagParameter) && parameter.hasProperty(FixedValues.class) && !parameter.hasProperty(FixedPosition.class))
                         {
+                            // TODO named parameter as parameter group with 1 fixed indexed parameter
                             List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
-                            list.clear();
                             list.add(parameter);
                             invocation.consume(1);
                             return true;
