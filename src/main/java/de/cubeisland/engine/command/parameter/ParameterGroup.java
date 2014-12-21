@@ -121,7 +121,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                     {
                         parameter.parse(invocation);
                         parsed = true;
-                        if (parameter.greed != GREED_INFINITE)
+                        if (parameter.greed != INFINITE)
                         {
                             System.out.println("Chosen: " + parameter.getType());
                             flags.remove(parameter);
@@ -172,7 +172,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
         for (Parameter parameter : positional)
         {
-            if (parameter.valueFor(Required.class) && parameter.greed != GREED_INFINITE) // TODO infinite greed better
+            if (parameter.valueFor(Required.class) && parameter.greed != INFINITE) // TODO infinite greed better
             {
                 if (!suggestion)
                 {

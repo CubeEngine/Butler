@@ -36,7 +36,7 @@ import de.cubeisland.engine.command.util.property.PropertyHolder;
  */
 public abstract class Parameter extends PropertyHolder
 {
-    public static final int GREED_INFINITE = -1;
+    public static final int INFINITE = -1;
     public static final int DEFAULT = 1;
 
     private final Class<?> type;
