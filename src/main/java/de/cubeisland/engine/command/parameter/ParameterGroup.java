@@ -30,13 +30,9 @@ import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.methodic.SuggestionParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
-import de.cubeisland.engine.command.parameter.property.Greed;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.util.property.Property;
-
-import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
 
 /**
  * A ParameterGroup providing grouped Parameters
@@ -49,7 +45,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
     public ParameterGroup(List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
     {
-        super(null, null); // TODO Type & Reader
+        super(null, null, 0); // TODO Type & Reader
         for (Parameter flag : flags) // Need to be FlagParameter
         {
             if (!(flag instanceof FlagParameter))
@@ -57,11 +53,11 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 throw new IllegalArgumentException("Parameter is not a FlagParameter");
             }
         }
-        for (Parameter parameter : nonPositional) // Need to have FixedValues but no
+        for (Parameter namedParameter : nonPositional) // Need to have FixedValues but no
         {
-            if (parameter.hasProperty(FixedPosition.class) || !parameter.hasProperty(FixedValues.class))
+            if (!(namedParameter instanceof NamedParameter))
             {
-                throw new IllegalArgumentException("Non Positional Parameter has a fixed Position or no FixedValue");
+                throw new IllegalArgumentException("Non Positional Parameter has to be a named parameter");
             }
         }
         for (Parameter parameter : positional)
@@ -115,23 +111,19 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             {
                 if (parameter.isPossible(invocation))
                 {
-                    if (suggestion && invocation.tokens().size() - consumed == 2) // TODO adapt to parameters of parametergroup (cummulative greed)(normal named param is 2)
+                    if (suggestion && parameter instanceof NamedParameter && invocation.tokens().size() - consumed <= parameter.getGreed())
                     {
-                        if (!(parameter instanceof FlagParameter) && parameter.hasProperty(FixedValues.class) && !parameter.hasProperty(FixedPosition.class))
-                        {
-                            // TODO named parameter as parameter group with 1 fixed indexed parameter
-                            List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
-                            list.add(parameter);
-                            invocation.consume(1);
-                            return true;
-                        }
+                        List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
+                        list.add(parameter);
+                        return true;
                     }
                     try
                     {
                         parameter.parse(invocation);
                         parsed = true;
-                        if (!Greed.isInfinite(parameter.valueFor(Greed.class)))
+                        if (parameter.greed != GREED_INFINITE)
                         {
+                            System.out.println("Chosen: " + parameter.getType());
                             flags.remove(parameter);
                             nonPositional.remove(parameter);
                             positional.remove(parameter);
@@ -180,8 +172,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
         for (Parameter parameter : positional)
         {
-            if (parameter.valueFor(Required.class) && parameter.valueFor(Greed.class)
-                != INFINITE_GREED) // TODO infinite greed better
+            if (parameter.valueFor(Required.class) && parameter.greed != GREED_INFINITE) // TODO infinite greed better
             {
                 if (!suggestion)
                 {
@@ -226,6 +217,12 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 suggestions.add(flag);
             }
         }
+        System.out.println("Suggestions: " + invocation.currentToken());
+        for (Parameter suggestion : suggestions)
+        {
+            System.out.println("-" + suggestion.getType());
+        }
+
         return suggestions;
     }
 

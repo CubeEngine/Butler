@@ -30,39 +30,21 @@ import de.cubeisland.engine.command.completer.Completer;
 import de.cubeisland.engine.command.completer.CompleterProperty;
 import de.cubeisland.engine.command.completer.CompleterProvider;
 import de.cubeisland.engine.command.completer.CompleterProviderProperty;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
-import de.cubeisland.engine.command.parameter.property.Greed;
 
 /**
  * A Parameter implementation.
- * <p>The following Properties are allowed</p>
- * <p>{@link Greed} the amount of tokens consumed by this parameter</p>
- * <p>{@link FixedValues} prefixed fixed values (e.g. used for named parameters) also augments the effective greed by one</p>
  */
 public class SimpleParameter extends Parameter
 {
-    public SimpleParameter(Class<?> type, Class<?> reader)
+    public SimpleParameter(Class<?> type, Class<?> reader, int greed)
     {
-        super(type, reader);
-        this.setProperty(Greed.DEFAULT);
+        super(type, reader, greed);
     }
 
     @Override
     public void parse(CommandInvocation invocation)
     {
         List<ParsedParameter> result = invocation.valueFor(ParsedParameters.class);
-        String[] names = this.valueFor(FixedValues.class);
-        if (names != null)
-        {
-            String name = invocation.currentToken().toLowerCase(); // previously matched in accepts(..)
-            if (this.valueFor(Greed.class) == 0)
-            {
-                result.add(ParsedParameter.of(this, invocation.getManager().read(this, invocation), name));
-                return;
-            }
-            invocation.consume(1); // else consume name
-            // TODO somehow include the name ?
-        }
         ParsedParameter pParam = this.parseValue(invocation); // TODO handle greedy params better
         if (!result.isEmpty() && result.get(result.size() - 1).getParameter().equals(pParam.getParameter()))
         {
@@ -83,66 +65,14 @@ public class SimpleParameter extends Parameter
     protected boolean isPossible(CommandInvocation invocation)
     {
         // Just checking if the parameter is possible here
-        int greed = this.valueFor(Greed.class); // cannot be null as greed is preset if not set manually
         int remainingTokens = invocation.tokens().size() - invocation.consumed();
-        String[] names = this.valueFor(FixedValues.class);
-        if (names != null)
-        {
-            remainingTokens--; // the name consumes a token
-            String lcToken = invocation.currentToken().toLowerCase();
-            for (String name : names)
-            {
-                if (name.equals(lcToken))
-                {
-                    if (greed == 0 || remainingTokens >= 1 && (remainingTokens >= greed))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false; // No match for named
-        }
-        // Non named:
-        if (greed == 0 || remainingTokens >= 1 && (remainingTokens >= greed))
-        {
-            return true;
-        }
-        return false;
+        return remainingTokens >= 1 && remainingTokens >= greed;
     }
 
     @Override
     protected List<String> getSuggestions(CommandInvocation invocation)
     {
-        String token = invocation.currentToken();
         List<String> result = new ArrayList<>();
-        String[] fixedValues = this.valueFor(FixedValues.class);
-        if (fixedValues != null) // covers named parameter and fixed values
-        {
-            if (this.valueFor(Greed.class) == 1)
-            {
-                String lastToken = invocation.tokens().get(invocation.consumed() - 1);
-                for (String value : fixedValues)
-                {
-                    if (value.equalsIgnoreCase(lastToken))
-                    {
-                        return getSuggestions0(result, invocation);
-                    }
-                }
-            }
-            for (String value : fixedValues)
-            {
-                if (value.startsWith(token))
-                {
-                    result.add(value);
-                }
-            }
-            return result;
-        }
-        return getSuggestions0(result, invocation);
-    }
-
-    private List<String> getSuggestions0(List<String> result, CommandInvocation invocation)
-    {
         Class completerClass = this.valueFor(CompleterProperty.class);
         if (completerClass == null)
         {

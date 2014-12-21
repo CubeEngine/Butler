@@ -34,11 +34,12 @@ import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.methodic.parametric.Greed;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
+import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
+import static de.cubeisland.engine.command.parameter.Parameter.GREED_INFINITE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -96,7 +97,7 @@ public class MethodicCommandTest
     }
 
     @Command(desc = "I get matched as one String by this greedy parameter")
-    @Params(positional = @Param(greed = INFINITE_GREED))
+    @Params(positional = @Param(greed = GREED_INFINITE))
     public boolean methodic1(ParameterizedContext ctx)
     {
         assertEquals(ctx.getStrings(0), ctx.getInvocation().getCommandLine());
@@ -105,7 +106,7 @@ public class MethodicCommandTest
 
     @Command(desc = "First Second Second too")
     @Params(positional = {
-            @Param(), @Param(greed = INFINITE_GREED)
+            @Param(), @Param(greed = GREED_INFINITE)
     })
     public boolean methodic2(ParameterizedContext ctx)
     {
@@ -115,7 +116,7 @@ public class MethodicCommandTest
     }
 
     @Command(desc = "Also a long String that gets matched completely")
-    public boolean parametric1(BaseCommandContext ctx, @Greed(INFINITE_GREED) String aString)
+    public boolean parametric1(BaseCommandContext ctx, @Greed(GREED_INFINITE) String aString)
     {
         assertEquals(aString, ctx.getInvocation().getCommandLine());
         return true;

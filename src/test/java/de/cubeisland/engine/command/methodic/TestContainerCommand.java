@@ -27,7 +27,8 @@ import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.methodic.parametric.Greed;
 
-import static de.cubeisland.engine.command.parameter.property.Greed.INFINITE_GREED;
+import static de.cubeisland.engine.command.parameter.Parameter.GREED_INFINITE;
+
 
 @Command(desc = "a description")
 public class TestContainerCommand extends MethodicCommandContainer<Void, InvokableMethod>
@@ -38,14 +39,14 @@ public class TestContainerCommand extends MethodicCommandContainer<Void, Invokab
     }
 
     @Command(desc = "a methodic command")
-    @Params(positional = @Param(greed = INFINITE_GREED))
+    @Params(positional = @Param(greed = GREED_INFINITE))
     public boolean methodic(ParameterizedContext ctx)
     {
         return ctx.getStrings(0).equals(ctx.getInvocation().getCommandLine());
     }
 
     @Command(desc = "a parametric command")
-    public boolean parametric(BaseCommandContext ctx, @Greed(INFINITE_GREED)String aString)
+    public boolean parametric(BaseCommandContext ctx, @Greed(GREED_INFINITE)String aString)
     {
         return aString.equals(ctx.getInvocation().getCommandLine());
     }

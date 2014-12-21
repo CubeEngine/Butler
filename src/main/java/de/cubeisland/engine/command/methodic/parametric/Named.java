@@ -51,7 +51,12 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
-public @interface Names
+public @interface Named
 {
+    /**
+     * The fixed names of the annotated named parameter
+     *
+     * @return the fixed names
+     */
     String[] value();
 }

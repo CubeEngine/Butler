@@ -40,13 +40,15 @@ import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.parameter.FixedValueParameter;
 import de.cubeisland.engine.command.parameter.FlagParameter;
+import de.cubeisland.engine.command.parameter.FixedValues;
+import de.cubeisland.engine.command.parameter.NamedParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
 import de.cubeisland.engine.command.parameter.property.Description;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
@@ -59,7 +61,6 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
     public ParametricBuilder()
     {
         this.addParameterProperty(Label.class, ValueLabel.class);
-        this.addParameterProperty(Names.class, FixedValues.class);
         this.addParameterProperty(Optional.class, Required.class);
         this.addParameterProperty(Desc.class, Description.class);
     }
@@ -148,7 +149,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
                     param = null;
                     break;
                 }
-                else if (annotation instanceof Names)
+                else if (annotation instanceof Named)
                 {
                     nPosList.add(param);
                     param = null;
@@ -164,28 +165,29 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         return new ParameterGroup(flagsList, nPosList, posList);
     }
 
-    protected Parameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations,
-                                              OriginT origin)
+    @SuppressWarnings("unchecked")
+    protected Parameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations, OriginT origin)
     {
-        // TODO what about flags?
-
-
         if (Group.class.isAssignableFrom(clazz))
         {
             // TODO Groups
             return null;
         }
 
-
         List<Property> properties = new ArrayList<>();
         Class<?> reader = clazz;
         int greed = 1;
         Flag flag = null;
+        Named named = null;
         for (Annotation annotation : annotations)
         {
             if (annotation instanceof Flag)
             {
                 flag = (Flag)annotation;
+            }
+            if (annotation instanceof Named)
+            {
+                named = (Named)annotation;
             }
             Property property = this.propertyOf(annotation);
             if (property != null)
@@ -211,23 +213,34 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
             reader = Enum.class;
         }
         Parameter parameter;
-        if (flag == null)
+        if (flag != null)
         {
-            parameter = new SimpleParameter(clazz, reader);
+            parameter = new FlagParameter(flag.name(), flag.longName());
+        }
+        else if (named != null)
+        {
+            parameter = new NamedParameter(clazz, reader, named.value(), 1);
         }
         else
         {
-            parameter = new FlagParameter(flag.name(), flag.longName());
+            if (clazz.isEnum() && FixedValues.class.isAssignableFrom(clazz))
+            {
+                if (greed != 1)
+                {
+                    throw new IllegalArgumentException("Fixed Values can only have a greed of 1");
+                }
+                parameter = new FixedValueParameter((Class<? extends FixedValues>)clazz, reader);
+            }
+            else
+            {
+                parameter = new SimpleParameter(clazz, reader, greed);
+            }
         }
 
         parameter.setProperties(properties.toArray(new Property[properties.size()]));
         if (parameter.valueFor(Required.class) == null)
         {
             parameter.setProperty(Required.REQUIRED);
-        }
-        if (greed != 1)
-        {
-            parameter.setProperty(new de.cubeisland.engine.command.parameter.property.Greed(greed));
         }
         return parameter;
     }

@@ -36,14 +36,19 @@ import de.cubeisland.engine.command.util.property.PropertyHolder;
  */
 public abstract class Parameter extends PropertyHolder
 {
+    public static final int GREED_INFINITE = -1;
+    public static final int DEFAULT = 1;
+
     private final Class<?> type;
     private final Class<?> readerType;
+    protected int greed;
 
-    protected Parameter(Class<?> type, Class<?> reader)
+    protected Parameter(Class<?> type, Class<?> reader, int greed)
     {
         this.type = type;
         this.readerType = reader;
         this.setProperty(Required.REQUIRED);
+        this.greed = greed;
     }
 
     /**
@@ -122,6 +127,8 @@ public abstract class Parameter extends PropertyHolder
         return ParsedParameter.of(this, read, invocation.tokensSince(consumed));
     }
 
-    //TODO Static Reader ? replace them with named param with no consuming / caution when parsing we'll need to map to alias name not actual name!
-    //TODO completer ?
+    public int getGreed()
+    {
+        return greed;
+    }
 }

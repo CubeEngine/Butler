@@ -26,26 +26,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 
 public class FlagParameter extends Parameter
 {
+    private final String name;
+    private final String longName;
+
     public FlagParameter(String name, String longName)
     {
-        super(Boolean.class, ValueReader.class);
+        super(Boolean.class, ValueReader.class, DEFAULT);
+        this.name = name;
+        this.longName = longName;
         this.setProperty(new ValueReader(new FlagReader(name, longName))); // Set Custom FlagReader!
-        this.setProperty(new FixedValues(new String[]{name, longName})); // Fixed Values
     }
 
     public final String name()
     {
-        return this.valueFor(FixedValues.class)[0];
+        return name;
     }
 
     public final String longName()
     {
-        return this.valueFor(FixedValues.class)[1];
+        return longName;
     }
 
     @Override
@@ -61,12 +64,9 @@ public class FlagParameter extends Parameter
         if (token.startsWith("-"))
         {
             token = token.substring(1);
-            for (String name : this.valueFor(FixedValues.class))
+            if (name.equalsIgnoreCase(token) || longName.equalsIgnoreCase(token))
             {
-                if (name.equalsIgnoreCase(token))
-                {
-                    return true;
-                }
+                return true;
             }
         }
         return false;

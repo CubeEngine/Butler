@@ -20,28 +20,17 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
-
-import de.cubeisland.engine.command.methodic.parametric.Names;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+package de.cubeisland.engine.command.parameter;
 
 /**
- * A set of fixed value for a Parameter
- * These values can either stand on their own or mark the start of a @code{named parameter}
+ * Represents possible fixed values for a parameter
  */
-public class FixedValues extends AbstractProperty<String[]>
+public interface FixedValues
 {
-    public FixedValues(String[] value)
-    {
-        super(value);
-        for (int i = 0; i < value.length; i++)
-        {
-            value[i] = value[i].toLowerCase();
-        }
-    }
-
-    public static FixedValues of(Names annotation)
-    {
-        return new FixedValues(annotation.value());
-    }
+    /**
+     * Returns the name of the value
+     *
+     * @return the name
+     */
+    String getName();
 }

@@ -30,11 +30,11 @@ import java.util.Map.Entry;
 
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.FlagParameter;
+import de.cubeisland.engine.command.parameter.NamedParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParsedParameter;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
 
 /**
  * A context with parameterized values
@@ -63,19 +63,17 @@ public class ParameterizedContext extends BaseCommandContext
             else
             {
                 Integer pos = parameter.valueFor(FixedPosition.class);
-                String[] fixedValues = parameter.valueFor(FixedValues.class);
-                if (fixedValues == null && pos == null)
+                if (parameter instanceof NamedParameter)
                 {
-                    throw new IllegalStateException(
-                            "Cannot assign parameter that is neither positional nor has fixed values");
+                    nameBased.put(((NamedParameter)parameter).getNames()[0], parsed);
                 }
-                if (fixedValues != null)
-                {
-                    nameBased.put(fixedValues[0], parsed);
-                }
-                if (pos != null)
+                else if (pos != null)
                 {
                     positional.put(pos, parsed);
+                }
+                else
+                {
+                    throw new IllegalArgumentException("Cannot assign parameter that is neither positional nor has fixed values");
                 }
             }
         }

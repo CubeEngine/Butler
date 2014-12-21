@@ -81,7 +81,7 @@ public abstract class UsageGenerator
      */
     public final String generateUsage(CommandSource source, CommandDescriptor descriptor)
     {
-        Stack<String> names = getNames(descriptor);
+        Stack<String> names = getNames(descriptor); // TODO get labels from invocation
         Collections.reverse(names);
         return getPrefix(source) + StringUtils.join(" ", names) + " " + this.generateUsage(source, descriptor.valueFor(
             ParameterGroup.class)).trim();

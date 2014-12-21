@@ -24,7 +24,6 @@ package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.StringUtils;
-import de.cubeisland.engine.command.parameter.property.FixedValues;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 
@@ -97,28 +96,24 @@ public class ParameterUsageGenerator extends UsageGenerator
             return "[" + this.generateUsage(source, (ParameterGroup)parameter) + "]";
         }
         String valueLabel = parameter.valueFor(ValueLabel.class);
-        String[] fixedValues = parameter.valueFor(FixedValues.class);
         if (valueLabel != null)
         {
             valueLabel = this.valueLabel(source, valueLabel);
-            if (fixedValues != null)
-            {
-                valueLabel = fixedValues[0] + " <" + valueLabel + ">";
-            }
         }
-        else if (fixedValues != null)
+        else if (parameter instanceof FixedValueParameter)
         {
-            valueLabel = StringUtils.join("|", fixedValues);
-            if (!parameter.valueFor(Required.class))
-            {
-                return "[" + valueLabel + "]";
-            }
-            return valueLabel;
+            valueLabel = StringUtils.join("|", ((FixedValueParameter)parameter).getFixedValues());
         }
         else
         {
             valueLabel = "param";
         }
+
+        if (parameter instanceof NamedParameter)
+        {
+            valueLabel = ((NamedParameter)parameter).getNames()[0] + " <" + valueLabel + ">";
+        }
+
         if (parameter.valueFor(Required.class))
         {
             return "<" + valueLabel + ">";
