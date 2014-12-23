@@ -34,8 +34,8 @@ import java.util.Set;
 import de.cubeisland.engine.command.alias.AliasCommand;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
 import de.cubeisland.engine.command.alias.Aliases;
-import de.cubeisland.engine.command.filter.CommandFilter;
-import de.cubeisland.engine.command.filter.CommandFilters;
+import de.cubeisland.engine.command.filter.Filter;
+import de.cubeisland.engine.command.filter.Filters;
 import de.cubeisland.engine.command.methodic.MethodicCommandContainer;
 
 /**
@@ -203,7 +203,7 @@ public class DispatcherCommand implements Dispatcher
      */
     protected void checkInvocation(CommandInvocation invocation)
     {
-        for (CommandFilter filter : this.getDescriptor().valueFor(CommandFilters.class))
+        for (Filter filter : this.getDescriptor().valueFor(Filters.class))
         {
             filter.run(invocation);
         }

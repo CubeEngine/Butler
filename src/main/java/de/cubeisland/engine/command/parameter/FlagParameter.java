@@ -52,12 +52,6 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected boolean isAllowed(CommandInvocation invocation)
-    {
-        return true;
-    }
-
-    @Override
     protected boolean isPossible(CommandInvocation invocation)
     {
         String token = invocation.currentToken();

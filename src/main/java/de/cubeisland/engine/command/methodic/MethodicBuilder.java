@@ -36,7 +36,7 @@ import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
 import de.cubeisland.engine.command.completer.Completer;
 import de.cubeisland.engine.command.completer.CompleterProperty;
-import de.cubeisland.engine.command.filter.CommandFilters;
+import de.cubeisland.engine.command.filter.Filters;
 import de.cubeisland.engine.command.filter.Restricted;
 import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.alias.Alias;
@@ -123,7 +123,7 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         }
         descriptor.setProperty(new Aliases(aliasList));
 
-        CommandFilters filters = new CommandFilters();
+        Filters filters = new Filters();
         descriptor.setProperty(filters);
 
         Restricted restricted = origin.getMethod().getAnnotation(Restricted.class);
@@ -158,7 +158,6 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
             for (Param param : params.positional())
             {
                 Parameter parameter = this.createParameter(param, origin);
-                // TODO set valuelabel if not set but "needed"
                 parameter.setProperty(new FixedPosition(posList.size()));
                 posList.add(parameter);
             }

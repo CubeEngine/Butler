@@ -73,7 +73,6 @@ public class ParameterUsageGenerator extends UsageGenerator
      */
     protected String generateFlagUsage(CommandInvocation invocation, FlagParameter parameter)
     {
-        // TODO check required is false! IllegalParameterException
         return "[-" + parameter.longName() + "]";
     }
 

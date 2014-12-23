@@ -84,7 +84,7 @@ public class NamedParameter extends SimpleParameter
         {
             this.parse0(invocation, true);
         }
-        catch (Exception ignored) // TODO PartialParsing Exception or smth like that
+        catch (Exception ignored)
         {
 
         }

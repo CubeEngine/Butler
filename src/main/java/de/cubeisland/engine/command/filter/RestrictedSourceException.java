@@ -24,7 +24,7 @@ package de.cubeisland.engine.command.filter;
 
 import de.cubeisland.engine.command.CommandSource;
 
-public class RestrictedSourceException extends CommandFilterException
+public class RestrictedSourceException extends FilterException
 {
     private final Class<? extends CommandSource>[] value;
 

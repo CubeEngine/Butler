@@ -33,6 +33,7 @@ import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
@@ -118,7 +119,11 @@ public class BasicParametricCommand extends BasicMethodicCommand
     @Override
     protected BaseCommandContext buildContext(CommandInvocation invocation)
     {
-        // TODO if method needs ParameterizedContext give it
+        InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethodProperty.class);
+        if (ParameterizedContext.class.isAssignableFrom(invokableMethod.getMethod().getParameterTypes()[0]))
+        {
+            return new ParameterizedContext(invocation);
+        }
         return new BaseCommandContext(invocation);
     }
 }

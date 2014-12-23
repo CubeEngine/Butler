@@ -25,6 +25,8 @@ package de.cubeisland.engine.command.parameter;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.filter.Filter;
+import de.cubeisland.engine.command.filter.Filters;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
@@ -78,8 +80,18 @@ public abstract class Parameter extends PropertyHolder
      *
      * @return whether the parameter is allowed to be parsed
      */
-    // TODO also add permission checks etc. (hide the fact that the command "could" be correct but only permissions are missing)
-    protected abstract boolean isAllowed(CommandInvocation invocation);
+    protected boolean isAllowed(CommandInvocation invocation)
+    {
+        Filters filters = this.valueFor(Filters.class);
+        if (filters != null)
+        {
+            for (Filter filter : filters)
+            {
+                filter.run(invocation);
+            }
+        }
+        return true;
+    }
 
     /**
      * Checks if the parameter is possible for the given CommandInvocation

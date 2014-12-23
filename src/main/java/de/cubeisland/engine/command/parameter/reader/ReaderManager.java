@@ -30,14 +30,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.Parameter;
 
+// TODO add Owner to registerReader so it is possible to remove all Readers from an owner
 public class ReaderManager
 {
-    public static ReaderManager MANAGER; // TODO PLS REMOVE ME I AM REALLY EVIL
-    public ReaderManager()
-    {
-        MANAGER = this;
-    }
-
     private final Map<Class<?>, ArgumentReader> READERS = new ConcurrentHashMap<>();
 
     public void registerDefaultReader()

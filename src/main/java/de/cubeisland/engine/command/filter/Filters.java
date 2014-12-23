@@ -29,26 +29,26 @@ import java.util.List;
 import de.cubeisland.engine.command.util.property.Property;
 
 /**
- * Contains a List of CommandFilters
+ * Contains a List of Filters
  */
-public class CommandFilters implements Property<CommandFilters>, Iterable<CommandFilter>
+public class Filters implements Property<Filters>, Iterable<Filter>
 {
-    private List<CommandFilter> filters = new LinkedList<>();
+    private List<Filter> filters = new LinkedList<>();
 
     @Override
-    public CommandFilters value()
+    public Filters value()
     {
         return this;
     }
 
-    public void addFilter(CommandFilter filter)
+    public void addFilter(Filter filter)
     {
         this.filters.add(filter);
     }
 
-    public void removeFilter(Class<? extends CommandFilter> clazz)
+    public void removeFilter(Class<? extends Filter> clazz)
     {
-        Iterator<CommandFilter> it = filters.iterator();
+        Iterator<Filter> it = filters.iterator();
         while (it.hasNext())
         {
             if (it.next().getClass().equals(clazz))
@@ -59,7 +59,7 @@ public class CommandFilters implements Property<CommandFilters>, Iterable<Comman
     }
 
     @Override
-    public Iterator<CommandFilter> iterator()
+    public Iterator<Filter> iterator()
     {
         return this.filters.iterator();
     }

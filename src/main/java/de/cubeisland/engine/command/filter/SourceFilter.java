@@ -28,7 +28,7 @@ import de.cubeisland.engine.command.CommandSource;
 /**
  * Allows to run a command if the CommandSource is of an allowed type
  */
-public class SourceFilter implements CommandFilter
+public class SourceFilter implements Filter
 {
     private Class<? extends CommandSource>[] sources;
     private String msg;
@@ -46,7 +46,7 @@ public class SourceFilter implements CommandFilter
     }
 
     @Override
-    public void run(CommandInvocation invocation) throws CommandFilterException
+    public void run(CommandInvocation invocation) throws FilterException
     {
         boolean restrict = true;
         for (Class<? extends CommandSource> clazz : this.sources)

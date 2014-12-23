@@ -100,9 +100,13 @@ public class BasicMethodicCommand extends DispatcherCommand
         return false;
     }
 
-    protected BaseCommandContext buildContext(CommandInvocation call)
+    protected BaseCommandContext buildContext(CommandInvocation invocation)
     {
-        // TODO check with method which context is allowed / possible
-        return new ParameterizedContext(call);
+        InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethodProperty.class);
+        if (ParameterizedContext.class.isAssignableFrom(invokableMethod.getMethod().getParameterTypes()[0]))
+        {
+            return new ParameterizedContext(invocation);
+        }
+        return new BaseCommandContext(invocation);
     }
 }

@@ -22,19 +22,12 @@
  */
 package de.cubeisland.engine.command.filter;
 
-import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.CommandException;
 
-/**
- * CommandFilter are run before a command is run
- */
-public interface CommandFilter
+public class FilterException extends CommandException
 {
-    /**
-     * Runs this CommandFilter
-     *
-     * @param invocation the invocation
-     *
-     * @throws CommandFilterException when the filter is not passed
-     */
-    void run(CommandInvocation invocation) throws CommandFilterException;
+    public FilterException(String msg)
+    {
+        super(msg);
+    }
 }

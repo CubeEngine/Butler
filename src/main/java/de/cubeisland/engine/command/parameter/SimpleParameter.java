@@ -45,7 +45,7 @@ public class SimpleParameter extends Parameter
     public void parse(CommandInvocation invocation)
     {
         List<ParsedParameter> result = invocation.valueFor(ParsedParameters.class);
-        ParsedParameter pParam = this.parseValue(invocation); // TODO handle greedy params better
+        ParsedParameter pParam = this.parseValue(invocation);
         if (!result.isEmpty() && result.get(result.size() - 1).getParameter().equals(pParam.getParameter()))
         {
             ParsedParameter last = result.remove(result.size() - 1);
@@ -53,12 +53,6 @@ public class SimpleParameter extends Parameter
             pParam = ParsedParameter.of(pParam.getParameter(), joined, joined);
         }
         result.add(pParam);
-    }
-
-    @Override
-    protected boolean isAllowed(CommandInvocation invocation)
-    {
-        return true;
     }
 
     @Override

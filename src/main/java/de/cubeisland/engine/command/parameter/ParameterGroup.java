@@ -74,12 +74,6 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     }
 
     @Override
-    public boolean isAllowed(CommandInvocation invocation)
-    {
-        return true;
-    }
-
-    @Override
     public void parse(CommandInvocation invocation)
     {
         parse0(invocation, false);
@@ -150,8 +144,6 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
         }
 
-        // TODO perhaps here squash greedy params at the end together in first pass
-
         List<ParsedParameter> toGroup = new ArrayList<>();
         for (ParsedParameter param : params)
         {
@@ -172,7 +164,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
         for (Parameter parameter : positional)
         {
-            if (parameter.valueFor(Required.class) && parameter.greed != INFINITE) // TODO infinite greed better
+            if (parameter.valueFor(Required.class) && parameter.greed != INFINITE)
             {
                 if (!suggestion)
                 {
@@ -229,7 +221,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     @Override
     protected boolean isPossible(CommandInvocation invocation)
     {
-        return true; // TODO correct?
+        return true;
     }
 
     @Override
