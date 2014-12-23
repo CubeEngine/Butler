@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter;
 
-import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.StringUtils;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
@@ -33,26 +33,26 @@ import de.cubeisland.engine.command.parameter.property.ValueLabel;
 public class ParameterUsageGenerator extends UsageGenerator
 {
     @Override
-    public String generateUsage(CommandSource source, ParameterGroup parameters)
+    public String generateParameterUsage(CommandInvocation invocation, ParameterGroup parameters)
     {
         StringBuilder sb = new StringBuilder();
 
 
         for (Parameter parameter : parameters.getPositional())
         {
-            sb.append(generateParameterUsage(source, parameter)).append(" ");
+            sb.append(generateParameterUsage(invocation, parameter)).append(" ");
         }
 
         for (Parameter parameter : parameters.getNonPositional())
         {
-            sb.append(generateParameterUsage(source, parameter)).append(" ");
+            sb.append(generateParameterUsage(invocation, parameter)).append(" ");
         }
 
         for (Parameter parameter : parameters.getFlags())
         {
             if (parameter instanceof FlagParameter)
             {
-                sb.append(generateFlagUsage(source, (FlagParameter)parameter)).append(" ");
+                sb.append(generateFlagUsage(invocation, (FlagParameter)parameter)).append(" ");
             }
             else
             {
@@ -66,12 +66,12 @@ public class ParameterUsageGenerator extends UsageGenerator
     /**
      * Generates the usage for given {@link FlagParameter}
      *
-     * @param source    the {@link CommandSource}
-     * @param parameter the {@link Parameter}
+     * @param invocation   the invocation
+     * @param parameter the {@link de.cubeisland.engine.command.parameter.Parameter}
      *
      * @return the usage string
      */
-    protected String generateFlagUsage(CommandSource source, FlagParameter parameter)
+    protected String generateFlagUsage(CommandInvocation invocation, FlagParameter parameter)
     {
         // TODO check required is false! IllegalParameterException
         return "[-" + parameter.longName() + "]";
@@ -80,25 +80,25 @@ public class ParameterUsageGenerator extends UsageGenerator
     /**
      * Generates the usage for given {@link Parameter}
      *
-     * @param source    the {@link CommandSource}
-     * @param parameter the {@link Parameter}
+     * @param invocation    the {@link de.cubeisland.engine.command.CommandSource}
+     * @param parameter the {@link de.cubeisland.engine.command.parameter.Parameter}
      *
      * @return the usage string
      */
-    protected String generateParameterUsage(CommandSource source, Parameter parameter)
+    protected String generateParameterUsage(CommandInvocation invocation, Parameter parameter)
     {
         if (parameter instanceof ParameterGroup)
         {
             if (parameter.valueFor(Required.class))
             {
-                return "<" + this.generateUsage(source, (ParameterGroup)parameter) + ">";
+                return "<" + this.generateParameterUsage(invocation, (ParameterGroup)parameter) + ">";
             }
-            return "[" + this.generateUsage(source, (ParameterGroup)parameter) + "]";
+            return "[" + this.generateParameterUsage(invocation, (ParameterGroup)parameter) + "]";
         }
         String valueLabel = parameter.valueFor(ValueLabel.class);
         if (valueLabel != null)
         {
-            valueLabel = this.valueLabel(source, valueLabel);
+            valueLabel = this.valueLabel(invocation, valueLabel);
         }
         else if (parameter instanceof FixedValueParameter)
         {
@@ -128,12 +128,12 @@ public class ParameterUsageGenerator extends UsageGenerator
      * Possibly manipulates the label and returns it.
      * <p>This can be overwritten to for example translate the label</p>
      *
-     * @param source     the {@link CommandSource}
+     * @param invocation     the {@link de.cubeisland.engine.command.CommandSource}
      * @param valueLabel the valueLabel
      *
      * @return the manipulated label
      */
-    protected String valueLabel(CommandSource source, String valueLabel)
+    protected String valueLabel(CommandInvocation invocation, String valueLabel)
     {
         return valueLabel;
     }

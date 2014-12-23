@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import de.cubeisland.engine.command.CommandDescriptor;
-import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.DispatcherProperty;
 import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.util.property.Property;
@@ -57,9 +57,9 @@ public class AliasDescriptor implements CommandDescriptor
     }
 
     @Override
-    public String getUsage(CommandSource source)
+    public String getUsage(CommandInvocation invocation)
     {
-        return this.valueFor(UsageProvider.class).generateUsage(source, this);
+        return this.valueFor(UsageProvider.class).generateUsage(invocation, this);
     }
 
     @Override

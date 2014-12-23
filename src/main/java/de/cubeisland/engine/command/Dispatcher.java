@@ -37,7 +37,6 @@ public interface Dispatcher extends CommandBase
      * @return true if the command is now registered
      */
     boolean addCommand(CommandBase command);
-    // TODO ReplacementPolicy
 
     /**
      * Removes a command from this dispatcher

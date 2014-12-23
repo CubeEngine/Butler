@@ -97,13 +97,7 @@ public class DispatcherCommand implements Dispatcher
         }
         dispatcher.setDispatcher(this);
 
-        CommandBase replaced = this.commands.put(descriptor.getName().toLowerCase(), command);
-        if (replaced != null)
-        {
-            // TODO replacement Policy
-            // for now always replace
-            // TODO replacement Policy if command instanceOf AliasCommand
-        }
+        this.commands.put(descriptor.getName().toLowerCase(), command);
         if (!(command instanceof AliasCommand))
         {
             for (AliasConfiguration alias : descriptor.valueFor(Aliases.class))
@@ -183,7 +177,6 @@ public class DispatcherCommand implements Dispatcher
     {
         try
         {
-            // TODO check if allowed to run cmd / permission and type
             this.checkInvocation(invocation);
 
             if (!invocation.isConsumed())
@@ -214,38 +207,6 @@ public class DispatcherCommand implements Dispatcher
         {
             filter.run(invocation);
         }
-
-        /*
-
-        public void checkContext(CommandContext ctx) throws CommandException
-        {
-            if (ctx.getCommand().isCheckperm() && !ctx.getCommand().isAuthorized(ctx.getSource()))
-            {
-                throw new PermissionDeniedException(ctx.getCommand().getPermission());
-            }
-            super.checkContext(ctx); // After general perm check -> check bounds etc.
-            CtxDescriptor descriptor = ctx.getCommand().getContextFactory().descriptor();
-            // TODO also check perm for indexed Parameters
-            for (NamedParameter named : descriptor.getNamedGroups().listAll())
-            {
-                if (named instanceof PermissibleNamedParameter && ctx.hasNamed(named.getName()) &&
-                    !((PermissibleNamedParameter)named).checkPermission(ctx.getSource()))
-                {
-                    throw new PermissionDeniedException(((PermissibleNamedParameter)named).getPermission());
-                }
-            }
-
-            for (FlagParameter flag : descriptor.getFlags())
-            {
-                if (flag instanceof PermissibleFlag && ctx.hasFlag(flag.getName())
-                    && !((PermissibleFlag)flag).checkPermission(ctx.getSource()))
-                {
-                    throw new PermissionDeniedException(((PermissibleFlag)flag).getPermission());
-                }
-            }
-        }
-
-         */
     }
 
     /**

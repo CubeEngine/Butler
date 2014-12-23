@@ -48,10 +48,10 @@ public interface CommandDescriptor
     /**
      * Gets the usage of the command
      *
-     * @param source  the source to get the usage for
+     * @param invocation the invocation to get the usage for
      * @return the usage string
      */
-    String getUsage(CommandSource source);
+    String getUsage(CommandInvocation invocation);
 
     /**
      * Returns the description of the command
