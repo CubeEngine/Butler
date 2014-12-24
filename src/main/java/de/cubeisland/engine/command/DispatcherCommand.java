@@ -37,6 +37,7 @@ import de.cubeisland.engine.command.alias.Aliases;
 import de.cubeisland.engine.command.filter.Filter;
 import de.cubeisland.engine.command.filter.Filters;
 import de.cubeisland.engine.command.methodic.MethodicCommandContainer;
+import de.cubeisland.engine.command.util.property.PropertyHolder;
 
 /**
  * A Command that can dispatch sub-commands
@@ -116,6 +117,11 @@ public class DispatcherCommand implements Dispatcher
                     ((Dispatcher)aliasDispatcher).addCommand(new AliasCommand(alias, command));
                 }
             }
+        }
+
+        if (command.getDescriptor() instanceof PropertyHolder)
+        {
+            ((PropertyHolder)command.getDescriptor()).doFinalize();
         }
 
         if (command instanceof MethodicCommandContainer)
