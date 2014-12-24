@@ -94,10 +94,11 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             if (suggestion && invocation.tokens().size() - invocation.consumed() == 1)
             {
                 List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
-                list.addAll(suggestions);
+                list.addAll(suggestions); // Suggest indexed first then named then flags
                 return true;
             }
 
+            Collections.reverse(suggestions); // Try flags first then named then indexed
             boolean parsed = false;
             RuntimeException exception = null;
             int consumed = invocation.consumed();

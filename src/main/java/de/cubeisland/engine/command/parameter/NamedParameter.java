@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.parameter.reader.ReaderException;
 
 public class NamedParameter extends SimpleParameter
 {
