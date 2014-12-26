@@ -52,6 +52,7 @@ import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
+import de.cubeisland.engine.command.parameter.reader.DefaultProvider;
 import de.cubeisland.engine.command.util.property.Property;
 
 public class ParametricBuilder<OriginT extends InvokableMethod> extends MethodicBuilder<OriginT>
@@ -179,6 +180,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         int greed = 1;
         Flag flag = null;
         Named named = null;
+        Class defaultProvider = null;
         for (Annotation annotation : annotations)
         {
             if (annotation instanceof Flag)
@@ -206,6 +208,18 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
             else if (annotation instanceof Complete)
             {
                 properties.add(new CompleterProperty(((Complete)annotation).value()));
+            }
+            else if (annotation instanceof Default)
+            {
+                defaultProvider = ((Default)annotation).value();
+                if (defaultProvider == DefaultProvider.class)
+                {
+                    defaultProvider = clazz;
+                }
+            }
+            else if (annotation instanceof Type)
+            {
+                clazz = ((Type)annotation).value();
             }
         }
         if (reader == clazz && Enum.class.isAssignableFrom(clazz))
@@ -236,7 +250,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
                 parameter = new SimpleParameter(clazz, reader, greed);
             }
         }
-
+        parameter.setDefaultProvider(defaultProvider);
         parameter.setProperties(properties.toArray(new Property[properties.size()]));
         if (parameter.valueFor(Required.class) == null)
         {

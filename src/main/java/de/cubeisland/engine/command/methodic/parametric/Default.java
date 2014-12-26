@@ -20,47 +20,23 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter;
+package de.cubeisland.engine.command.methodic.parametric;
 
-import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import de.cubeisland.engine.command.parameter.reader.DefaultProvider;
-import de.cubeisland.engine.command.parameter.reader.ReaderException;
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 
 /**
- * An ArgumentReader for Flags
+ * When no value was parsed use a default value Provided by
  */
-public class FlagReader implements ArgumentReader<Boolean>, DefaultProvider<Boolean>
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+public @interface Default
 {
-    private final String name;
-    private final String longName;
-
-    public FlagReader(String name, String longName)
-    {
-        this.name = name;
-        this.longName = longName;
-    }
-
-    @Override
-    public Boolean read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException
-    {
-        String flag = invocation.currentToken();
-        if (flag.startsWith("-"))
-        {
-            flag = flag.substring(1);
-            if (this.name.equalsIgnoreCase(flag) || this.longName.equalsIgnoreCase(flag))
-            {
-                invocation.consume(1);
-                return true;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Boolean getDefault(CommandInvocation invocation)
-    {
-        return false;
-    }
+    Class<? extends DefaultProvider> value() default DefaultProvider.class;
 }

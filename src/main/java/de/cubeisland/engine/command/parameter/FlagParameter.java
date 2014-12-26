@@ -39,6 +39,7 @@ public class FlagParameter extends Parameter
         this.name = name;
         this.longName = longName;
         this.setProperty(new ValueReader(new FlagReader(name, longName))); // Set Custom FlagReader!
+        this.setDefaultProvider(FlagReader.class);
     }
 
     public final String name()

@@ -44,6 +44,7 @@ public abstract class Parameter extends PropertyHolder
     private final Class<?> type;
     private final Class<?> readerType;
     protected int greed;
+    private Class<?> defaultProvider;
 
     protected Parameter(Class<?> type, Class<?> reader, int greed)
     {
@@ -95,7 +96,9 @@ public abstract class Parameter extends PropertyHolder
 
     /**
      * Checks if the parameter is possible for the given CommandInvocation
+     *
      * @param invocation the invocation
+     *
      * @return whether the parameter can be parsed
      */
     protected abstract boolean isPossible(CommandInvocation invocation);
@@ -142,5 +145,15 @@ public abstract class Parameter extends PropertyHolder
     public int getGreed()
     {
         return greed;
+    }
+
+    public Class<?> getDefaultProvider()
+    {
+        return defaultProvider;
+    }
+
+    public void setDefaultProvider(Class<?> defaultProvider)
+    {
+        this.defaultProvider = defaultProvider;
     }
 }

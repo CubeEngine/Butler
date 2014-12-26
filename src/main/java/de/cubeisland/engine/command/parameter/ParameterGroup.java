@@ -169,6 +169,11 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             {
                 if (!suggestion)
                 {
+                    if (parameter.getDefaultProvider() != null)
+                    {
+                        params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
+                        continue;
+                    }
                     throw new TooFewArgumentsException();
                 }
             }

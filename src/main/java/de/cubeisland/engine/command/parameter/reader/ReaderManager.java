@@ -33,7 +33,8 @@ import de.cubeisland.engine.command.parameter.Parameter;
 // TODO add Owner to registerReader so it is possible to remove all Readers from an owner
 public class ReaderManager
 {
-    private final Map<Class<?>, ArgumentReader> READERS = new ConcurrentHashMap<>();
+    private final Map<Class<?>, ArgumentReader> readers = new ConcurrentHashMap<>();
+    private final Map<Class, DefaultProvider> defaultProviders = new ConcurrentHashMap<>();
 
     public void registerDefaultReader()
     {
@@ -46,14 +47,22 @@ public class ReaderManager
     {
         for (Class c : classes)
         {
-            READERS.put(c, reader);
+            readers.put(c, reader);
         }
-        READERS.put(reader.getClass(), reader);
+        readers.put(reader.getClass(), reader);
+        if (reader instanceof DefaultProvider)
+        {
+            defaultProviders.put(reader.getClass(), (DefaultProvider)reader);
+            for (Class<?> c : classes)
+            {
+                defaultProviders.put(c, (DefaultProvider)reader);
+            }
+        }
     }
 
     public ArgumentReader getReader(Class<?> type)
     {
-        return READERS.get(type);
+        return readers.get(type);
     }
 
     public ArgumentReader resolveReader(Class<?> type)
@@ -61,11 +70,11 @@ public class ReaderManager
         ArgumentReader reader = getReader(type);
         if (reader == null)
         {
-            for (Class<?> next : READERS.keySet())
+            for (Class<?> next : readers.keySet())
             {
                 if (type.isAssignableFrom(next))
                 {
-                    reader = READERS.get(next);
+                    reader = readers.get(next);
                     if (reader != null)
                     {
                         registerReader(reader, type);
@@ -84,7 +93,7 @@ public class ReaderManager
 
     public void removeReader(Class type)
     {
-        Iterator<Map.Entry<Class<?>, ArgumentReader>> it = READERS.entrySet().iterator();
+        Iterator<Map.Entry<Class<?>, ArgumentReader>> it = readers.entrySet().iterator();
 
         Map.Entry<Class<?>, ArgumentReader> entry;
         while (it.hasNext())
@@ -111,5 +120,10 @@ public class ReaderManager
             throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");
         }
         return reader.read(this, type, invocation);
+    }
+
+    public Object getDefault(Class<?> defaultProvider, CommandInvocation invocation)
+    {
+        return this.defaultProviders.get(defaultProvider).getDefault(invocation);
     }
 }

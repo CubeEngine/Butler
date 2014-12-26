@@ -24,13 +24,16 @@ package de.cubeisland.engine.command.parameter;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import de.cubeisland.engine.command.CommandInvocation;
 
 public class FixedValueParameter extends SimpleParameter
 {
-    private List<String> fixedValues = new ArrayList<>();
+    private Map<String, FixedValues> fixedValues = new HashMap<>();
 
     public FixedValueParameter(Class<? extends FixedValues> type, Class<?> reader)
     {
@@ -40,7 +43,7 @@ public class FixedValueParameter extends SimpleParameter
             Method valuesMethod = type.getMethod("values");
             for (FixedValues value : (FixedValues[])valuesMethod.invoke(null))
             {
-                fixedValues.add(value.getName());
+                fixedValues.put(value.getName(), value);
             }
         }
         catch (ReflectiveOperationException e)
@@ -53,9 +56,9 @@ public class FixedValueParameter extends SimpleParameter
     protected boolean isPossible(CommandInvocation invocation)
     {
         String token = invocation.currentToken();
-        for (String fixedValue : fixedValues)
+        for (String key : fixedValues.keySet())
         {
-            if (fixedValue.equalsIgnoreCase(token))
+            if (key.equalsIgnoreCase(token))
             {
                 return true;
             }
@@ -68,11 +71,11 @@ public class FixedValueParameter extends SimpleParameter
     {
         List<String> result = new ArrayList<>();
         String token = invocation.currentToken().toLowerCase();
-        for (String fixedValue : fixedValues)
+        for (String key : fixedValues.keySet())
         {
-            if (fixedValue.startsWith(token))
+            if (key.startsWith(token))
             {
-                result.add(fixedValue);
+                result.add(key);
             }
         }
         return result;
@@ -82,20 +85,20 @@ public class FixedValueParameter extends SimpleParameter
     public void parse(CommandInvocation invocation)
     {
         List<ParsedParameter> result = invocation.valueFor(ParsedParameters.class);
-        String token = invocation.currentToken();
-        for (String fixedValue : fixedValues)
+        String token = invocation.consume(1);
+        for (String key : fixedValues.keySet())
         {
-            if (fixedValue.equalsIgnoreCase(token))
+            if (key.equalsIgnoreCase(token))
             {
-                result.add(ParsedParameter.of(this, fixedValue, token));
+                result.add(ParsedParameter.of(this, fixedValues.get(key), token));
                 return;
             }
         }
         throw new IllegalStateException();
     }
 
-    public List<String> getFixedValues()
+    public Set<String> getFixedValues()
     {
-        return fixedValues;
+        return fixedValues.keySet();
     }
 }
