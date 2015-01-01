@@ -27,7 +27,7 @@ import java.util.List;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.filter.Filter;
 import de.cubeisland.engine.command.filter.Filters;
-import de.cubeisland.engine.command.parameter.property.Required;
+import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
 import de.cubeisland.engine.command.util.property.PropertyHolder;
@@ -50,7 +50,7 @@ public abstract class Parameter extends PropertyHolder
     {
         this.type = type;
         this.readerType = reader;
-        this.setProperty(Required.REQUIRED);
+        this.setProperty(Requirement.REQUIRED);
         this.greed = greed;
     }
 

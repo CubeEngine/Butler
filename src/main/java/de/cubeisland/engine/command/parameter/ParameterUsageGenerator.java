@@ -24,7 +24,7 @@ package de.cubeisland.engine.command.parameter;
 
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.StringUtils;
-import de.cubeisland.engine.command.parameter.property.Required;
+import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 
 /**
@@ -88,7 +88,7 @@ public class ParameterUsageGenerator extends UsageGenerator
     {
         if (parameter instanceof ParameterGroup)
         {
-            if (parameter.valueFor(Required.class))
+            if (Requirement.isRequired(parameter))
             {
                 return "<" + this.generateParameterUsage(invocation, (ParameterGroup)parameter) + ">";
             }
@@ -113,7 +113,7 @@ public class ParameterUsageGenerator extends UsageGenerator
             valueLabel = ((NamedParameter)parameter).getNames()[0] + " <" + valueLabel + ">";
         }
 
-        if (parameter.valueFor(Required.class))
+        if (Requirement.isRequired(parameter))
         {
             return "<" + valueLabel + ">";
         }

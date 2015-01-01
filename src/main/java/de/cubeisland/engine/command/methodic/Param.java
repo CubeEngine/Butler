@@ -40,6 +40,7 @@
 package de.cubeisland.engine.command.methodic;
 
 import de.cubeisland.engine.command.completer.Completer;
+import de.cubeisland.engine.command.parameter.property.Requirement;
 
 /**
  * A Parameter
@@ -85,9 +86,9 @@ public @interface Param
     /**
      * Whether the parameter is required or not
      *
-     * @return true if the parameter is required
+     * @return the Requirement value
      */
-    boolean req() default true;
+    Requirement req() default Requirement.DEFAULT;
 
     /**
      * A short description of the parameter

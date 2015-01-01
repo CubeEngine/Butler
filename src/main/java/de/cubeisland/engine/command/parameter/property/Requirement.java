@@ -23,23 +23,47 @@
 package de.cubeisland.engine.command.parameter.property;
 
 import de.cubeisland.engine.command.methodic.parametric.Optional;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import de.cubeisland.engine.command.parameter.NamedParameter;
+import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.util.property.Property;
 
 /**
  * Defines if the Parameter is required or not
  */
-public class Required extends AbstractProperty<Boolean>
+public enum Requirement implements Property<Requirement>
 {
-    public static final Required REQUIRED = new Required(true);
-    public static final Required OPTIONAL = new Required(false);
+    DEFAULT,
+    REQUIRED,
+    OPTIONAL;
 
-    private Required(Boolean value)
+    public static boolean isRequired(Parameter parameter)
     {
-        super(value);
+        boolean angleBrackets;
+        switch (parameter.valueFor(Requirement.class))
+        {
+            case REQUIRED:
+                angleBrackets = true;
+                break;
+            case OPTIONAL:
+                angleBrackets = false;
+                break;
+            case DEFAULT:
+            default:
+                angleBrackets = !(parameter instanceof NamedParameter);
+        }
+        return angleBrackets;
     }
 
-    public static Required of(Optional annotation)
+    @Override
+    public Requirement value()
+    {
+        return this;
+    }
+
+    public static Requirement of(Optional annotation)
     {
         return OPTIONAL;
     }
+
+
 }

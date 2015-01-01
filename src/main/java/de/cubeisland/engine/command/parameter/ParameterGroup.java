@@ -31,9 +31,10 @@ import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.methodic.SuggestionParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
-import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 import de.cubeisland.engine.command.util.property.Property;
+
+import static de.cubeisland.engine.command.parameter.property.Requirement.isRequired;
 
 /**
  * A ParameterGroup providing grouped Parameters
@@ -171,7 +172,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
                 continue;
             }
-            if (parameter.valueFor(Required.class) && parameter.greed != INFINITE)
+            if (isRequired(parameter) && parameter.greed != INFINITE)
             {
                 if (!suggestion)
                 {
@@ -187,7 +188,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
                 continue;
             }
-            if (parameter.valueFor(Required.class) && parameter.greed != INFINITE)
+            if (isRequired(parameter) && parameter.greed != INFINITE)
             {
                 if (!suggestion)
                 {

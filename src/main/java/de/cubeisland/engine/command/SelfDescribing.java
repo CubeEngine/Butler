@@ -22,8 +22,6 @@
  */
 package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.CommandDescriptor;
-
 public interface SelfDescribing
 {
     /**

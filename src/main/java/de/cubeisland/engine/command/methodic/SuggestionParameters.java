@@ -26,7 +26,6 @@ import java.util.List;
 
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.util.property.AbstractProperty;
-import de.cubeisland.engine.command.util.property.Property;
 
 public class SuggestionParameters extends AbstractProperty<List<Parameter>>
 {

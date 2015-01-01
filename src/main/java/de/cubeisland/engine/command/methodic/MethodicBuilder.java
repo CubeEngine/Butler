@@ -34,19 +34,19 @@ import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
-import de.cubeisland.engine.command.completer.Completer;
-import de.cubeisland.engine.command.completer.CompleterProperty;
-import de.cubeisland.engine.command.filter.Filters;
-import de.cubeisland.engine.command.filter.Restricted;
 import de.cubeisland.engine.command.UsageProvider;
 import de.cubeisland.engine.command.alias.Alias;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
 import de.cubeisland.engine.command.alias.Aliases;
+import de.cubeisland.engine.command.completer.Completer;
+import de.cubeisland.engine.command.completer.CompleterProperty;
+import de.cubeisland.engine.command.filter.Filters;
+import de.cubeisland.engine.command.filter.Restricted;
 import de.cubeisland.engine.command.filter.SourceFilter;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.FixedValueParameter;
-import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.FixedValues;
+import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.NamedParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
@@ -54,7 +54,6 @@ import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
 import de.cubeisland.engine.command.parameter.property.Description;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
-import de.cubeisland.engine.command.parameter.property.Required;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 
 // TODO BaseAlias + Alias pre/suffix arguments
@@ -207,7 +206,7 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
             parameter.setProperty(new ValueLabel(label));
         }
 
-        parameter.setProperty(anot.req() ? Required.REQUIRED : Required.OPTIONAL);
+        parameter.setProperty(anot.req());
 
         String desc = anot.desc();
         if (!desc.isEmpty())

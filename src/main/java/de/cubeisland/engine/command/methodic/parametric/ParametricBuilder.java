@@ -41,8 +41,8 @@ import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
 import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
 import de.cubeisland.engine.command.parameter.FixedValueParameter;
-import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.FixedValues;
+import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.NamedParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
@@ -50,10 +50,12 @@ import de.cubeisland.engine.command.parameter.SimpleParameter;
 import de.cubeisland.engine.command.parameter.property.Description;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
-import de.cubeisland.engine.command.parameter.property.Required;
+import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 import de.cubeisland.engine.command.parameter.reader.DefaultProvider;
 import de.cubeisland.engine.command.util.property.Property;
+
+import static de.cubeisland.engine.command.parameter.property.Requirement.OPTIONAL;
 
 public class ParametricBuilder<OriginT extends InvokableMethod> extends MethodicBuilder<OriginT>
 {
@@ -62,7 +64,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
     public ParametricBuilder()
     {
         this.addParameterProperty(Label.class, ValueLabel.class);
-        this.addParameterProperty(Optional.class, Required.class);
+        this.addParameterProperty(Optional.class, Requirement.class);
         this.addParameterProperty(Desc.class, Description.class);
     }
 
@@ -216,7 +218,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
                 {
                     defaultProvider = clazz;
                 }
-                properties.add(Required.OPTIONAL);
+                properties.add(OPTIONAL);
             }
             else if (annotation instanceof Type)
             {
@@ -253,9 +255,9 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         }
         parameter.setDefaultProvider(defaultProvider);
         parameter.setProperties(properties.toArray(new Property[properties.size()]));
-        if (parameter.valueFor(Required.class) == null)
+        if (parameter.valueFor(Requirement.class) == null)
         {
-            parameter.setProperty(Required.REQUIRED);
+            parameter.setProperty(Requirement.REQUIRED);
         }
         return parameter;
     }

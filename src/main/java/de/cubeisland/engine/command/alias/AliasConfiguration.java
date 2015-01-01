@@ -36,7 +36,8 @@ public class AliasConfiguration
      */
     public AliasConfiguration(String name)
     {
-        this(name , null);
+        this.name = name;
+        this.dispatcher = null;
     }
 
     /**
