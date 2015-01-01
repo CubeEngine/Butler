@@ -79,7 +79,7 @@ public abstract class UsageGenerator
      * @param invocation the invocation
      * @param descriptor the {@link de.cubeisland.engine.command.CommandDescriptor}
      *
-     * @return the getSuggestions usage String
+     * @return the complete usage String
      */
     public final String generateUsage(CommandInvocation invocation, CommandDescriptor descriptor, String... plabels)
     {
