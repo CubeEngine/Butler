@@ -32,6 +32,7 @@ import de.cubeisland.engine.command.methodic.SuggestionParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Required;
+import de.cubeisland.engine.command.parameter.property.ValueLabel;
 import de.cubeisland.engine.command.util.property.Property;
 
 /**
@@ -118,7 +119,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                         parsed = true;
                         if (parameter.greed != INFINITE)
                         {
-                            System.out.println("Chosen: " + parameter.getType());
+                            System.out.println("Parsed: " + parameter.valueFor(ValueLabel.class) + " | " + parameter.getType());
                             flags.remove(parameter);
                             nonPositional.remove(parameter);
                             positional.remove(parameter);
@@ -165,15 +166,15 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
         for (Parameter parameter : positional)
         {
+            if (parameter.getDefaultProvider() != null)
+            {
+                params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
+                continue;
+            }
             if (parameter.valueFor(Required.class) && parameter.greed != INFINITE)
             {
                 if (!suggestion)
                 {
-                    if (parameter.getDefaultProvider() != null)
-                    {
-                        params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
-                        continue;
-                    }
                     throw new TooFewArgumentsException();
                 }
             }
@@ -216,11 +217,6 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
         }
         System.out.println("Suggestions: " + invocation.currentToken());
-        for (Parameter suggestion : suggestions)
-        {
-            System.out.println("-" + suggestion.getType());
-        }
-
         return suggestions;
     }
 

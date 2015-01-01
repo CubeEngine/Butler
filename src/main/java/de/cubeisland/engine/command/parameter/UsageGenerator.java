@@ -22,6 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -80,10 +81,14 @@ public abstract class UsageGenerator
      *
      * @return the getSuggestions usage String
      */
-    public final String generateUsage(CommandInvocation invocation, CommandDescriptor descriptor)
+    public final String generateUsage(CommandInvocation invocation, CommandDescriptor descriptor, String... plabels)
     {
         List<String> labels;
-        if (invocation == null)
+        if (plabels != null && plabels.length > 0)
+        {
+            labels = Arrays.asList(plabels);
+        }
+        else if (invocation == null)
         {
             labels = getNames(descriptor);
             Collections.reverse(labels);

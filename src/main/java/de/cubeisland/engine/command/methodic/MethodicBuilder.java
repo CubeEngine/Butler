@@ -153,11 +153,11 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         {
             for (Param param : params.nonpositional())
             {
-                nPosList.add(this.createParameter(param, origin));
+                nPosList.add(this.createParameter(param, origin, false));
             }
             for (Param param : params.positional())
             {
-                Parameter parameter = this.createParameter(param, origin);
+                Parameter parameter = this.createParameter(param, origin, true);
                 parameter.setProperty(new FixedPosition(posList.size()));
                 posList.add(parameter);
             }
@@ -166,7 +166,7 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
     }
 
     @SuppressWarnings("unchecked")
-    private Parameter createParameter(Param anot, OriginT origin)
+    private Parameter createParameter(Param anot, OriginT origin, boolean positional)
     {
         Class type = anot.type();
         Class reader = anot.reader();
@@ -190,6 +190,10 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
             if (FixedValues.class.isAssignableFrom(type))
             {
                 parameter = new FixedValueParameter((Class<? extends FixedValues>)type, reader);
+            }
+            else if (positional)
+            {
+                parameter = new FixedValueParameter(names);
             }
             else
             {

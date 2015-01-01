@@ -33,7 +33,7 @@ import de.cubeisland.engine.command.CommandInvocation;
 
 public class FixedValueParameter extends SimpleParameter
 {
-    private Map<String, FixedValues> fixedValues = new HashMap<>();
+    private Map<String, Object> fixedValues = new HashMap<>();
 
     public FixedValueParameter(Class<? extends FixedValues> type, Class<?> reader)
     {
@@ -49,6 +49,15 @@ public class FixedValueParameter extends SimpleParameter
         catch (ReflectiveOperationException e)
         {
             throw new IllegalArgumentException("Error while extracting Fixed Values from class", e);
+        }
+    }
+
+    public FixedValueParameter(String[] names)
+    {
+        super(String.class, String.class, 1);
+        for (String name : names)
+        {
+            this.fixedValues.put(name, name);
         }
     }
 

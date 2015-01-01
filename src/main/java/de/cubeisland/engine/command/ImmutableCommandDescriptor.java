@@ -66,8 +66,8 @@ public class ImmutableCommandDescriptor extends ImmutablePropertyHolder implemen
     }
 
     @Override
-    public String getUsage(CommandInvocation invocation)
+    public String getUsage(CommandInvocation invocation, String... strings)
     {
-        return this.valueFor(UsageProvider.class).generateUsage(invocation, this);
+        return this.valueFor(UsageProvider.class).generateUsage(invocation, this, strings);
     }
 }

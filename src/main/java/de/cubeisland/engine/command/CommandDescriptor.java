@@ -49,9 +49,11 @@ public interface CommandDescriptor
      * Gets the usage of the command
      *
      * @param invocation the invocation to get the usage for
+     * @param labels     the labels, if kept empty it will use the labels from the invocation
+     *
      * @return the usage string
      */
-    String getUsage(CommandInvocation invocation);
+    String getUsage(CommandInvocation invocation, String... labels);
 
     /**
      * Returns the description of the command

@@ -216,6 +216,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
                 {
                     defaultProvider = clazz;
                 }
+                properties.add(Required.OPTIONAL);
             }
             else if (annotation instanceof Type)
             {

@@ -57,9 +57,9 @@ public class AliasDescriptor implements CommandDescriptor
     }
 
     @Override
-    public String getUsage(CommandInvocation invocation)
+    public String getUsage(CommandInvocation invocation, String... strings)
     {
-        return this.valueFor(UsageProvider.class).generateUsage(invocation, this);
+        return this.valueFor(UsageProvider.class).generateUsage(invocation, this, strings);
     }
 
     @Override
