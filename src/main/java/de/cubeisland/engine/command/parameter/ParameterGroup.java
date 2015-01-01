@@ -180,6 +180,22 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
         }
 
+        for (Parameter parameter : nonPositional)
+        {
+            if (parameter.getDefaultProvider() != null)
+            {
+                params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
+                continue;
+            }
+            if (parameter.valueFor(Required.class) && parameter.greed != INFINITE)
+            {
+                if (!suggestion)
+                {
+                    throw new TooFewArgumentsException();
+                }
+            }
+        }
+
         return true;
     }
 
