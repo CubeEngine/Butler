@@ -257,7 +257,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         parameter.setProperties(properties.toArray(new Property[properties.size()]));
         if (parameter.valueFor(Requirement.class) == null)
         {
-            parameter.setProperty(Requirement.REQUIRED);
+            parameter.setProperty(Requirement.DEFAULT);
         }
         return parameter;
     }

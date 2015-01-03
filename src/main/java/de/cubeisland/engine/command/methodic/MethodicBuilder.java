@@ -54,6 +54,7 @@ import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.SimpleParameter;
 import de.cubeisland.engine.command.parameter.property.Description;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
+import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
 
 // TODO BaseAlias + Alias pre/suffix arguments
@@ -217,6 +218,10 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         if (Completer.class != anot.completer())
         {
             parameter.setProperty(new CompleterProperty(anot.completer()));
+        }
+        if (parameter.valueFor(Requirement.class) == null)
+        {
+            parameter.setProperty(Requirement.DEFAULT);
         }
         return parameter;
     }

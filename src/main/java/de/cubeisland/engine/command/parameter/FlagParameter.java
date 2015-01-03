@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 
 public class FlagParameter extends Parameter
@@ -40,6 +41,7 @@ public class FlagParameter extends Parameter
         this.longName = longName;
         this.setProperty(new ValueReader(new FlagReader(name, longName))); // Set Custom FlagReader!
         this.setDefaultProvider(FlagReader.class);
+        this.setProperty(Requirement.OPTIONAL);
     }
 
     public final String name()

@@ -50,7 +50,6 @@ public abstract class Parameter extends PropertyHolder
     {
         this.type = type;
         this.readerType = reader;
-        this.setProperty(Requirement.REQUIRED);
         this.greed = greed;
     }
 
