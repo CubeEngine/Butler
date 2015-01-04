@@ -52,11 +52,7 @@ public class ReaderManager
         readers.put(reader.getClass(), reader);
         if (reader instanceof DefaultProvider)
         {
-            defaultProviders.put(reader.getClass(), (DefaultProvider)reader);
-            for (Class<?> c : classes)
-            {
-                defaultProviders.put(c, (DefaultProvider)reader);
-            }
+            this.registerDefaultProvider((DefaultProvider)reader, classes);
         }
     }
 
@@ -125,5 +121,14 @@ public class ReaderManager
     public Object getDefault(Class<?> defaultProvider, CommandInvocation invocation)
     {
         return this.defaultProviders.get(defaultProvider).getDefault(invocation);
+    }
+
+    public void registerDefaultProvider(DefaultProvider provider, Class... forClass)
+    {
+        defaultProviders.put(provider.getClass(), provider);
+        for (Class<?> c : forClass)
+        {
+            defaultProviders.put(c, provider);
+        }
     }
 }
