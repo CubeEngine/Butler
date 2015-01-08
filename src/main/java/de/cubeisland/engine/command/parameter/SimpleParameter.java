@@ -81,7 +81,7 @@ public class SimpleParameter extends Parameter
         }
         else
         {
-            System.out.println("NO COMPLETER FOUND!!!");
+            System.out.println("No completer found for " + completerClass);
         }
         return result;
     }

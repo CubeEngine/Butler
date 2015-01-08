@@ -120,7 +120,6 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                         parsed = true;
                         if (parameter.greed != INFINITE)
                         {
-                            System.out.println("Parsed: " + parameter.valueFor(ValueLabel.class) + " | " + parameter.getType());
                             flags.remove(parameter);
                             nonPositional.remove(parameter);
                             positional.remove(parameter);
@@ -233,7 +232,6 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 suggestions.add(flag);
             }
         }
-        System.out.println("Suggestions: " + invocation.currentToken());
         return suggestions;
     }
 
