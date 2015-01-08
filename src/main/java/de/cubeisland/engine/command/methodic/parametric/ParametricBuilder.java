@@ -23,10 +23,12 @@
 package de.cubeisland.engine.command.methodic.parametric;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +61,24 @@ import static de.cubeisland.engine.command.parameter.property.Requirement.OPTION
 
 public class ParametricBuilder<OriginT extends InvokableMethod> extends MethodicBuilder<OriginT>
 {
+    private static final Method PARAMETERS;
+    private static final Method PARAMETER_NAME;
+
+    static
+    {
+        Method parameters = null;
+        Method parameterNames = null;
+        try
+        {
+            parameters = Method.class.getMethod("getParameters");
+            parameterNames = parameters.getReturnType().getComponentType().getMethod("getName");
+        }
+        catch (NoSuchMethodException ignored)
+        {}
+        PARAMETERS = parameters;
+        PARAMETER_NAME = parameterNames;
+    }
+
     private final Map<Class<? extends Annotation>, Method> parameterProperties = new HashMap<>();
 
     public ParametricBuilder()
@@ -143,6 +163,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
             Class<?> paramType = parameterTypes[i];
             Annotation[] annotations = paramAnnotations[i];
             Parameter param = this.createParameter(descriptor, paramType, annotations, origin);
+            this.javaParameterLabel(param, method, i);
             param.setProperty(new MethodIndex(i));
             for (Annotation annotation : annotations) // Find type of Annotation to assign to correct list
             {
@@ -166,6 +187,25 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
             }
         }
         return new ParameterGroup(flagsList, nPosList, posList);
+    }
+
+    private void javaParameterLabel(Parameter param, Method method, int index)
+    {
+        if (PARAMETERS == null || param.valueFor(ValueLabel.class) != null)
+        {
+            return;
+        }
+        try
+        {
+            Object paramArray = PARAMETERS.invoke(method);
+            Object parameter = Array.get(paramArray, index);
+            Object name = PARAMETER_NAME.invoke(parameter);
+            param.setProperty(new ValueLabel(name.toString()));
+        }
+        catch (IllegalAccessException | InvocationTargetException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")
