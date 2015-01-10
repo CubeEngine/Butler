@@ -162,8 +162,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         {
             Class<?> paramType = parameterTypes[i];
             Annotation[] annotations = paramAnnotations[i];
-            Parameter param = this.createParameter(descriptor, paramType, annotations, origin);
-            this.javaParameterLabel(param, method, i);
+            Parameter param = this.createParameter(descriptor, paramType, annotations, origin, getJavaParameter(method, i));
             param.setProperty(new MethodIndex(i));
             for (Annotation annotation : annotations) // Find type of Annotation to assign to correct list
             {
@@ -189,18 +188,32 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         return new ParameterGroup(flagsList, nPosList, posList);
     }
 
-    private void javaParameterLabel(Parameter param, Method method, int index)
+    private Object getJavaParameter(Method method, int index)
     {
-        if (PARAMETERS == null || param.valueFor(ValueLabel.class) != null)
+        if (PARAMETERS == null || PARAMETER_NAME == null)
         {
-            return;
+            return null;
         }
         try
         {
             Object paramArray = PARAMETERS.invoke(method);
-            Object parameter = Array.get(paramArray, index);
-            Object name = PARAMETER_NAME.invoke(parameter);
-            param.setProperty(new ValueLabel(name.toString()));
+            return Array.get(paramArray, index);
+        }
+        catch (IllegalAccessException | InvocationTargetException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String javaParameterLabel(Object javaParameter)
+    {
+        if (PARAMETER_NAME == null)
+        {
+            throw new IllegalStateException("Missing Label");
+        }
+        try
+        {
+            return PARAMETER_NAME.invoke(javaParameter).toString();
         }
         catch (IllegalAccessException | InvocationTargetException e)
         {
@@ -209,7 +222,8 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
     }
 
     @SuppressWarnings("unchecked")
-    protected Parameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations, OriginT origin)
+    protected Parameter createParameter(CommandDescriptor descriptor, Class<?> clazz, Annotation[] annotations,
+                                        OriginT origin, Object javaParameter)
     {
         if (Group.class.isAssignableFrom(clazz))
         {
@@ -272,7 +286,14 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         Parameter parameter;
         if (flag != null)
         {
-            parameter = new FlagParameter(flag.name(), flag.longName());
+            String shortName = flag.name();
+            String longName = flag.longName();
+            if (shortName.isEmpty() && longName.isEmpty())
+            {
+                longName = javaParameterLabel(javaParameter);
+                shortName = longName.substring(0, 1);
+            }
+            parameter = new FlagParameter(shortName, longName);
         }
         else if (named != null)
         {
@@ -298,6 +319,10 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         if (parameter.valueFor(Requirement.class) == null)
         {
             parameter.setProperty(Requirement.DEFAULT);
+        }
+        if (parameter.valueFor(ValueLabel.class) == null)
+        {
+            parameter.setProperty(new ValueLabel(javaParameterLabel(javaParameter)));
         }
         return parameter;
     }
