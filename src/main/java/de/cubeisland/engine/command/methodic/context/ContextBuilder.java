@@ -20,19 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.result;
+package de.cubeisland.engine.command.methodic.context;
 
-/**
- * A result to be processed after the command was executed
- *
- * @param <ContextT> the type of the context
- */
-public interface CommandResult<ContextT>
+import de.cubeisland.engine.command.CommandInvocation;
+
+public interface ContextBuilder
 {
     /**
-     * Processes this CommandResult
+     * Builds a context for given invocation
      *
-     * @param context the context that was used by the command before
+     * @param invocation the invocation
+     * @return the context
      */
-    public void process(ContextT context);
+    Object buildContext(CommandInvocation invocation);
 }

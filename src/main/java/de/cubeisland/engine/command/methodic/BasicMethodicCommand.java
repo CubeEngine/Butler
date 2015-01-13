@@ -29,8 +29,8 @@ import java.util.List;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.DispatcherCommand;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
-import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
+import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
+import de.cubeisland.engine.command.methodic.context.ContextBuilderProperty;
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.parameter.ParameterGroup;
 import de.cubeisland.engine.command.parameter.ParsedParameters;
@@ -50,7 +50,7 @@ public class BasicMethodicCommand extends DispatcherCommand
         {
             invocation.setProperty(new ParsedParameters());
             this.getDescriptor().valueFor(ParameterGroup.class).parse(invocation);
-            ran = this.run(this.buildContext(invocation));
+            ran = this.run(invocation, this.buildContext(invocation));
         }
         return ran;
     }
@@ -72,14 +72,16 @@ public class BasicMethodicCommand extends DispatcherCommand
     /**
      * Runs this command with given CommandContext
      *
-     * @param commandContext the CommandContext
-     * @return whether the command was executed succesfully
+     *
+     * @param invocation
+     * @param context the context
+     * @return whether the command was executed successfully
      */
-    protected boolean run(BaseCommandContext commandContext)
+    protected boolean run(CommandInvocation invocation, Object context)
     {
         try
         {
-            Object result = this.getDescriptor().valueFor(InvokableMethodProperty.class).invoke(commandContext);
+            Object result = this.getDescriptor().valueFor(InvokableMethodProperty.class).invoke(context);
             if (result == null)
             {
                 return true;
@@ -95,18 +97,18 @@ public class BasicMethodicCommand extends DispatcherCommand
         }
         catch (IllegalAccessException | InvocationTargetException e)
         {
-            this.handleException(e, commandContext.getInvocation());
+            this.handleException(e, invocation);
         }
         return false;
     }
 
-    protected BaseCommandContext buildContext(CommandInvocation invocation)
+    /**
+     * Builds a new Context for this command
+     * @param invocation the invocation
+     * @return the Context for this command
+     */
+    protected Object buildContext(CommandInvocation invocation)
     {
-        InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethodProperty.class);
-        if (ParameterizedContext.class.isAssignableFrom(invokableMethod.getMethod().getParameterTypes()[0]))
-        {
-            return new ParameterizedContext(invocation);
-        }
-        return new BaseCommandContext(invocation);
+        return this.getDescriptor().valueFor(ContextBuilderProperty.class).buildContext(invocation);
     }
 }

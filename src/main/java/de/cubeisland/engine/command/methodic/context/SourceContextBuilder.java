@@ -20,19 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.result;
+package de.cubeisland.engine.command.methodic.context;
 
-/**
- * A result to be processed after the command was executed
- *
- * @param <ContextT> the type of the context
- */
-public interface CommandResult<ContextT>
+import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.filter.RestrictedSourceException;
+
+public class SourceContextBuilder implements ContextBuilder
 {
-    /**
-     * Processes this CommandResult
-     *
-     * @param context the context that was used by the command before
-     */
-    public void process(ContextT context);
+    private Class<? extends CommandSource> clazz;
+
+    public SourceContextBuilder(Class<? extends CommandSource> clazz)
+    {
+        this.clazz = clazz;
+    }
+
+    @Override
+    public Object buildContext(CommandInvocation invocation)
+    {
+        if (clazz.isAssignableFrom(invocation.getCommandSource().getClass()))
+        {
+            return invocation.getCommandSource();
+        }
+        throw new RestrictedSourceException(null, clazz);
+    }
 }

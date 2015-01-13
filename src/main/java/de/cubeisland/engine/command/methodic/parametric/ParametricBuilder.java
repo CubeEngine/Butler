@@ -28,7 +28,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
 import de.cubeisland.engine.command.parameter.FixedValueParameter;
 import de.cubeisland.engine.command.parameter.FixedValues;
 import de.cubeisland.engine.command.parameter.FlagParameter;
@@ -91,15 +90,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
     @Override
     protected boolean isApplicable(Method method)
     {
-        if (method.isAnnotationPresent(Command.class))
-        {
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length > 1 && BaseCommandContext.class.isAssignableFrom(parameterTypes[0]))
-            {
-                return true;
-            }
-        }
-        return false;
+        return method.isAnnotationPresent(Command.class) && method.getParameterTypes().length >= 1;
     }
 
     private void addParameterProperty(Class<? extends Annotation> annotClass, Class<? extends Property> propertyClass)
@@ -152,11 +143,6 @@ public class ParametricBuilder<OriginT extends InvokableMethod> extends Methodic
         List<Parameter> flagsList = new ArrayList<>();
         List<Parameter> nPosList = new ArrayList<>();
         List<Parameter> posList = new ArrayList<>();
-
-        if (!BaseCommandContext.class.isAssignableFrom(parameterTypes[0]))
-        {
-            throw new CommandException("Missing CommandContext in Method Signature " + method.getDeclaringClass().getName() + "#" + method.getName());
-        }
 
         for (int i = 1; i < parameterTypes.length; i++)
         {

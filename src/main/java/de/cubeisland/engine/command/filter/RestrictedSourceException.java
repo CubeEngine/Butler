@@ -28,7 +28,7 @@ public class RestrictedSourceException extends FilterException
 {
     private final Class<? extends CommandSource>[] value;
 
-    public RestrictedSourceException(String msg, Class<? extends CommandSource>[] value)
+    public RestrictedSourceException(String msg, Class<? extends CommandSource>... value)
     {
         super(msg);
         this.value = value;

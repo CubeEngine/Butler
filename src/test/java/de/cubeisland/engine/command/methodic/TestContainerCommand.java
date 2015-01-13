@@ -23,7 +23,7 @@
 package de.cubeisland.engine.command.methodic;
 
 import de.cubeisland.engine.command.CommandBuilder;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.methodic.parametric.Greed;
 
@@ -46,7 +46,7 @@ public class TestContainerCommand extends MethodicCommandContainer<Void, Invokab
     }
 
     @Command(desc = "a parametric command")
-    public boolean parametric(BaseCommandContext ctx, @Greed(INFINITE)String aString)
+    public boolean parametric(BasicCommandContext ctx, @Greed(INFINITE)String aString)
     {
         return aString.equals(ctx.getInvocation().getCommandLine());
     }

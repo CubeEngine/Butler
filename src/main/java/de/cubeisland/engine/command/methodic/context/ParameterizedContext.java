@@ -39,7 +39,7 @@ import de.cubeisland.engine.command.parameter.property.FixedPosition;
 /**
  * A context with parameterized values
  */
-public class ParameterizedContext extends BaseCommandContext
+public class ParameterizedContext extends BasicCommandContext
 {
     private final Map<Integer, ParsedParameter> positional = new HashMap<>();
     private final Map<String, ParsedParameter> nameBased = new HashMap<>();

@@ -20,19 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.result;
+package de.cubeisland.engine.command.methodic.context;
 
-/**
- * A result to be processed after the command was executed
- *
- * @param <ContextT> the type of the context
- */
-public interface CommandResult<ContextT>
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import de.cubeisland.engine.command.CommandInvocation;
+
+public class CommandContextBuilder implements ContextBuilder
 {
-    /**
-     * Processes this CommandResult
-     *
-     * @param context the context that was used by the command before
-     */
-    public void process(ContextT context);
+    private final Constructor<? extends BasicCommandContext> constructor;
+
+    public CommandContextBuilder(Class<? extends BasicCommandContext> clazz)
+    {
+        try
+        {
+            this.constructor = clazz.getConstructor(CommandInvocation.class);
+        }
+        catch (NoSuchMethodException e)
+        {
+            throw new IllegalArgumentException("Given class has no constructor with only a CommandInvocation");
+        }
+    }
+
+    @Override
+    public Object buildContext(CommandInvocation invocation)
+    {
+        try
+        {
+            return this.constructor.newInstance(invocation);
+        }
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
 }

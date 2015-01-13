@@ -32,6 +32,7 @@ import java.util.Set;
 
 import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.CommandDescriptor;
+import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.Name;
 import de.cubeisland.engine.command.UsageProvider;
@@ -43,7 +44,11 @@ import de.cubeisland.engine.command.completer.CompleterProperty;
 import de.cubeisland.engine.command.filter.Filters;
 import de.cubeisland.engine.command.filter.Restricted;
 import de.cubeisland.engine.command.filter.SourceFilter;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
+import de.cubeisland.engine.command.methodic.context.CommandContextBuilder;
+import de.cubeisland.engine.command.methodic.context.ContextBuilder;
+import de.cubeisland.engine.command.methodic.context.ContextBuilderProperty;
+import de.cubeisland.engine.command.methodic.context.SourceContextBuilder;
 import de.cubeisland.engine.command.parameter.FixedValueParameter;
 import de.cubeisland.engine.command.parameter.FixedValues;
 import de.cubeisland.engine.command.parameter.FlagParameter;
@@ -82,7 +87,7 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         if (method.isAnnotationPresent(Command.class))
         {
             Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length == 1 && BaseCommandContext.class.isAssignableFrom(parameterTypes[0]))
+            if (parameterTypes.length == 1 && BasicCommandContext.class.isAssignableFrom(parameterTypes[0]))
             {
                 return true;
             }
@@ -104,6 +109,13 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
         descriptor.setProperty(new Description(annotation.desc()));
         descriptor.setProperty(new InvokableMethodProperty(origin.getMethod(), origin.getHolder()));
         descriptor.setProperty(new UsageProvider(usageGenerator));
+
+        ContextBuilder contextBuilder = getContextBuilder(origin);
+        if (contextBuilder == null)
+        {
+            throw new IllegalArgumentException("No ContextBuilder found for command!");
+        }
+        descriptor.setProperty(new ContextBuilderProperty(contextBuilder));
 
         List<AliasConfiguration> aliasList = new ArrayList<>();
         for (String name : annotation.alias())
@@ -132,6 +144,26 @@ public class MethodicBuilder<OriginT extends InvokableMethod> implements Command
             filters.addFilter(new SourceFilter(restricted.value(), restricted.msg()));
         }
         return descriptor;
+    }
+
+    /**
+     * Returns the appropriate ContextBuilder for given origin
+     * @param origin the origin
+     * @return the ContextBuilder or {@code null} if not applicable
+     */
+    @SuppressWarnings("unchecked")
+    protected ContextBuilder getContextBuilder(OriginT origin)
+    {
+        Class<?> contextType = origin.getMethod().getParameterTypes()[0];
+        if (CommandSource.class.isAssignableFrom(contextType))
+        {
+            return new SourceContextBuilder((Class<? extends CommandSource>)contextType);
+        }
+        else if (BasicCommandContext.class.isAssignableFrom(contextType))
+        {
+            return new CommandContextBuilder((Class<? extends BasicCommandContext>)contextType);
+        }
+        return null;
     }
 
     protected ParameterGroup buildParameters(CommandDescriptor descriptor, OriginT origin)

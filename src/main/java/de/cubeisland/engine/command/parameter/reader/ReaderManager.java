@@ -41,6 +41,7 @@ public class ReaderManager
         registerReader(new StringReader(), String.class);
         registerReader(new SimpleListReader(","), List.class);
         registerReader(new SimpleEnumReader(), Enum.class);
+        registerReader(new StringArrayReader(), String[].class);
     }
 
     public void registerReader(ArgumentReader reader, Class<?>... classes)

@@ -26,13 +26,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
-import de.cubeisland.engine.command.methodic.context.BaseCommandContext;
+import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
 import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
 import de.cubeisland.engine.command.parameter.FlagParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
@@ -51,13 +52,13 @@ public class BasicParametricCommand extends BasicMethodicCommand
 
     @Override
     @SuppressWarnings("unchecked")
-    protected boolean run(BaseCommandContext commandContext)
+    protected boolean run(CommandInvocation invocation, Object context)
     {
         try
         {
             InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethodProperty.class);
             Object[] args = new Object[invokableMethod.getMethod().getParameterTypes().length];
-            args[0] = commandContext;
+            args[0] = context;
 
             ParameterGroup params = this.getDescriptor().valueFor(ParameterGroup.class);
             List<Parameter> parameters = new ArrayList<>(params.getFlags());
@@ -65,7 +66,7 @@ public class BasicParametricCommand extends BasicMethodicCommand
             parameters.addAll(params.getPositional());
             Collections.sort(parameters, MethodIndex.COMPARATOR);
 
-            List<ParsedParameter> parsedParams = new ArrayList<>(commandContext.getInvocation().valueFor(ParsedParameters.class));
+            List<ParsedParameter> parsedParams = new ArrayList<>(invocation.valueFor(ParsedParameters.class));
             for (Parameter parameter : parameters)
             {
                 Integer index = parameter.valueFor(MethodIndex.class);
@@ -106,24 +107,13 @@ public class BasicParametricCommand extends BasicMethodicCommand
             }
             else if (result instanceof CommandResult)
             {
-                ((CommandResult)result).process(commandContext);
+                ((CommandResult)result).process(context); // TODO recreate context for CommandResult OR somehow ensure the types are the same
             }
         }
         catch (IllegalAccessException | InvocationTargetException e)
         {
-            this.handleException(e, commandContext.getInvocation());
+            this.handleException(e, invocation);
         }
         return false;
-    }
-
-    @Override
-    protected BaseCommandContext buildContext(CommandInvocation invocation)
-    {
-        InvokableMethod invokableMethod = this.getDescriptor().valueFor(InvokableMethodProperty.class);
-        if (ParameterizedContext.class.isAssignableFrom(invokableMethod.getMethod().getParameterTypes()[0]))
-        {
-            return new ParameterizedContext(invocation);
-        }
-        return new BaseCommandContext(invocation);
     }
 }

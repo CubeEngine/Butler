@@ -20,63 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.methodic.context;
+package de.cubeisland.engine.command.parameter.reader;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.CommandSource;
 
-/**
- * A CommandContext for an Invocation of a MethodicCommand
- */
-public class BaseCommandContext
+public class StringArrayReader implements ArgumentReader<String[]>
 {
-    private final CommandInvocation invocation;
-
-    public BaseCommandContext(CommandInvocation invocation)
+    @Override
+    public String[] read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException
     {
-        this.invocation = invocation;
-    }
-
-    /**
-     * Returns the CommandCall
-     *
-     * @return the CommandCall
-     */
-    public CommandInvocation getInvocation()
-    {
-        return invocation;
-    }
-
-    /**
-     * Returns the parent calls
-     *
-     * @return the parent calls
-     */
-    public List<String> getParentInvocations()
-    {
-        return invocation.getLabels();
-    }
-
-    /**
-     * Returns the source of the commands invocation
-     *
-     * @return the CommandSource
-     */
-    public CommandSource getSource()
-    {
-        return invocation.getCommandSource();
-    }
-
-    /**
-     * Returns whether the source is of given type
-     *
-     * @param clazz the type
-     * @return whether the source is of given type
-     */
-    public boolean isSource(Class<? extends CommandSource> clazz)
-    {
-        return clazz.isAssignableFrom(this.getSource().getClass());
+        List<String> list = new ArrayList<>();
+        while (!invocation.isConsumed())
+        {
+            list.add(manager.read(String.class, String.class, invocation).toString());
+        }
+        return list.toArray(new String[list.size()]);
     }
 }
