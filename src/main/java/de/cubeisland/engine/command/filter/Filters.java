@@ -25,7 +25,6 @@ package de.cubeisland.engine.command.filter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import de.cubeisland.engine.command.util.property.Property;
 
 /**

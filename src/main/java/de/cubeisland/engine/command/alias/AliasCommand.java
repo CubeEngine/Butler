@@ -23,7 +23,6 @@
 package de.cubeisland.engine.command.alias;
 
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandBase;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandInvocation;

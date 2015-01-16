@@ -23,7 +23,6 @@
 package de.cubeisland.engine.command.completer;
 
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandInvocation;
 
 /**

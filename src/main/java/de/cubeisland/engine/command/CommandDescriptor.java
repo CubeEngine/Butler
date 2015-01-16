@@ -23,7 +23,6 @@
 package de.cubeisland.engine.command;
 
 import java.util.Set;
-
 import de.cubeisland.engine.command.util.property.Property;
 
 /**

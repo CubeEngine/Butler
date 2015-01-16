@@ -25,13 +25,11 @@ package de.cubeisland.engine.command.parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.methodic.SuggestionParameters;
 import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
-import de.cubeisland.engine.command.parameter.property.ValueLabel;
 import de.cubeisland.engine.command.util.property.Property;
 
 import static de.cubeisland.engine.command.parameter.property.Requirement.isRequired;

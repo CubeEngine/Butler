@@ -23,7 +23,6 @@
 package de.cubeisland.engine.command.parameter.property;
 
 import java.util.Comparator;
-
 import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.util.property.AbstractProperty;
 

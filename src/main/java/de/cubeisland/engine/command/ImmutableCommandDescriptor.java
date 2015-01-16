@@ -24,7 +24,6 @@ package de.cubeisland.engine.command;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import de.cubeisland.engine.command.alias.AliasConfiguration;
 import de.cubeisland.engine.command.alias.Aliases;
 import de.cubeisland.engine.command.parameter.property.Description;

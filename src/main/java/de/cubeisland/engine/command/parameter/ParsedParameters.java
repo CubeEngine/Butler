@@ -24,7 +24,6 @@ package de.cubeisland.engine.command.parameter;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 public class ParsedParameters extends AbstractProperty<List<ParsedParameter>>

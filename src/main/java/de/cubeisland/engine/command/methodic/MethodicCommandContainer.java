@@ -25,7 +25,6 @@ package de.cubeisland.engine.command.methodic;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.DispatcherCommand;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;

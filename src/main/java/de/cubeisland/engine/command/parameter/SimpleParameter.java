@@ -24,7 +24,6 @@ package de.cubeisland.engine.command.parameter;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.completer.Completer;
 import de.cubeisland.engine.command.completer.CompleterProperty;

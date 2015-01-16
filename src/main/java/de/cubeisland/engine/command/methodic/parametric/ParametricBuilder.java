@@ -31,16 +31,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import de.cubeisland.engine.command.CommandDescriptor;
-import de.cubeisland.engine.command.CommandException;
 import de.cubeisland.engine.command.ImmutableCommandDescriptor;
 import de.cubeisland.engine.command.completer.CompleterProperty;
 import de.cubeisland.engine.command.methodic.Command;
 import de.cubeisland.engine.command.methodic.Flag;
 import de.cubeisland.engine.command.methodic.InvokableMethod;
 import de.cubeisland.engine.command.methodic.MethodicBuilder;
-import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
 import de.cubeisland.engine.command.parameter.FixedValueParameter;
 import de.cubeisland.engine.command.parameter.FixedValues;
 import de.cubeisland.engine.command.parameter.FlagParameter;

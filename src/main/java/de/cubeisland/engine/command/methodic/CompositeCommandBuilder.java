@@ -24,7 +24,6 @@ package de.cubeisland.engine.command.methodic;
 
 import java.util.Arrays;
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandBuilder;
 
 public class CompositeCommandBuilder<OriginT> implements CommandBuilder<BasicMethodicCommand, OriginT>

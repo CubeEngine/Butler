@@ -23,7 +23,6 @@
 package de.cubeisland.engine.command.alias;
 
 import java.util.List;
-
 import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 /**

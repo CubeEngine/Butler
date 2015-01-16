@@ -24,7 +24,6 @@ package de.cubeisland.engine.command.alias;
 
 import java.util.Collections;
 import java.util.Set;
-
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.DispatcherProperty;

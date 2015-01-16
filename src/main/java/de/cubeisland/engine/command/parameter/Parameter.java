@@ -23,11 +23,9 @@
 package de.cubeisland.engine.command.parameter;
 
 import java.util.List;
-
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.filter.Filter;
 import de.cubeisland.engine.command.filter.Filters;
-import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueReader;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
 import de.cubeisland.engine.command.util.property.PropertyHolder;
