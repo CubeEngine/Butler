@@ -20,23 +20,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric;
 
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * A Description
+ * Defines the amount of tokens the parameter can consume
  */
-public class Description extends AbstractProperty<String>
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+public @interface Greed
 {
-    public Description(String string)
-    {
-        super(string);
-    }
-
-    public static Description of(Desc annotation)
-    {
-        return new Description(annotation.value());
-    }
+    int value() default 1;
 }

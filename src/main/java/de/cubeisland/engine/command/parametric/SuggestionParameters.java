@@ -20,23 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric;
 
-import de.cubeisland.engine.command.parametric.Desc;
+import java.util.List;
+import de.cubeisland.engine.command.parameter.Parameter;
 import de.cubeisland.engine.command.util.property.AbstractProperty;
 
-/**
- * A Description
- */
-public class Description extends AbstractProperty<String>
+public class SuggestionParameters extends AbstractProperty<List<Parameter>>
 {
-    public Description(String string)
+    public SuggestionParameters(List<Parameter> value)
     {
-        super(string);
-    }
-
-    public static Description of(Desc annotation)
-    {
-        return new Description(annotation.value());
+        super(value);
     }
 }

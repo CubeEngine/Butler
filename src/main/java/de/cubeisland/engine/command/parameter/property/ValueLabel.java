@@ -22,7 +22,7 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.methodic.parametric.Label;
+import de.cubeisland.engine.command.parametric.Label;
 import de.cubeisland.engine.command.util.property.AbstractProperty;
 
 /**

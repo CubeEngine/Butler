@@ -20,23 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
-
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+package de.cubeisland.engine.command.parametric;
 
 /**
- * A Description
+ * An empty interface to indicate a grouping of Parameters
  */
-public class Description extends AbstractProperty<String>
+public interface Group
 {
-    public Description(String string)
-    {
-        super(string);
-    }
-
-    public static Description of(Desc annotation)
-    {
-        return new Description(annotation.value());
-    }
 }

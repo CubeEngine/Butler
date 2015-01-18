@@ -25,15 +25,14 @@ package de.cubeisland.engine.command.parameter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import de.cubeisland.engine.command.methodic.BasicMethodicCommand;
-import de.cubeisland.engine.command.methodic.parametric.Command;
-import de.cubeisland.engine.command.methodic.InvokableMethod;
-import de.cubeisland.engine.command.methodic.InvokableMethodProperty;
-import de.cubeisland.engine.command.methodic.MethodicBuilder;
-import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
-import de.cubeisland.engine.command.methodic.parametric.Label;
-import de.cubeisland.engine.command.methodic.parametric.Optional;
-import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
+import de.cubeisland.engine.command.parametric.BasicParametricCommand;
+import de.cubeisland.engine.command.parametric.Command;
+import de.cubeisland.engine.command.parametric.InvokableMethod;
+import de.cubeisland.engine.command.parametric.Label;
+import de.cubeisland.engine.command.parametric.Optional;
+import de.cubeisland.engine.command.parametric.ParametricBuilder;
+import de.cubeisland.engine.command.parametric.ParametricCommandDescriptor;
+import de.cubeisland.engine.command.parametric.context.BasicCommandContext;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,15 +40,15 @@ import static org.junit.Assert.assertEquals;
 
 public class ParameterUsageGeneratorTest
 {
-    private List<BasicMethodicCommand> commands = new ArrayList<>();
+    private List<BasicParametricCommand> commands = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception
     {
-        ParametricBuilder<InvokableMethod> builder = new ParametricBuilder<>();
-        for (Method method : MethodicBuilder.getMethods(this.getClass()))
+        ParametricBuilder<InvokableMethod, ParametricCommandDescriptor> builder = new ParametricBuilder<>(new ParameterUsageGenerator());
+        for (Method method : ParametricBuilder.getMethods(this.getClass()))
         {
-            BasicMethodicCommand cmd = builder.buildCommand(new InvokableMethodProperty(method, this));
+            BasicParametricCommand cmd = builder.buildCommand(new InvokableMethod(method, this));
             if (cmd != null)
             {
                 commands.add(cmd);
@@ -60,7 +59,7 @@ public class ParameterUsageGeneratorTest
     @Test
     public void testGenerator() throws Exception
     {
-        for (BasicMethodicCommand command : commands)
+        for (BasicParametricCommand command : commands)
         {
             assertEquals(command.getDescriptor().getDescription(), command.getDescriptor().getUsage(null));
         }

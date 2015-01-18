@@ -22,14 +22,13 @@
  */
 package de.cubeisland.engine.command;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * Handles Exceptions that come up when running a command
  */
-public class ExceptionHandler
+public interface ExceptionHandler
 {
-    public void handleException(Throwable e, CommandBase command, CommandInvocation invocation)
+    public void handleException(Throwable e, CommandBase command, CommandInvocation invocation);
+    /* TODO
     {
         if (e instanceof InvocationTargetException)
         {
@@ -45,4 +44,5 @@ public class ExceptionHandler
             e.printStackTrace();
         }
     }
+    */
 }

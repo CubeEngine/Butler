@@ -20,23 +20,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric;
 
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * A Description
+ * This annotation marks a target Element that represents a command
  */
-public class Description extends AbstractProperty<String>
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface Command
 {
-    public Description(String string)
-    {
-        super(string);
-    }
+    /**
+     * Returns the name of the command
+     *
+     * @return the name of the command
+     */
+    String name() default "";
 
-    public static Description of(Desc annotation)
-    {
-        return new Description(annotation.value());
-    }
+    /**
+     * Returns the aliases of the command
+     *
+     * @return the aliases of the command
+     */
+    String[] alias() default {};
+
+    /**
+     * Returns the description of the command
+     *
+     * @return the description of the command
+     */
+    String desc();
 }
+
+

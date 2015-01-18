@@ -22,9 +22,9 @@
  */
 package de.cubeisland.engine.command.parameter.property;
 
-import de.cubeisland.engine.command.methodic.parametric.Optional;
 import de.cubeisland.engine.command.parameter.NamedParameter;
 import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.parametric.Optional;
 import de.cubeisland.engine.command.util.property.Property;
 
 /**

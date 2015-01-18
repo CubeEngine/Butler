@@ -32,11 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import de.cubeisland.engine.command.alias.AliasCommand;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
-import de.cubeisland.engine.command.alias.Aliases;
 import de.cubeisland.engine.command.filter.Filter;
-import de.cubeisland.engine.command.filter.Filters;
-import de.cubeisland.engine.command.methodic.MethodicCommandContainer;
-import de.cubeisland.engine.command.util.property.PropertyHolder;
+import de.cubeisland.engine.command.parametric.ParametricContainerCommand;
 
 /**
  * A Command that can dispatch sub-commands
@@ -56,22 +53,10 @@ public class DispatcherCommand implements Dispatcher
         this.descriptor = descriptor;
     }
 
-    protected DispatcherCommand()
-    {
-        if (this instanceof SelfDescribing)
-        {
-            this.descriptor = ((SelfDescribing)this).selfDescribe();
-        }
-        else
-        {
-            throw new MissingCommandDescriptorException();
-        }
-    }
-
     @Override
     public Dispatcher getBaseDispatcher()
     {
-        Dispatcher dispatcher = this.descriptor.valueFor(DispatcherProperty.class).getDispatcher();
+        Dispatcher dispatcher = this.getDescriptor().getDispatcher();
         if (dispatcher == null)
         {
             return this;
@@ -84,23 +69,24 @@ public class DispatcherCommand implements Dispatcher
     {
         CommandDescriptor descriptor = command.getDescriptor();
 
-        // Remove command from old dispatcher and set this one
-        DispatcherProperty dispatcher = descriptor.valueFor(DispatcherProperty.class);
-        if (dispatcher == null)
+        if (!(descriptor instanceof Dispatchable))
         {
-            throw new IllegalArgumentException("The provided command is missing a DispatcherProperty");
+            throw new IllegalArgumentException("The given command is not dispatchable");
         }
-        Dispatcher oldDispatcher = dispatcher.getDispatcher();
+
+        // Remove command from old dispatcher and set this one
+        Dispatcher oldDispatcher = descriptor.getDispatcher();
         if (oldDispatcher != null)
         {
             oldDispatcher.removeCommand(command);
         }
-        dispatcher.setDispatcher(this);
+        ((Dispatchable)descriptor).setDispatcher(this);
 
         this.commands.put(descriptor.getName().toLowerCase(), command);
         if (!(command instanceof AliasCommand))
         {
-            for (AliasConfiguration alias : descriptor.valueFor(Aliases.class))
+
+            for (AliasConfiguration alias : descriptor.getAliases())
             {
                 if (alias.getDispatcher() == null)
                 {
@@ -118,14 +104,9 @@ public class DispatcherCommand implements Dispatcher
             }
         }
 
-        if (command.getDescriptor() instanceof PropertyHolder)
+        if (command instanceof ParametricContainerCommand)
         {
-            ((PropertyHolder)command.getDescriptor()).doFinalize();
-        }
-
-        if (command instanceof MethodicCommandContainer)
-        {
-            ((MethodicCommandContainer)command).registerSubCommands();
+            ((ParametricContainerCommand)command).registerSubCommands();
         }
 
         return true;
@@ -137,8 +118,7 @@ public class DispatcherCommand implements Dispatcher
         boolean removed = this.commands.values().removeAll(Collections.singleton(command));
         if (removed)
         {
-            DispatcherProperty dispatcher = descriptor.valueFor(DispatcherProperty.class);
-            dispatcher.setDispatcher(null);
+            ((Dispatchable)command.getDescriptor()).setDispatcher(null);
         }
         return removed;
     }
@@ -208,9 +188,9 @@ public class DispatcherCommand implements Dispatcher
      */
     protected void checkInvocation(CommandInvocation invocation)
     {
-        for (Filter filter : this.getDescriptor().valueFor(Filters.class))
+        if (getDescriptor() instanceof Filter)
         {
-            filter.run(invocation);
+            ((Filter)getDescriptor()).run(invocation);
         }
     }
 
@@ -221,12 +201,11 @@ public class DispatcherCommand implements Dispatcher
      */
     protected void handleException(Throwable e, CommandInvocation invocation)
     {
-        ExceptionHandler handler = this.getBaseDispatcher().getDescriptor().valueFor(ExceptionHandlerProperty.class);
-        if (handler == null)
+        if (!(this.getBaseDispatcher().getDescriptor() instanceof ExceptionHandler))
         {
             throw new MissingExceptionHandlerException("The Base Dispatcher has no Exception Handler!", e);
         }
-        handler.handleException(e, this, invocation);
+        ((ExceptionHandler)this.getBaseDispatcher().getDescriptor()).handleException(e, this, invocation);
     }
 
     /**

@@ -20,23 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric.context;
 
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import de.cubeisland.engine.command.CommandInvocation;
 
-/**
- * A Description
- */
-public class Description extends AbstractProperty<String>
+public interface ContextBuilder
 {
-    public Description(String string)
-    {
-        super(string);
-    }
-
-    public static Description of(Desc annotation)
-    {
-        return new Description(annotation.value());
-    }
+    /**
+     * Builds a context for given invocation
+     *
+     * @param invocation the invocation
+     * @param parameterType the parameterType
+     * @return the context
+     */
+    Object buildContext(CommandInvocation invocation, Class<?> parameterType);
 }

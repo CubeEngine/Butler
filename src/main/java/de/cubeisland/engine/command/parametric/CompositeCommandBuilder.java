@@ -20,23 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric;
 
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import java.util.Arrays;
+import java.util.List;
+import de.cubeisland.engine.command.CommandBuilder;
 
-/**
- * A Description
- */
-public class Description extends AbstractProperty<String>
+public class CompositeCommandBuilder<OriginT> implements CommandBuilder<BasicParametricCommand, OriginT>
 {
-    public Description(String string)
+    private final List<CommandBuilder<BasicParametricCommand, OriginT>> list;
+
+    public CompositeCommandBuilder(List<CommandBuilder<BasicParametricCommand, OriginT>> list)
     {
-        super(string);
+        this.list = list;
     }
 
-    public static Description of(Desc annotation)
+    @SafeVarargs
+    public CompositeCommandBuilder(CommandBuilder<BasicParametricCommand, OriginT>... builders)
     {
-        return new Description(annotation.value());
+        this(Arrays.asList(builders));
+    }
+
+    @Override
+    public BasicParametricCommand buildCommand(OriginT origin)
+    {
+        for (CommandBuilder<BasicParametricCommand, OriginT> builder : list)
+        {
+            BasicParametricCommand command = builder.buildCommand(origin);
+            if (command != null)
+            {
+                return command;
+            }
+        }
+        return null;
     }
 }

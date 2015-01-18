@@ -29,49 +29,14 @@ import java.util.Stack;
 import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.Dispatcher;
-import de.cubeisland.engine.command.DispatcherProperty;
-import de.cubeisland.engine.command.StringUtils;
+
+import static de.cubeisland.engine.command.StringUtils.join;
 
 /**
  * Provides the ability to generate a usage for a {@link ParameterGroup}
  */
 public abstract class UsageGenerator
 {
-    /**
-     * Returns the names of the given command and all its dispatchers
-     *
-     * @param descriptor the command
-     *
-     * @return the names
-     */
-    public static Stack<String> getNames(CommandDescriptor descriptor)
-    {
-        Stack<String> cmds = new Stack<>();
-        cmds.push(descriptor.getName());
-        Dispatcher dispatcher = descriptor.valueFor(DispatcherProperty.class).getDispatcher();
-        while (dispatcher != null && dispatcher.getDescriptor() != null)
-        {
-            descriptor = dispatcher.getDescriptor();
-            if (descriptor.getName().isEmpty())
-            {
-                break;
-            }
-            cmds.add(descriptor.getName());
-            dispatcher = descriptor.valueFor(DispatcherProperty.class).getDispatcher();
-        }
-        return cmds;
-    }
-
-    /**
-     * Generates the usage for given {@link ParameterGroup}
-     *
-     * @param invocation     the invocation
-     * @param parameters the {@link de.cubeisland.engine.command.parameter.ParameterGroup}
-     *
-     * @return the generated usage string
-     */
-    protected abstract String generateParameterUsage(CommandInvocation invocation, ParameterGroup parameters);
-
     /**
      * Generates the usage for a given CommandDescriptor and CommandSource
      *
@@ -96,8 +61,32 @@ public abstract class UsageGenerator
         {
             labels = invocation.getLabels();
         }
-        return getPrefix(invocation) + StringUtils.join(" ", labels) + " " +
-            this.generateParameterUsage(invocation, descriptor.valueFor(ParameterGroup.class)).trim();
+        return getPrefix(invocation) + join(" ", labels) + " " + this.generateParameterUsage(invocation, descriptor).trim();
+    }
+
+    /**
+     * Returns the names of the given command and all its dispatchers
+     *
+     * @param descriptor the command
+     *
+     * @return the names
+     */
+    public static Stack<String> getNames(CommandDescriptor descriptor)
+    {
+        Stack<String> commands = new Stack<>();
+        commands.push(descriptor.getName());
+        Dispatcher dispatcher = descriptor.getDispatcher();
+        while (dispatcher != null && dispatcher.getDescriptor() != null)
+        {
+            descriptor = dispatcher.getDescriptor();
+            if (descriptor.getName().isEmpty())
+            {
+                break;
+            }
+            commands.add(descriptor.getName());
+            dispatcher = descriptor.getDispatcher();
+        }
+        return commands;
     }
 
     /**
@@ -111,4 +100,14 @@ public abstract class UsageGenerator
     {
         return "";
     }
+
+    /**
+     * Generates the usage for given {@link ParameterGroup}
+     *
+     * @param invocation the invocation
+     * @param descriptor the {@link CommandDescriptor}
+     *
+     * @return the generated usage string
+     */
+    protected abstract String generateParameterUsage(CommandInvocation invocation, CommandDescriptor descriptor);
 }

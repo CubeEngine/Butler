@@ -20,54 +20,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.alias;
+package de.cubeisland.engine.command;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import de.cubeisland.engine.command.CommandDescriptor;
-import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.Dispatchable;
-import de.cubeisland.engine.command.Dispatcher;
+import de.cubeisland.engine.command.alias.AliasConfiguration;
+import de.cubeisland.engine.command.parameter.UsageGenerator;
 
-public class AliasDescriptor implements CommandDescriptor, Dispatchable
+public class SimpleCommandDescriptor implements CommandDescriptor, Dispatchable
 {
     private String name;
-    private CommandDescriptor descriptor;
+    private String description;
+    private UsageGenerator usageGenerator;
+    private List<AliasConfiguration> aliases = new ArrayList<>();
     private Dispatcher dispatcher;
-
-    public AliasDescriptor(String name, CommandDescriptor descriptor)
-    {
-        this.name = name;
-        this.descriptor = descriptor;
-    }
 
     @Override
     public String getName()
     {
-        return this.name;
+        return name;
     }
 
-    @Override
-    public List<AliasConfiguration> getAliases()
+    public void setName(String name)
     {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public String getUsage(CommandInvocation invocation, String... strings)
-    {
-        return descriptor.getUsage(invocation, strings);
+        this.name = name;
     }
 
     @Override
     public String getDescription()
     {
-        return this.descriptor.getDescription();
+        return description;
     }
 
-    public CommandDescriptor mainDescriptor()
+    public void setDescription(String description)
     {
-        return descriptor;
+        this.description = description;
+    }
+
+    @Override
+    public List<AliasConfiguration> getAliases()
+    {
+        return aliases;
+    }
+
+    public void addAliases(List<AliasConfiguration> aliases)
+    {
+        this.aliases.addAll(aliases);
+    }
+
+    public void setUsageGenerator(UsageGenerator usageGenerator)
+    {
+        this.usageGenerator = usageGenerator;
+    }
+
+    @Override
+    public String getUsage(CommandInvocation invocation, String... labels)
+    {
+        return usageGenerator.generateUsage(invocation, this, labels);
     }
 
     @Override

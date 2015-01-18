@@ -22,10 +22,12 @@
  */
 package de.cubeisland.engine.command.parameter;
 
+import de.cubeisland.engine.command.CommandDescriptor;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.StringUtils;
 import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
+import de.cubeisland.engine.command.parametric.ParametricCommandDescriptor;
 
 /**
  * A simple Implementation of the UsageGenerator
@@ -33,11 +35,16 @@ import de.cubeisland.engine.command.parameter.property.ValueLabel;
 public class ParameterUsageGenerator extends UsageGenerator
 {
     @Override
-    public String generateParameterUsage(CommandInvocation invocation, ParameterGroup parameters)
+    public String generateParameterUsage(CommandInvocation invocation, CommandDescriptor descriptor)
     {
         StringBuilder sb = new StringBuilder();
 
+        if (!(descriptor instanceof ParametricCommandDescriptor))
+        {
+            return "<parameters>";
+        }
 
+        ParameterGroup parameters = ((ParametricCommandDescriptor)descriptor).getParameters();
         for (Parameter parameter : parameters.getPositional())
         {
             sb.append(generateParameterUsage(invocation, parameter)).append(" ");

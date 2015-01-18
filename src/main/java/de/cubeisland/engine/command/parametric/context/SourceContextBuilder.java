@@ -20,23 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric.context;
 
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.filter.RestrictedSourceException;
 
-/**
- * A Description
- */
-public class Description extends AbstractProperty<String>
+public class SourceContextBuilder implements ContextBuilder
 {
-    public Description(String string)
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object buildContext(CommandInvocation invocation, Class<?>  parameterType)
     {
-        super(string);
-    }
-
-    public static Description of(Desc annotation)
-    {
-        return new Description(annotation.value());
+        if (parameterType.isAssignableFrom(invocation.getCommandSource().getClass()))
+        {
+            return invocation.getCommandSource();
+        }
+        throw new RestrictedSourceException(null, (Class<? extends CommandSource>)parameterType);
     }
 }

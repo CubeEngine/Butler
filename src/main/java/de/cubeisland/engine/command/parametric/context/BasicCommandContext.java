@@ -20,51 +20,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command;
+package de.cubeisland.engine.command.parametric.context;
 
 import java.util.List;
-import de.cubeisland.engine.command.alias.AliasConfiguration;
+import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.CommandSource;
 
 /**
- * Provides general information about a command
+ * A CommandContext for an Invocation of a MethodicCommand
  */
-public interface CommandDescriptor
+public class BasicCommandContext
 {
-    /**
-     * Returns the name of the command
-     *
-     * @return the name
-     */
-    String getName();
+    private final CommandInvocation invocation;
+
+    public BasicCommandContext(CommandInvocation invocation)
+    {
+        this.invocation = invocation;
+    }
 
     /**
-     * Returns the aliases of the command under the same dispatcher
+     * Returns the CommandCall
      *
-     * @return the aliases
+     * @return the CommandCall
      */
-    List<AliasConfiguration> getAliases();
+    public CommandInvocation getInvocation()
+    {
+        return invocation;
+    }
 
     /**
-     * Gets the usage of the command
+     * Returns the parent calls
      *
-     * @param invocation the invocation to get the usage for
-     * @param labels     the labels, if kept empty it will use the labels from the invocation
-     *
-     * @return the usage string
+     * @return the parent calls
      */
-    String getUsage(CommandInvocation invocation, String... labels);
+    public List<String> getParentInvocations()
+    {
+        return invocation.getLabels();
+    }
 
     /**
-     * Returns the description of the command
+     * Returns the source of the commands invocation
      *
-     * @return the description
+     * @return the CommandSource
      */
-    String getDescription();
+    public CommandSource getSource()
+    {
+        return invocation.getCommandSource();
+    }
 
     /**
-     * Returns the dispatcher for the command of this descriptor
+     * Returns whether the source is of given type
      *
-     * @return the dispatcher
+     * @param clazz the type
+     * @return whether the source is of given type
      */
-    Dispatcher getDispatcher();
+    public boolean isSource(Class<? extends CommandSource> clazz)
+    {
+        return clazz.isAssignableFrom(this.getSource().getClass());
+    }
 }

@@ -20,23 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric;
 
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import de.cubeisland.engine.command.CommandBase;
+import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.ExceptionHandler;
+import de.cubeisland.engine.command.parametric.context.CommandContextBuilder;
+import de.cubeisland.engine.command.parametric.context.ContextBuilder;
 
-/**
- * A Description
- */
-public class Description extends AbstractProperty<String>
+public class TestContainerDescriptor extends ContainerCommandDescriptor implements ExceptionHandler, ContextBuilder
 {
-    public Description(String string)
+    private CommandContextBuilder builder = new CommandContextBuilder();
+
+    @Override
+    public Object buildContext(CommandInvocation invocation, Class<?> parameterType)
     {
-        super(string);
+        return builder.buildContext(invocation, parameterType);
     }
 
-    public static Description of(Desc annotation)
+    @Override
+    public void handleException(Throwable e, CommandBase command, CommandInvocation invocation)
     {
-        return new Description(annotation.value());
+        throw new IllegalStateException(e);
     }
 }

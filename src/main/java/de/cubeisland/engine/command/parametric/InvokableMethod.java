@@ -20,23 +20,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.property;
+package de.cubeisland.engine.command.parametric;
 
-import de.cubeisland.engine.command.parametric.Desc;
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
- * A Description
+ * A Method and its holder
  */
-public class Description extends AbstractProperty<String>
+public class InvokableMethod
 {
-    public Description(String string)
+    private final Method method;
+    private final Object holder;
+
+    public InvokableMethod(Method method, Object holder)
     {
-        super(string);
+        this.method = method;
+        this.holder = holder;
     }
 
-    public static Description of(Desc annotation)
+    /**
+     * Returns the Method
+     *
+     * @return the Method
+     */
+    public Method getMethod()
     {
-        return new Description(annotation.value());
+        return method;
+    }
+
+    /**
+     * Returns the Holder
+     *
+     * @return the holder
+     */
+    public Object getHolder()
+    {
+        return holder;
+    }
+
+    /**
+     * Invokes the Method with given arguments
+     *
+     * @param args the arguments
+     *
+     * @return the returned object
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T invoke(Object... args) throws InvocationTargetException, IllegalAccessException
+    {
+        return (T)method.invoke(holder, args);
     }
 }
