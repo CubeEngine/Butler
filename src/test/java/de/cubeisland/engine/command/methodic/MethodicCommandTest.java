@@ -30,7 +30,7 @@ import java.util.UUID;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.CommandSource;
 import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
-import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
+import de.cubeisland.engine.command.methodic.parametric.Command;
 import de.cubeisland.engine.command.methodic.parametric.Greed;
 import de.cubeisland.engine.command.methodic.parametric.ParametricBuilder;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
@@ -72,8 +72,7 @@ public class MethodicCommandTest
     {
         readerManager = new ReaderManager();
         readerManager.registerDefaultReader();
-        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new MethodicBuilder(),
-                new ParametricBuilder());
+        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new ParametricBuilder());
         for (Method method : MethodicBuilder.getMethods(this.getClass()))
         {
             BasicMethodicCommand cmd = builder.buildCommand(new InvokableMethodProperty(method, this));
@@ -92,25 +91,6 @@ public class MethodicCommandTest
         {
             assertTrue(command.execute(new CommandInvocation(source, command.getDescriptor().getDescription(), readerManager)));
         }
-    }
-
-    @Command(desc = "I get matched as one String by this greedy parameter")
-    @Params(positional = @Param(greed = INFINITE))
-    public boolean methodic1(ParameterizedContext ctx)
-    {
-        assertEquals(ctx.getStrings(0), ctx.getInvocation().getCommandLine());
-        return true;
-    }
-
-    @Command(desc = "First Second Second too")
-    @Params(positional = {
-            @Param(), @Param(greed = INFINITE)
-    })
-    public boolean methodic2(ParameterizedContext ctx)
-    {
-        assertEquals(ctx.getString(0), "First");
-        assertEquals(ctx.getStrings(1), "Second Second too");
-        return true;
     }
 
     @Command(desc = "Also a long String that gets matched completely")

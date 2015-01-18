@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.methodic;
+package de.cubeisland.engine.command.methodic.parametric;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -29,14 +29,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A Set of Flags
+ * A Flag
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Flags
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+public @interface Flag
 {
-    Flag[] value();
+    String name() default "";
+    String longName() default "";
 }
-
-

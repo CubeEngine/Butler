@@ -35,6 +35,7 @@ import de.cubeisland.engine.command.alias.Alias;
 import de.cubeisland.engine.command.alias.AliasConfiguration;
 import de.cubeisland.engine.command.alias.Aliases;
 import de.cubeisland.engine.command.filter.Filters;
+import de.cubeisland.engine.command.methodic.parametric.Command;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
 import de.cubeisland.engine.command.parameter.property.Description;
 

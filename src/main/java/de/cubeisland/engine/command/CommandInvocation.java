@@ -24,6 +24,7 @@ package de.cubeisland.engine.command;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import de.cubeisland.engine.command.parameter.reader.ReaderManager;
@@ -38,9 +39,11 @@ import static de.cubeisland.engine.command.StringUtils.join;
  */
 public class CommandInvocation extends PropertyHolder
 {
+    public static final String SPACE = " ";
     private final CommandSource commandSource;
     private final String commandLine;
-    private final List<String> labels = new ArrayList<>();
+
+    private final LinkedHashMap<String, CommandBase> invocationPath = new LinkedHashMap<>();
 
     private final List<String> tokens;
     private final ReaderManager manager;
@@ -57,7 +60,7 @@ public class CommandInvocation extends PropertyHolder
 
     public CommandInvocation(CommandSource source, String commandLine, ReaderManager manager)
     {
-        this(source, commandLine, " ", manager);
+        this(source, commandLine, SPACE, manager);
     }
 
     protected List<String> tokenize(String commandLine, String delim)
@@ -203,9 +206,9 @@ public class CommandInvocation extends PropertyHolder
         return this.commandSource;
     }
 
-    public CommandInvocation subInvocation()
+    public CommandInvocation subInvocation(CommandBase command)
     {
-        this.labels.add(this.consume(1));
+        this.invocationPath.put(this.consume(1), command);
         return this;
     }
 
@@ -216,7 +219,7 @@ public class CommandInvocation extends PropertyHolder
      */
     public List<String> getLabels()
     {
-        return Collections.unmodifiableList(this.labels);
+        return new ArrayList<>(this.invocationPath.keySet());
     }
 
     /**

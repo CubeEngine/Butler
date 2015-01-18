@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.methodic;
+package de.cubeisland.engine.command.methodic.parametric;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -29,13 +29,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A Flag
+ * This annotation marks a target Element that represents a command
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-public @interface Flag
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface Command
 {
+    /**
+     * Returns the name of the command
+     *
+     * @return the name of the command
+     */
     String name() default "";
-    String longName() default "";
+
+    /**
+     * Returns the aliases of the command
+     *
+     * @return the aliases of the command
+     */
+    String[] alias() default {};
+
+    /**
+     * Returns the description of the command
+     *
+     * @return the description of the command
+     */
+    String desc();
 }
+
+

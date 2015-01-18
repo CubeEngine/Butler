@@ -189,7 +189,7 @@ public class DispatcherCommand implements Dispatcher
                 CommandBase command = this.getCommand(invocation.currentToken());
                 if (command != null)
                 {
-                    return command.execute(invocation.subInvocation());
+                    return command.execute(invocation.subInvocation(command));
                 }
             }
             return this.selfExecute(invocation);
@@ -271,7 +271,7 @@ public class DispatcherCommand implements Dispatcher
             {
                 return null; // Nothing to tab
             }
-            return command.getSuggestions(invocation.subInvocation());
+            return command.getSuggestions(invocation.subInvocation(command));
         }
         return result;
     }

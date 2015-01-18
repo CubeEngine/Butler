@@ -24,7 +24,7 @@ package de.cubeisland.engine.command.methodic;
 
 import de.cubeisland.engine.command.CommandBuilder;
 import de.cubeisland.engine.command.methodic.context.BasicCommandContext;
-import de.cubeisland.engine.command.methodic.context.ParameterizedContext;
+import de.cubeisland.engine.command.methodic.parametric.Command;
 import de.cubeisland.engine.command.methodic.parametric.Greed;
 
 import static de.cubeisland.engine.command.parameter.Parameter.INFINITE;
@@ -36,13 +36,6 @@ public class TestContainerCommand extends MethodicCommandContainer<Void, Invokab
     public TestContainerCommand(CommandBuilder<BasicMethodicCommand, InvokableMethod> builder)
     {
         super(builder, null);
-    }
-
-    @Command(desc = "a methodic command")
-    @Params(positional = @Param(greed = INFINITE))
-    public boolean methodic(ParameterizedContext ctx)
-    {
-        return ctx.getStrings(0).equals(ctx.getInvocation().getCommandLine());
     }
 
     @Command(desc = "a parametric command")
