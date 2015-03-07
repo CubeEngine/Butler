@@ -22,9 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.Provider;
 
-public interface DefaultProvider<ObjectT>
+public class DefaultProvider extends Provider<DefaultValue>
 {
-    ObjectT getDefault(CommandInvocation invocation);
 }

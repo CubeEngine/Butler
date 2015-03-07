@@ -22,10 +22,8 @@
  */
 package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.ProviderManager;
+import de.cubeisland.engine.command.Provider;
 
-public interface ArgumentReader<ObjectT>
+public class ReaderProvider extends Provider<ArgumentReader>
 {
-    ObjectT read(ProviderManager manager, Class type, CommandInvocation invocation) throws ReaderException;
 }

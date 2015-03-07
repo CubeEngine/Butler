@@ -23,6 +23,7 @@
 package de.cubeisland.engine.command.parameter.reader;
 
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.ProviderManager;
 
 /**
  * A Reader for UpperCased Enum names
@@ -31,7 +32,7 @@ public class SimpleEnumReader implements ArgumentReader
 {
     @Override
     @SuppressWarnings("unchecked")
-    public Object read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException
+    public Object read(ProviderManager manager, Class type, CommandInvocation invocation) throws ReaderException
     {
         if (manager.hasReader(type))
         {

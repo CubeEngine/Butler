@@ -27,7 +27,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import de.cubeisland.engine.command.parameter.reader.DefaultProvider;
+import de.cubeisland.engine.command.parameter.reader.DefaultValue;
 
 /**
  * When no value was parsed use a default value Provided by
@@ -37,5 +37,5 @@ import de.cubeisland.engine.command.parameter.reader.DefaultProvider;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 public @interface Default
 {
-    Class<? extends DefaultProvider> value() default DefaultProvider.class;
+    Class<? extends DefaultValue> value() default DefaultValue.class;
 }

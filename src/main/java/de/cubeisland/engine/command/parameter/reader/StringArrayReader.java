@@ -25,11 +25,12 @@ package de.cubeisland.engine.command.parameter.reader;
 import java.util.ArrayList;
 import java.util.List;
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.ProviderManager;
 
 public class StringArrayReader implements ArgumentReader<String[]>
 {
     @Override
-    public String[] read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException
+    public String[] read(ProviderManager manager, Class type, CommandInvocation invocation) throws ReaderException
     {
         List<String> list = new ArrayList<>();
         while (!invocation.isConsumed())

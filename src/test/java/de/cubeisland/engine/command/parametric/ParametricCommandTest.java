@@ -27,8 +27,9 @@ import java.util.UUID;
 import de.cubeisland.engine.command.CommandBase;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.CommandSource;
+import de.cubeisland.engine.command.ProviderManager;
+import de.cubeisland.engine.command.completer.CompleterProvider;
 import de.cubeisland.engine.command.parameter.ParameterUsageGenerator;
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +37,8 @@ import static org.junit.Assert.assertTrue;
 
 public class ParametricCommandTest
 {
-    private ReaderManager readerManager;
+    private ProviderManager providerManager;
+    private CompleterProvider completerProvider;
     private CommandSource source = new CommandSource()
     {
         @Override
@@ -63,9 +65,9 @@ public class ParametricCommandTest
     @Before
     public void setUp() throws Exception
     {
-        readerManager = new ReaderManager();
-        readerManager.registerDefaultReader();
-        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new ParametricBuilder(new ParameterUsageGenerator()));
+        providerManager = new ProviderManager();
+        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new ParametricBuilder(
+            new ParameterUsageGenerator()));
 
         container = new TestParametricCommand(builder);
         container.registerSubCommands();
@@ -76,11 +78,8 @@ public class ParametricCommandTest
     {
         for (CommandBase command : container.getCommands())
         {
-            assertTrue(command.execute(new CommandInvocation(source, command.getDescriptor().getDescription(), readerManager)));
+            assertTrue(command.execute(new CommandInvocation(source, command.getDescriptor().getDescription(),
+                                                             providerManager)));
         }
     }
-
-
-
-
 }

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+import de.cubeisland.engine.command.completer.CompleterProvider;
 import de.cubeisland.engine.command.util.property.PropertyHolder;
 
 import static de.cubeisland.engine.command.StringUtils.join;
@@ -46,11 +46,11 @@ public class CommandInvocation extends PropertyHolder
     private final List<String> labels = new ArrayList<>();
 
     private final List<String> tokens;
-    private final ReaderManager manager;
+    private final ProviderManager manager;
 
     private int consumed = 0;
 
-    public CommandInvocation(CommandSource source, String commandLine, String delim, ReaderManager manager)
+    public CommandInvocation(CommandSource source, String commandLine, String delim, ProviderManager manager)
     {
         this.commandSource = source;
         this.commandLine = commandLine;
@@ -58,7 +58,7 @@ public class CommandInvocation extends PropertyHolder
         this.manager = manager;
     }
 
-    public CommandInvocation(CommandSource source, String commandLine, ReaderManager manager)
+    public CommandInvocation(CommandSource source, String commandLine, ProviderManager manager)
     {
         this(source, commandLine, SPACE, manager);
     }
@@ -91,7 +91,7 @@ public class CommandInvocation extends PropertyHolder
      *
      * @return the readerManager
      */
-    public ReaderManager getManager()
+    public ProviderManager getManager()
     {
         return manager;
     }

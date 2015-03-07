@@ -24,9 +24,9 @@ package de.cubeisland.engine.command.parametric;
 
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.CommandSource;
-import de.cubeisland.engine.command.parameter.reader.ReaderManager;
+import de.cubeisland.engine.command.ProviderManager;
 
 public interface InvocationBuilder
 {
-    CommandInvocation build(CommandSource source, String commandLine, String delim, ReaderManager manager);
+    CommandInvocation build(CommandSource source, String commandLine, String delim, ProviderManager manager);
 }

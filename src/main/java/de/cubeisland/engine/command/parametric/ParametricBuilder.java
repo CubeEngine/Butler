@@ -54,7 +54,7 @@ import de.cubeisland.engine.command.parameter.property.FixedPosition;
 import de.cubeisland.engine.command.parameter.property.MethodIndex;
 import de.cubeisland.engine.command.parameter.property.Requirement;
 import de.cubeisland.engine.command.parameter.property.ValueLabel;
-import de.cubeisland.engine.command.parameter.reader.DefaultProvider;
+import de.cubeisland.engine.command.parameter.reader.DefaultValue;
 import de.cubeisland.engine.command.util.property.Property;
 
 import static de.cubeisland.engine.command.parameter.property.Requirement.OPTIONAL;
@@ -313,7 +313,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
             else if (annotation instanceof Default)
             {
                 defaultProvider = ((Default)annotation).value();
-                if (defaultProvider == DefaultProvider.class)
+                if (defaultProvider == DefaultValue.class)
                 {
                     defaultProvider = clazz;
                 }

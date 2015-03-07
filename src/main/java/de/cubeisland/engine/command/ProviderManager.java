@@ -20,45 +20,64 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parameter.reader;
+package de.cubeisland.engine.command;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.completer.Completer;
+import de.cubeisland.engine.command.completer.CompleterProvider;
 import de.cubeisland.engine.command.parameter.Parameter;
+import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
+import de.cubeisland.engine.command.parameter.reader.DefaultProvider;
+import de.cubeisland.engine.command.parameter.reader.DefaultValue;
+import de.cubeisland.engine.command.parameter.reader.ReaderException;
+import de.cubeisland.engine.command.parameter.reader.ReaderProvider;
+import de.cubeisland.engine.command.parameter.reader.SimpleEnumReader;
+import de.cubeisland.engine.command.parameter.reader.SimpleListReader;
+import de.cubeisland.engine.command.parameter.reader.StringArrayReader;
+import de.cubeisland.engine.command.parameter.reader.StringReader;
 
-// TODO add Owner to registerReader so it is possible to remove all Readers from an owner
-public class ReaderManager
+public class ProviderManager
 {
-    private final Map<Class<?>, ArgumentReader> readers = new ConcurrentHashMap<>();
-    private final Map<Class, DefaultProvider> defaultProviders = new ConcurrentHashMap<>();
+    private CompleterProvider completers = new CompleterProvider();
+    private ReaderProvider readers = new ReaderProvider();
+    private DefaultProvider defaults = new DefaultProvider();
 
-    public void registerDefaultReader()
+    public ProviderManager()
     {
-        registerReader(new StringReader(), String.class);
-        registerReader(new SimpleListReader(","), List.class);
-        registerReader(new SimpleEnumReader(), Enum.class);
-        registerReader(new StringArrayReader(), String[].class);
+        register(this, new StringReader(), String.class);
+        register(this, new SimpleListReader(","), List.class);
+        register(this, new SimpleEnumReader(), Enum.class);
+        register(this, new StringArrayReader(), String[].class);
     }
 
-    public void registerReader(ArgumentReader reader, Class<?>... classes)
+    public void register(Object owner, Object toRegister, Class<?>... classes)
     {
-        for (Class c : classes)
+        if (toRegister instanceof ArgumentReader)
         {
-            readers.put(c, reader);
+            readers.register(owner, (ArgumentReader)toRegister, classes);
         }
-        readers.put(reader.getClass(), reader);
-        if (reader instanceof DefaultProvider)
+
+        if (toRegister instanceof DefaultValue)
         {
-            this.registerDefaultProvider((DefaultProvider)reader, classes);
+            defaults.register(owner, (DefaultValue)toRegister, classes);
+        }
+
+        if (toRegister instanceof Completer)
+        {
+            completers.register(owner, (Completer)toRegister, classes);
         }
     }
 
-    public ArgumentReader getReader(Class<?> type)
+    public void removeAll(Object owner)
     {
-        return readers.get(type);
+        readers.removeAll(owner);
+        defaults.removeAll(owner);
+        completers.removeAll(owner);
+    }
+
+    public boolean hasReader(Class<?> type)
+    {
+        return resolveReader(type) != null;
     }
 
     public ArgumentReader resolveReader(Class<?> type)
@@ -66,14 +85,14 @@ public class ReaderManager
         ArgumentReader reader = getReader(type);
         if (reader == null)
         {
-            for (Class<?> next : readers.keySet())
+            for (Class<?> next : readers.keys())
             {
                 if (type.isAssignableFrom(next))
                 {
                     reader = readers.get(next);
                     if (reader != null)
                     {
-                        registerReader(reader, type);
+                        register(reader, type);
                         break;
                     }
                 }
@@ -82,24 +101,9 @@ public class ReaderManager
         return reader;
     }
 
-    public boolean hasReader(Class<?> type)
+    public ArgumentReader getReader(Class<?> type)
     {
-        return resolveReader(type) != null;
-    }
-
-    public void removeReader(Class type)
-    {
-        Iterator<Map.Entry<Class<?>, ArgumentReader>> it = readers.entrySet().iterator();
-
-        Map.Entry<Class<?>, ArgumentReader> entry;
-        while (it.hasNext())
-        {
-            entry = it.next();
-            if (entry.getKey() == type || entry.getValue().getClass() == type)
-            {
-                it.remove();
-            }
-        }
+        return readers.get(type);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,15 +124,16 @@ public class ReaderManager
 
     public Object getDefault(Class<?> defaultProvider, CommandInvocation invocation)
     {
-        return this.defaultProviders.get(defaultProvider).getDefault(invocation);
+        DefaultValue def = this.defaults.get(defaultProvider);
+        if (def != null)
+        {
+            return def.getDefault(invocation);
+        }
+        return null;
     }
 
-    public void registerDefaultProvider(DefaultProvider provider, Class... forClass)
+    public Completer getCompleter(Class completerClass)
     {
-        defaultProviders.put(provider.getClass(), provider);
-        for (Class<?> c : forClass)
-        {
-            defaultProviders.put(c, provider);
-        }
+        return completers.get(completerClass);
     }
 }

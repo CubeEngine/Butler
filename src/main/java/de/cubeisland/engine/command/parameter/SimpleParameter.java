@@ -27,8 +27,6 @@ import java.util.List;
 import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.completer.Completer;
 import de.cubeisland.engine.command.completer.CompleterProperty;
-import de.cubeisland.engine.command.completer.CompleterProvider;
-import de.cubeisland.engine.command.completer.CompleterProviderProperty;
 
 /**
  * A Parameter implementation.
@@ -72,8 +70,7 @@ public class SimpleParameter extends Parameter
             completerClass = this.getType();
         }
 
-        CompleterProvider provider = invocation.valueFor(CompleterProviderProperty.class);
-        Completer completer = provider.getDefaultCompleter(completerClass);
+        Completer completer = invocation.getManager().getCompleter(completerClass);
         if (completer != null)
         {
             result.addAll(completer.getSuggestions(invocation));

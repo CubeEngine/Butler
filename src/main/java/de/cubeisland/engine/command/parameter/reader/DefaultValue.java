@@ -20,17 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.completer;
+package de.cubeisland.engine.command.parameter.reader;
 
-import de.cubeisland.engine.command.util.property.AbstractProperty;
+import de.cubeisland.engine.command.CommandInvocation;
 
-/**
- * Provides a CompleterProvider
- */
-public class CompleterProviderProperty extends AbstractProperty<CompleterProvider>
+public interface DefaultValue<ObjectT>
 {
-    public CompleterProviderProperty(CompleterProvider value)
-    {
-        super(value);
-    }
+    ObjectT getDefault(CommandInvocation invocation);
 }

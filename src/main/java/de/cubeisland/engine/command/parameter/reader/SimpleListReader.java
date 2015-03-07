@@ -26,6 +26,7 @@ package de.cubeisland.engine.command.parameter.reader;
 import java.util.ArrayList;
 import java.util.List;
 import de.cubeisland.engine.command.CommandInvocation;
+import de.cubeisland.engine.command.ProviderManager;
 
 /**
  * Reads a list of Arguments
@@ -40,7 +41,7 @@ public class SimpleListReader implements ArgumentReader<List>
     }
 
     @Override
-    public List read(ReaderManager manager, Class type, CommandInvocation invocation) throws ReaderException
+    public List read(ProviderManager manager, Class type, CommandInvocation invocation) throws ReaderException
     {
         List<Object> result = new ArrayList<>();
 

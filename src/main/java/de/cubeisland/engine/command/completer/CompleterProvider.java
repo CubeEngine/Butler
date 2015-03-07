@@ -22,18 +22,11 @@
  */
 package de.cubeisland.engine.command.completer;
 
+import de.cubeisland.engine.command.Provider;
+
 /**
  * Provides completer
  */
-public interface CompleterProvider
+public class CompleterProvider extends Provider<Completer>
 {
-    /**
-     * Returns a completer for the first registered class
-     */
-    Completer getDefaultCompleter(Class... types);
-
-    /**
-     * Registers a completer for given classes
-     */
-    void registerDefaultCompleter(Completer completer, Class... types);
 }
