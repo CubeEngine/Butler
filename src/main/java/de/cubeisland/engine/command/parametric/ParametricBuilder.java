@@ -273,7 +273,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
         if (Group.class.isAssignableFrom(clazz))
         {
             // TODO Groups
-            return null;
+            throw new UnsupportedOperationException("Groups are not yet supported");
         }
 
         List<Property> properties = new ArrayList<>();

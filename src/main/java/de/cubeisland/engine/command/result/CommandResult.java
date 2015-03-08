@@ -22,17 +22,17 @@
  */
 package de.cubeisland.engine.command.result;
 
+import de.cubeisland.engine.command.CommandInvocation;
+
 /**
  * A result to be processed after the command was executed
- *
- * @param <ContextT> the type of the context
  */
-public interface CommandResult<ContextT>
+public interface CommandResult
 {
     /**
      * Processes this CommandResult
      *
      * @param context the context that was used by the command before
      */
-    public void process(ContextT context);
+    public void process(CommandInvocation context);
 }
