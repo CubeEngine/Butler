@@ -84,12 +84,13 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
         List<Parameter> flags = new ArrayList<>(this.flags);
         List<Parameter> nonPositional = new ArrayList<>(this.nonPositional);
         List<Parameter> positional = new ArrayList<>(this.positional);
+        Parameter greedy = null;
 
         List<ParsedParameter> params = invocation.valueFor(ParsedParameters.class);
 
         while (!invocation.isConsumed())
         {
-            List<Parameter> suggestions = suggestParameters(invocation, positional, nonPositional, flags);
+            List<Parameter> suggestions = suggestParameters(invocation, positional, nonPositional, flags, greedy);
 
             if (suggestion && invocation.tokens().size() - invocation.consumed() == 1)
             {
@@ -116,12 +117,13 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                     {
                         parameter.parse(invocation);
                         parsed = true;
-                        if (parameter.greed != INFINITE)
+                        if (parameter.greed == INFINITE)
                         {
-                            flags.remove(parameter);
-                            nonPositional.remove(parameter);
-                            positional.remove(parameter);
+                            greedy = parameter;
                         }
+                        flags.remove(parameter);
+                        nonPositional.remove(parameter);
+                        positional.remove(parameter);
                         break;
                     }
                     catch (RuntimeException e)
@@ -169,12 +171,9 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
                 continue;
             }
-            if (isRequired(parameter) && parameter.greed != INFINITE)
+            if (isRequired(parameter) && !suggestion)
             {
-                if (!suggestion)
-                {
-                    throw new TooFewArgumentsException();
-                }
+                throw new TooFewArgumentsException();
             }
         }
 
@@ -199,16 +198,21 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
 
     /**
      * Gets a list of possible parameters
-     *
-     * @param invocation    the invocation
+     *  @param invocation    the invocation
      * @param positional    the positional parameters
      * @param nonPositional the non positional parameters
      * @param flags         the flags
+     * @param greedy
      */
     private ArrayList<Parameter> suggestParameters(CommandInvocation invocation, List<Parameter> positional,
-                                                   List<Parameter> nonPositional, List<Parameter> flags)
+                                                   List<Parameter> nonPositional, List<Parameter> flags,
+                                                   Parameter greedy)
     {
         ArrayList<Parameter> suggestions = new ArrayList<>();
+        if (greedy != null && greedy.isAllowed(invocation))
+        {
+            suggestions.add(greedy);
+        }
         if (!positional.isEmpty())
         {
             if (positional.get(0).isAllowed(invocation))
