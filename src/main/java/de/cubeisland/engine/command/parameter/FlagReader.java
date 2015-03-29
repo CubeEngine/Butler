@@ -26,7 +26,6 @@ import de.cubeisland.engine.command.CommandInvocation;
 import de.cubeisland.engine.command.parameter.reader.ArgumentReader;
 import de.cubeisland.engine.command.parameter.reader.DefaultValue;
 import de.cubeisland.engine.command.parameter.reader.ReaderException;
-import de.cubeisland.engine.command.ProviderManager;
 
 /**
  * An ArgumentReader for Flags
@@ -43,7 +42,7 @@ public class FlagReader implements ArgumentReader<Boolean>, DefaultValue<Boolean
     }
 
     @Override
-    public Boolean read(ProviderManager manager, Class type, CommandInvocation invocation) throws ReaderException
+    public Boolean read(Class type, CommandInvocation invocation) throws ReaderException
     {
         String flag = invocation.currentToken();
         if (flag.startsWith("-"))

@@ -130,7 +130,7 @@ public abstract class Parameter extends PropertyHolder
         Object read;
         if (reader != null)
         {
-            read = reader.read(invocation.getManager(), this.type, invocation);
+            read = reader.read(this.type, invocation);
         }
         else
         {

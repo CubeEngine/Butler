@@ -119,7 +119,7 @@ public class ProviderManager
         {
             throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");
         }
-        return reader.read(this, type, invocation);
+        return reader.read(type, invocation);
     }
 
     public Object getDefault(Class<?> defaultProvider, CommandInvocation invocation)

@@ -23,12 +23,11 @@
 package de.cubeisland.engine.command.parameter.reader;
 
 import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.ProviderManager;
 
 public final class StringReader implements ArgumentReader<String>
 {
     @Override
-    public String read(ProviderManager manager, Class type, CommandInvocation invocation) throws ReaderException
+    public String read(Class type, CommandInvocation invocation) throws ReaderException
     {
         String result = invocation.currentToken();
         invocation.consume(1);

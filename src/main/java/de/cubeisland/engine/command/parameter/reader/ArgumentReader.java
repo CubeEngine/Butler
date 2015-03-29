@@ -27,5 +27,5 @@ import de.cubeisland.engine.command.ProviderManager;
 
 public interface ArgumentReader<ObjectT>
 {
-    ObjectT read(ProviderManager manager, Class type, CommandInvocation invocation) throws ReaderException;
+    ObjectT read(Class type, CommandInvocation invocation) throws ReaderException;
 }
