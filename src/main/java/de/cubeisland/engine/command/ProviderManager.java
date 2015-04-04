@@ -42,6 +42,8 @@ public class ProviderManager
     private ReaderProvider readers = new ReaderProvider();
     private DefaultProvider defaults = new DefaultProvider();
 
+    private CompositeExceptionHandler exceptionHandler = new CompositeExceptionHandler();
+
     public ProviderManager()
     {
         register(this, new StringReader(), String.class);
@@ -135,5 +137,10 @@ public class ProviderManager
     public Completer getCompleter(Class completerClass)
     {
         return completers.get(completerClass);
+    }
+
+    public CompositeExceptionHandler getExceptionHandler()
+    {
+        return exceptionHandler;
     }
 }

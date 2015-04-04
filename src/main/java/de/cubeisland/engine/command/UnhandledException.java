@@ -20,27 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parametric;
+package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.CommandBase;
-import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.ExceptionHandler;
-import de.cubeisland.engine.command.parametric.context.CommandContextBuilder;
-import de.cubeisland.engine.command.parametric.context.ContextBuilder;
-
-public class TestContainerDescriptor extends ContainerCommandDescriptor implements ExceptionHandler, ContextBuilder
+/**
+ * This Exception is thrown whenever an exception during a command execution was not handled accordingly.
+ */
+public class UnhandledException extends CommandException
 {
-    private CommandContextBuilder builder = new CommandContextBuilder();
-
-    @Override
-    public Object buildContext(CommandInvocation invocation, Class<?> parameterType)
+    public UnhandledException(Throwable e)
     {
-        return builder.buildContext(invocation, parameterType);
-    }
-
-    @Override
-    public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation)
-    {
-        throw new IllegalStateException(e);
+        super(e);
     }
 }

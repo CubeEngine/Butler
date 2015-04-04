@@ -201,11 +201,10 @@ public class DispatcherCommand implements Dispatcher
      */
     protected void handleException(Throwable e, CommandInvocation invocation)
     {
-        if (!(this.getBaseDispatcher().getDescriptor() instanceof ExceptionHandler))
+        if (!invocation.getManager().getExceptionHandler().handleException(e, this, invocation))
         {
-            throw new MissingExceptionHandlerException("The Base Dispatcher has no Exception Handler!", e);
+            throw new UnhandledException(e);
         }
-        ((ExceptionHandler)this.getBaseDispatcher().getDescriptor()).handleException(e, this, invocation);
     }
 
     /**

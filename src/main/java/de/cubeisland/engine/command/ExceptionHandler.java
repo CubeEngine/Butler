@@ -27,22 +27,5 @@ package de.cubeisland.engine.command;
  */
 public interface ExceptionHandler
 {
-    public void handleException(Throwable e, CommandBase command, CommandInvocation invocation);
-    /* TODO
-    {
-        if (e instanceof InvocationTargetException)
-        {
-            e = e.getCause();
-        }
-        if (e instanceof CommandException)
-        {
-            System.out.println("CommandException: " + e.getMessage());
-        }
-        else
-        {
-            System.out.println("Unknown Exception: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-    */
+    public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation);
 }

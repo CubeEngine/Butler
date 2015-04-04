@@ -20,27 +20,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.command.parametric;
+package de.cubeisland.engine.command;
 
-import de.cubeisland.engine.command.CommandBase;
-import de.cubeisland.engine.command.CommandInvocation;
-import de.cubeisland.engine.command.ExceptionHandler;
-import de.cubeisland.engine.command.parametric.context.CommandContextBuilder;
-import de.cubeisland.engine.command.parametric.context.ContextBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TestContainerDescriptor extends ContainerCommandDescriptor implements ExceptionHandler, ContextBuilder
+/**
+ * A basic ExceptionHandler forwarding to a list of ExceptionHandlers
+ */
+public class CompositeExceptionHandler implements ExceptionHandler
 {
-    private CommandContextBuilder builder = new CommandContextBuilder();
+    private List<ExceptionHandler> handlers = new ArrayList<>();
 
-    @Override
-    public Object buildContext(CommandInvocation invocation, Class<?> parameterType)
+    /**
+     * Adds an ExceptionHandler at the end of the handlerlist
+     *
+     * @param handler the ExceptionHandler to add
+     */
+    public void addHandler(ExceptionHandler handler)
     {
-        return builder.buildContext(invocation, parameterType);
+        handlers.add(handler);
+    }
+
+    /**
+     * Removes all ExceptionHandlers
+     */
+    public void clearHandlers()
+    {
+        handlers.clear();
     }
 
     @Override
     public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation)
     {
-        throw new IllegalStateException(e);
+        for (ExceptionHandler handler : handlers)
+        {
+            if (handler.handleException(e, command, invocation))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
