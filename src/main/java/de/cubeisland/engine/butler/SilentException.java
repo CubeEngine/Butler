@@ -20,37 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.butler.parameter.reader;
-
-import de.cubeisland.engine.butler.CommandInvocation;
+package de.cubeisland.engine.butler;
 
 /**
- * A Reader for UpperCased Enum names
+ * Silently fails the command
  */
-public class SimpleEnumReader implements ArgumentReader
+public class SilentException extends CommandException
 {
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object read(Class type, CommandInvocation invocation) throws ReaderException
-    {
-        if (invocation.getManager().hasReader(type))
-        {
-            return invocation.getManager().read(type, type, invocation);
-        }
-        if (Enum.class.isAssignableFrom(type))
-        {
-            Enum<?>[] enumConstants = ((Class<? extends Enum<?>>)type).getEnumConstants();
-            String token = invocation.currentToken().replace(" ", "_").toUpperCase();
-            for (Enum<?> anEnum : enumConstants)
-            {
-                if (anEnum.name().equals(token))
-                {
-                    invocation.consume(1);
-                    return anEnum;
-                }
-            }
-            throw new ReaderException("Could not find \"" + invocation.currentToken() + "\" in Enum");
-        }
-        throw new UnsupportedOperationException();
-    }
 }
