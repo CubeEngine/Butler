@@ -138,21 +138,18 @@ public class DispatcherCommand implements Dispatcher
     @Override
     public CommandBase getCommand(String... alias)
     {
-        if (alias.length != 0)
-        {
-            CommandBase cmd = this.commands.get(alias[0].toLowerCase());
-            if (alias.length == 1)
-            {
-                return cmd;
-            }
-            if (cmd instanceof Dispatcher)
-            {
-                return ((Dispatcher)cmd).getCommand(Arrays.copyOfRange(alias, 1, alias.length));
-            }
-        }
-        else
+        if (alias.length == 0)
         {
             return this;
+        }
+        CommandBase cmd = this.commands.get(alias[0].toLowerCase());
+        if (alias.length == 1)
+        {
+            return cmd;
+        }
+        if (cmd instanceof Dispatcher)
+        {
+            return ((Dispatcher)cmd).getCommand(Arrays.copyOfRange(alias, 1, alias.length));
         }
         return null;
     }

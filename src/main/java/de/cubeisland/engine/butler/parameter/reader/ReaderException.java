@@ -30,4 +30,8 @@ public class ReaderException extends CommandException
     {
         super(message, (Object[])args);
     }
+
+    public ReaderException()
+    {
+    }
 }

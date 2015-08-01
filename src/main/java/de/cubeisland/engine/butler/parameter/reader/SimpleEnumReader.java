@@ -29,6 +29,7 @@ import de.cubeisland.engine.butler.CommandInvocation;
  */
 public class SimpleEnumReader implements ArgumentReader
 {
+    // TODO simpleEnumCompleter
     @Override
     @SuppressWarnings("unchecked")
     public Object read(Class type, CommandInvocation invocation) throws ReaderException

@@ -59,14 +59,16 @@ public class BasicParametricCommand extends DispatcherCommand
     @Override
     public List<String> getSuggestions(CommandInvocation invocation)
     {
-        List<String> suggestions = super.getSuggestions(invocation);
-        if (suggestions == null)
-        {
-            suggestions = new ArrayList<>();
-        }
+        List<String> suggestions = new ArrayList<>();
         invocation.setProperty(new ParsedParameters());
         invocation.setProperty(new SuggestionParameters(new ArrayList<Parameter>()));
         suggestions.addAll(this.getDescriptor().getParameters().getSuggestions(invocation));
+
+        List<String> superSuggestions = super.getSuggestions(invocation);
+        if (superSuggestions != null)
+        {
+            suggestions.addAll(superSuggestions);
+        }
         return suggestions;
     }
 
