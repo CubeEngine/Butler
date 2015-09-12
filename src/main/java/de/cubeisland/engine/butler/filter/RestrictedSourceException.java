@@ -22,19 +22,17 @@
  */
 package de.cubeisland.engine.butler.filter;
 
-import de.cubeisland.engine.butler.CommandSource;
-
 public class RestrictedSourceException extends FilterException
 {
-    private final Class<? extends CommandSource>[] value;
+    private final Class<?>[] value;
 
-    public RestrictedSourceException(String msg, Class<? extends CommandSource>... value)
+    public RestrictedSourceException(String msg, Class<?>... value)
     {
         super(msg);
         this.value = value;
     }
 
-    public Class<? extends CommandSource>[] getRestrictions()
+    public Class<?>[] getRestrictions()
     {
         return value;
     }

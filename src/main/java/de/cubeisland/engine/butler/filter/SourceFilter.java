@@ -23,14 +23,13 @@
 package de.cubeisland.engine.butler.filter;
 
 import de.cubeisland.engine.butler.CommandInvocation;
-import de.cubeisland.engine.butler.CommandSource;
 
 /**
  * Allows to run a command if the CommandSource is of an allowed type
  */
 public class SourceFilter implements Filter
 {
-    private Class<? extends CommandSource>[] sources;
+    private Class<?>[] sources;
     private String msg;
 
     /**
@@ -39,7 +38,7 @@ public class SourceFilter implements Filter
      * @param sources the allowed sources
      * @param msg     the message
      */
-    public SourceFilter(Class<? extends CommandSource>[] sources, String msg)
+    public SourceFilter(Class<?>[] sources, String msg)
     {
         this.sources = sources;
         this.msg = msg;
@@ -49,7 +48,7 @@ public class SourceFilter implements Filter
     public void run(CommandInvocation invocation) throws FilterException
     {
         boolean restrict = true;
-        for (Class<? extends CommandSource> clazz : this.sources)
+        for (Class<?> clazz : this.sources)
         {
             if (clazz.isAssignableFrom(invocation.getCommandSource().getClass()))
             {

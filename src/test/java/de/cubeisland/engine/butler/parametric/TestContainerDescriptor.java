@@ -25,19 +25,9 @@ package de.cubeisland.engine.butler.parametric;
 import de.cubeisland.engine.butler.CommandBase;
 import de.cubeisland.engine.butler.CommandInvocation;
 import de.cubeisland.engine.butler.ExceptionHandler;
-import de.cubeisland.engine.butler.parametric.context.CommandContextBuilder;
-import de.cubeisland.engine.butler.parametric.context.ContextBuilder;
 
-public class TestContainerDescriptor extends ContainerCommandDescriptor implements ExceptionHandler, ContextBuilder
+public class TestContainerDescriptor extends ContainerCommandDescriptor implements ExceptionHandler
 {
-    private CommandContextBuilder builder = new CommandContextBuilder();
-
-    @Override
-    public Object buildContext(CommandInvocation invocation, Class<?> parameterType)
-    {
-        return builder.buildContext(invocation, parameterType);
-    }
-
     @Override
     public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation)
     {

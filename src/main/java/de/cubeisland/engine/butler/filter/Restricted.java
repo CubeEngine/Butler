@@ -26,12 +26,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import de.cubeisland.engine.butler.CommandSource;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Restricted
 {
-    Class<? extends CommandSource>[] value();
+    Class<?>[] value();
     String msg() default "";
 }

@@ -20,18 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.butler.parametric.context;
+package de.cubeisland.engine.butler;
 
-import de.cubeisland.engine.butler.CommandInvocation;
-
-public interface ContextBuilder
+public class ContextProvider extends Provider<ContextValue>
 {
-    /**
-     * Builds a context for given invocation
-     *
-     * @param invocation the invocation
-     * @param parameterType the parameterType
-     * @return the context
-     */
-    Object buildContext(CommandInvocation invocation, Class<?> parameterType);
+
+
 }

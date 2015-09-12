@@ -29,7 +29,6 @@ import de.cubeisland.engine.butler.SimpleCommandDescriptor;
 import de.cubeisland.engine.butler.filter.Filter;
 import de.cubeisland.engine.butler.filter.FilterException;
 import de.cubeisland.engine.butler.parameter.ParameterGroup;
-import de.cubeisland.engine.butler.parametric.context.ContextBuilder;
 
 public class ParametricCommandDescriptor extends SimpleCommandDescriptor
 
@@ -82,14 +81,5 @@ public class ParametricCommandDescriptor extends SimpleCommandDescriptor
     public void setParameters(ParameterGroup parameters)
     {
         this.parameters = parameters;
-    }
-
-    protected Object getContext(CommandInvocation invocation, Class<?> parameterType)
-    {
-        if (getDispatcher().getBaseDispatcher().getDescriptor() instanceof ContextBuilder)
-        {
-            return ((ContextBuilder)getDispatcher().getBaseDispatcher().getDescriptor()).buildContext(invocation, parameterType);
-        }
-        throw new IllegalArgumentException("Missing ContextBuilder");
     }
 }

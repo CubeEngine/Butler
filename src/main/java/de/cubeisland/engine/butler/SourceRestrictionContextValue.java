@@ -20,41 +20,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.cubeisland.engine.butler.parametric.context;
+package de.cubeisland.engine.butler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import de.cubeisland.engine.butler.CommandInvocation;
+import de.cubeisland.engine.butler.ContextValue;
+import de.cubeisland.engine.butler.filter.RestrictedSourceException;
 
-public class CommandContextBuilder implements ContextBuilder
+public class SourceRestrictionContextValue implements ContextValue
 {
-    private Map<Class, Constructor> constructorMap = new HashMap<>();
-
     @Override
-    public Object buildContext(CommandInvocation invocation, Class<?> parameterType)
+    public Object getContext(CommandInvocation invocation, Class<?> clazz)
     {
-        try
+        if (clazz.isAssignableFrom(invocation.getCommandSource().getClass()))
         {
-            Constructor constructor = constructorMap.get(parameterType);
-            if (constructor == null)
-            {
-                try
-                {
-                    constructor = parameterType.getConstructor(CommandInvocation.class);
-                    constructorMap.put(parameterType, constructor);
-                }
-                catch (NoSuchMethodException e)
-                {
-                    throw new IllegalArgumentException("Given class has no constructor with only a CommandInvocation");
-                }
-            }
-            return constructor.newInstance(invocation);
+            return invocation.getCommandSource();
         }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
-        {
-            throw new IllegalStateException(e);
-        }
+        throw new RestrictedSourceException(null, (Class<?>)clazz);
     }
 }

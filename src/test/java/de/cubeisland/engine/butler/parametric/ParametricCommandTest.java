@@ -22,11 +22,8 @@
  */
 package de.cubeisland.engine.butler.parametric;
 
-import java.util.Locale;
-import java.util.UUID;
 import de.cubeisland.engine.butler.CommandBase;
 import de.cubeisland.engine.butler.CommandInvocation;
-import de.cubeisland.engine.butler.CommandSource;
 import de.cubeisland.engine.butler.ProviderManager;
 import de.cubeisland.engine.butler.completer.CompleterProvider;
 import de.cubeisland.engine.butler.parameter.ParameterUsageGenerator;
@@ -39,26 +36,6 @@ public class ParametricCommandTest
 {
     private ProviderManager providerManager;
     private CompleterProvider completerProvider;
-    private CommandSource source = new CommandSource()
-    {
-        @Override
-        public String getName()
-        {
-            return null;
-        }
-
-        @Override
-        public UUID getUniqueId()
-        {
-            return null;
-        }
-
-        @Override
-        public Locale getLocale()
-        {
-            return null;
-        }
-    };
     private TestParametricCommand container;
 
     @SuppressWarnings("unchecked")
@@ -78,7 +55,7 @@ public class ParametricCommandTest
     {
         for (CommandBase command : container.getCommands())
         {
-            assertTrue(command.execute(new CommandInvocation(source, command.getDescriptor().getDescription(),
+            assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(),
                                                              providerManager)));
         }
     }

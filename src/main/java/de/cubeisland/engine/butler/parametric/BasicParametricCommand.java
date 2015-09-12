@@ -83,7 +83,7 @@ public class BasicParametricCommand extends DispatcherCommand
             Object[] args = new Object[parameterTypes.length];
             for (int i = 0; i <= descriptor.getContextParameter(); i++)
             {
-                args[i] = descriptor.getContext(invocation, parameterTypes[i]);
+                args[i] = invocation.getContext(parameterTypes[i]);
             }
 
 

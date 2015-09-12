@@ -22,32 +22,10 @@
  */
 package de.cubeisland.engine.butler;
 
-import java.util.Locale;
-import java.util.UUID;
-
 /**
- * A CommandSource able to execute commands;
+ * Provides Context for given CommandInvocation
  */
-public interface CommandSource
+public interface ContextValue
 {
-    /**
-     * Returns the name of this CommandSource
-     *
-     * @return the name
-     */
-    String getName();
-
-    /**
-     * Returns the UUID of this CommandSource.
-     *
-     * @return the uuid
-     */
-    UUID getUniqueId();
-
-    /**
-     * Returns the locale of this CommandSource or if not known the default Locale
-     *
-     * @return the locale
-     */
-    Locale getLocale();
+    Object getContext(CommandInvocation invocation, Class<?> clazz);
 }

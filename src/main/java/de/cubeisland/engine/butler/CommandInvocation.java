@@ -38,7 +38,7 @@ import static de.cubeisland.engine.butler.StringUtils.join;
 public class CommandInvocation extends PropertyHolder
 {
     public static final String SPACE = " ";
-    private final CommandSource commandSource;
+    private final Object commandSource;
     private final String commandLine;
 
     private final LinkedList<CommandBase> invocationPath = new LinkedList<>();
@@ -49,7 +49,7 @@ public class CommandInvocation extends PropertyHolder
 
     private int consumed = 0;
 
-    public CommandInvocation(CommandSource source, String commandLine, String delim, ProviderManager manager)
+    public CommandInvocation(Object source, String commandLine, String delim, ProviderManager manager)
     {
         this.commandSource = source;
         this.commandLine = commandLine;
@@ -57,7 +57,7 @@ public class CommandInvocation extends PropertyHolder
         this.manager = manager;
     }
 
-    public CommandInvocation(CommandSource source, String commandLine, ProviderManager manager)
+    public CommandInvocation(Object source, String commandLine, ProviderManager manager)
     {
         this(source, commandLine, SPACE, manager);
     }
@@ -95,14 +95,9 @@ public class CommandInvocation extends PropertyHolder
         return manager;
     }
 
-    /**
-     * Returns the Locale to be used for this CommandCall
-     *
-     * @return the locale
-     */
-    public Locale getLocale()
+    public <T> T getContext(Class<T> clazz)
     {
-        return commandSource.getLocale();
+        return manager.getContext(clazz, this);
     }
 
     /**
@@ -200,7 +195,7 @@ public class CommandInvocation extends PropertyHolder
      *
      * @return the CommandSource
      */
-    public CommandSource getCommandSource()
+    public Object getCommandSource()
     {
         return this.commandSource;
     }

@@ -23,10 +23,9 @@
 package de.cubeisland.engine.butler.parametric;
 
 import de.cubeisland.engine.butler.CommandInvocation;
-import de.cubeisland.engine.butler.CommandSource;
 import de.cubeisland.engine.butler.ProviderManager;
 
 public interface InvocationBuilder
 {
-    CommandInvocation build(CommandSource source, String commandLine, String delim, ProviderManager manager);
+    CommandInvocation build(Object source, String commandLine, String delim, ProviderManager manager);
 }

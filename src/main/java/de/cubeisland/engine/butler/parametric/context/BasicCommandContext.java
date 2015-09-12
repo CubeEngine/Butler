@@ -24,7 +24,6 @@ package de.cubeisland.engine.butler.parametric.context;
 
 import java.util.List;
 import de.cubeisland.engine.butler.CommandInvocation;
-import de.cubeisland.engine.butler.CommandSource;
 
 /**
  * A CommandContext for an Invocation of a MethodicCommand
@@ -63,7 +62,7 @@ public class BasicCommandContext
      *
      * @return the CommandSource
      */
-    public CommandSource getSource()
+    public Object getSource()
     {
         return invocation.getCommandSource();
     }
@@ -74,7 +73,7 @@ public class BasicCommandContext
      * @param clazz the type
      * @return whether the source is of given type
      */
-    public boolean isSource(Class<? extends CommandSource> clazz)
+    public boolean isSource(Class<?> clazz)
     {
         return clazz.isAssignableFrom(this.getSource().getClass());
     }

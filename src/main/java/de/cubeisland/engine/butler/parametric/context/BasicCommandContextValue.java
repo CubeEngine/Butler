@@ -23,19 +23,13 @@
 package de.cubeisland.engine.butler.parametric.context;
 
 import de.cubeisland.engine.butler.CommandInvocation;
-import de.cubeisland.engine.butler.CommandSource;
-import de.cubeisland.engine.butler.filter.RestrictedSourceException;
+import de.cubeisland.engine.butler.ContextValue;
 
-public class SourceContextBuilder implements ContextBuilder
+public class BasicCommandContextValue implements ContextValue
 {
     @Override
-    @SuppressWarnings("unchecked")
-    public Object buildContext(CommandInvocation invocation, Class<?>  parameterType)
+    public Object getContext(CommandInvocation invocation, Class<?> clazz)
     {
-        if (parameterType.isAssignableFrom(invocation.getCommandSource().getClass()))
-        {
-            return invocation.getCommandSource();
-        }
-        throw new RestrictedSourceException(null, (Class<? extends CommandSource>)parameterType);
+        return new BasicCommandContext(invocation);
     }
 }

@@ -35,12 +35,19 @@ import de.cubeisland.engine.butler.parameter.reader.SimpleEnumReader;
 import de.cubeisland.engine.butler.parameter.reader.SimpleListReader;
 import de.cubeisland.engine.butler.parameter.reader.StringArrayReader;
 import de.cubeisland.engine.butler.parameter.reader.StringReader;
+import de.cubeisland.engine.butler.parametric.context.BasicCommandContext;
+import de.cubeisland.engine.butler.parametric.context.BasicCommandContextValue;
 
 public class ProviderManager
 {
+    private final SourceRestrictionContextValue sourceContext = new SourceRestrictionContextValue();
+
+
     private CompleterProvider completers = new CompleterProvider();
     private ReaderProvider readers = new ReaderProvider();
     private DefaultProvider defaults = new DefaultProvider();
+
+    private ContextProvider contexts = new ContextProvider();
 
     private CompositeExceptionHandler exceptionHandler = new CompositeExceptionHandler();
 
@@ -50,8 +57,16 @@ public class ProviderManager
         register(this, new SimpleListReader(","), List.class);
         register(this, new SimpleEnumReader(), Enum.class);
         register(this, new StringArrayReader(), String[].class);
+
+        register(this, new BasicCommandContextValue(), BasicCommandContext.class);
     }
 
+    /**
+     * Registers ArgumentReader, DefaultValue, Completer or ContextValue
+     * @param owner
+     * @param toRegister
+     * @param classes
+     */
     public void register(Object owner, Object toRegister, Class<?>... classes)
     {
         if (toRegister instanceof ArgumentReader)
@@ -67,6 +82,11 @@ public class ProviderManager
         if (toRegister instanceof Completer)
         {
             completers.register(owner, (Completer)toRegister, classes);
+        }
+
+        if (toRegister instanceof ContextValue)
+        {
+            contexts.register(owner, (ContextValue)toRegister, classes);
         }
     }
 
@@ -142,5 +162,24 @@ public class ProviderManager
     public CompositeExceptionHandler getExceptionHandler()
     {
         return exceptionHandler;
+    }
+
+    /**
+     * Returns the requested context or null if not found
+     * @param clazz the context class
+     * @param commandInvocation the commandinvocation
+     * @param <T> the context Type
+     * @return the requested context or null if not found
+     */
+    public <T> T getContext(Class<T> clazz, CommandInvocation commandInvocation)
+    {
+        ContextValue contextValue = contexts.get(clazz);
+        if (contextValue == null)
+        {
+            contextValue = sourceContext;
+        }
+        @SuppressWarnings("unchecked")
+        T val = (T)contextValue.getContext(commandInvocation, clazz);
+        return val;
     }
 }
