@@ -40,7 +40,7 @@ import de.cubeisland.engine.butler.parametric.context.BasicCommandContextValue;
 
 public class ProviderManager
 {
-    private final SourceRestrictionContextValue sourceContext = new SourceRestrictionContextValue();
+    private final SourceRestrictedContextValue sourceContext = new SourceRestrictedContextValue();
 
 
     private CompleterProvider completers = new CompleterProvider();

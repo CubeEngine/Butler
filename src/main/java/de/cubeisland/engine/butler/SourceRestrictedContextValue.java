@@ -22,11 +22,9 @@
  */
 package de.cubeisland.engine.butler;
 
-import de.cubeisland.engine.butler.CommandInvocation;
-import de.cubeisland.engine.butler.ContextValue;
 import de.cubeisland.engine.butler.filter.RestrictedSourceException;
 
-public class SourceRestrictionContextValue implements ContextValue
+public class SourceRestrictedContextValue implements ContextValue
 {
     @Override
     public Object getContext(CommandInvocation invocation, Class<?> clazz)
