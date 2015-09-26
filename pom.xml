@@ -4,7 +4,7 @@
 
     <groupId>de.cubeisland.engine</groupId>
     <artifactId>butler</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <name>Butler</name>
     <description>Send him commands!</description>
