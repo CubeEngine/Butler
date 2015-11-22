@@ -62,9 +62,10 @@ public class BasicParametricCommand extends DispatcherCommand
         List<String> suggestions = new ArrayList<>();
         invocation.setProperty(new ParsedParameters());
         invocation.setProperty(new SuggestionParameters(new ArrayList<Parameter>()));
+
+        List<String> superSuggestions = super.getSuggestions(invocation); // do this first before token is consumed!
         suggestions.addAll(this.getDescriptor().getParameters().getSuggestions(invocation));
 
-        List<String> superSuggestions = super.getSuggestions(invocation);
         if (superSuggestions != null)
         {
             suggestions.addAll(superSuggestions);
