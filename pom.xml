@@ -97,8 +97,8 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <source>${jdkVersion}</source>
                     <target>${jdkVersion}</target>
-					<testSource>${testJdkVersion}</testSource>
-					<testTarget>${testJdkVersion}</testTarget>
+                    <testSource>${testJdkVersion}</testSource>
+                    <testTarget>${testJdkVersion}</testTarget>
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
