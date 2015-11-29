@@ -20,17 +20,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.exception;
 
+import java.util.Comparator;
+import java.util.TreeSet;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.exception.ExceptionHandler;
 
-public class TestContainerDescriptor extends ContainerCommandDescriptor implements ExceptionHandler
+/**
+ * A basic ExceptionHandler forwarding to a list of ExceptionHandlers
+ */
+public class CompositeExceptionHandler implements ExceptionHandler
 {
+    private TreeSet<PriorityExceptionHandler> handlers = new TreeSet<>(new Comparator<PriorityExceptionHandler>()
+    {
+        @Override
+        public int compare(PriorityExceptionHandler o1, PriorityExceptionHandler o2)
+        {
+            int compare = Integer.compare(o1.priority(), o2.priority());
+            if (compare == 0)
+            {
+                return o1.getClass().getName().compareTo(o2.getClass().getName());
+            }
+            return compare;
+        }
+    });
+
+    /**
+     * Adds an ExceptionHandler at the end of the handlerlist
+     *
+     * @param handler the ExceptionHandler to add
+     */
+    public void addHandler(PriorityExceptionHandler handler)
+    {
+        handlers.add(handler);
+    }
+
+    /**
+     * Removes all ExceptionHandlers
+     */
+    public void clearHandlers()
+    {
+        handlers.clear();
+    }
+
     @Override
     public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation)
     {
-        throw new IllegalStateException(e);
+        for (ExceptionHandler handler : handlers)
+        {
+            if (handler.handleException(e, command, invocation))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

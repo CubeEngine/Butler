@@ -20,46 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.cubeengine.butler.exception;
 
 /**
- * A basic ExceptionHandler forwarding to a list of ExceptionHandlers
+ * This Exception is thrown whenever an exception during a command execution was not handled accordingly.
  */
-public class CompositeExceptionHandler implements ExceptionHandler
+public class UnhandledException extends CommandException
 {
-    private List<ExceptionHandler> handlers = new ArrayList<>();
-
-    /**
-     * Adds an ExceptionHandler at the end of the handlerlist
-     *
-     * @param handler the ExceptionHandler to add
-     */
-    public void addHandler(ExceptionHandler handler)
+    public UnhandledException(Throwable e)
     {
-        handlers.add(handler);
-    }
-
-    /**
-     * Removes all ExceptionHandlers
-     */
-    public void clearHandlers()
-    {
-        handlers.clear();
-    }
-
-    @Override
-    public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation)
-    {
-        for (ExceptionHandler handler : handlers)
-        {
-            if (handler.handleException(e, command, invocation))
-            {
-                return true;
-            }
-        }
-        return false;
+        super(e);
     }
 }

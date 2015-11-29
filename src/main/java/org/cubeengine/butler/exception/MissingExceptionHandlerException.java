@@ -20,11 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
+package org.cubeengine.butler.exception;
 
-/**
- * This Exception is thrown whenever a command has no CommandDescriptor
- */
-public class MissingCommandDescriptorException extends RuntimeException
+public class MissingExceptionHandlerException extends RuntimeException
 {
+    public MissingExceptionHandlerException(String msg, Throwable t)
+    {
+        super(msg, t);
+    }
 }

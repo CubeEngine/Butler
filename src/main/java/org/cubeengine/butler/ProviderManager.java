@@ -25,6 +25,7 @@ package org.cubeengine.butler;
 import java.util.List;
 import org.cubeengine.butler.completer.Completer;
 import org.cubeengine.butler.completer.CompleterProvider;
+import org.cubeengine.butler.exception.CompositeExceptionHandler;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.reader.ArgumentReader;
 import org.cubeengine.butler.parameter.reader.DefaultProvider;

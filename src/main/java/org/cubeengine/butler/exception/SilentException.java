@@ -20,15 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
+package org.cubeengine.butler.exception;
 
 /**
- * This Exception is thrown whenever an exception during a command execution was not handled accordingly.
+ * Silently fails the command
  */
-public class UnhandledException extends CommandException
+public class SilentException extends CommandException
 {
-    public UnhandledException(Throwable e)
-    {
-        super(e);
-    }
 }

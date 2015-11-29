@@ -20,11 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
+package org.cubeengine.butler.exception;
 
-/**
- * Silently fails the command
- */
-public class SilentException extends CommandException
+public interface PriorityExceptionHandler extends ExceptionHandler
 {
+    int priority();
 }

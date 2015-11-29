@@ -25,7 +25,7 @@ package org.cubeengine.butler.parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.cubeengine.butler.CommandException;
+import org.cubeengine.butler.exception.CommandException;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.parameter.property.FixedPosition;
 import org.cubeengine.butler.parameter.property.MethodIndex;

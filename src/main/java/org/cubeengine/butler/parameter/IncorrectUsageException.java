@@ -22,7 +22,7 @@
  */
 package org.cubeengine.butler.parameter;
 
-import org.cubeengine.butler.CommandException;
+import org.cubeengine.butler.exception.CommandException;
 
 /**
  * This exception is thrown when a user performed an invalid command.

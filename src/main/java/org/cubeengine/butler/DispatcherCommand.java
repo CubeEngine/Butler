@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import org.cubeengine.butler.alias.AliasCommand;
 import org.cubeengine.butler.alias.AliasConfiguration;
+import org.cubeengine.butler.exception.MissingCommandDescriptorException;
+import org.cubeengine.butler.exception.UnhandledException;
 import org.cubeengine.butler.filter.Filter;
 import org.cubeengine.butler.parametric.ParametricContainerCommand;
 

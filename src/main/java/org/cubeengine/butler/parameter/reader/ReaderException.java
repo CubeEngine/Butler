@@ -22,7 +22,7 @@
  */
 package org.cubeengine.butler.parameter.reader;
 
-import org.cubeengine.butler.CommandException;
+import org.cubeengine.butler.exception.CommandException;
 
 public class ReaderException extends CommandException
 {

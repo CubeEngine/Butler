@@ -20,12 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
+package org.cubeengine.butler.exception;
 
-public class MissingExceptionHandlerException extends RuntimeException
+import org.cubeengine.butler.CommandBase;
+import org.cubeengine.butler.CommandInvocation;
+
+/**
+ * Handles Exceptions that come up when running a command
+ */
+public interface ExceptionHandler
 {
-    public MissingExceptionHandlerException(String msg, Throwable t)
-    {
-        super(msg, t);
-    }
+    public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation);
 }

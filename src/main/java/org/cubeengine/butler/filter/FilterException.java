@@ -22,7 +22,7 @@
  */
 package org.cubeengine.butler.filter;
 
-import org.cubeengine.butler.CommandException;
+import org.cubeengine.butler.exception.CommandException;
 
 public class FilterException extends CommandException
 {
