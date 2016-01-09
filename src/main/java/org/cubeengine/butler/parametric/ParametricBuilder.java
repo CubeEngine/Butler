@@ -255,7 +255,7 @@ public class ParametricBuilder implements CommandBuilder<BasicParametricCommand,
         }
     }
 
-    interface LabelProvider
+    public interface LabelProvider
     {
         String getLabel();
     }
