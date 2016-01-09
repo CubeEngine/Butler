@@ -38,12 +38,7 @@ public class NamedParameter extends SimpleParameter
     }
 
     @Override
-    public void parse(CommandInvocation invocation)
-    {
-        parse0(invocation, false);
-    }
-
-    private void parse0(CommandInvocation invocation, boolean suggestion)
+    public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions)
     {
         String token = invocation.currentToken();
         for (String name : names)
@@ -54,11 +49,11 @@ public class NamedParameter extends SimpleParameter
                 break;
             }
         }
-        if (suggestion)
+        if (suggestions != null)
         {
             return;
         }
-        super.parse(invocation);
+        super.parse(invocation, params, suggestions);
     }
 
     @Override
@@ -80,7 +75,7 @@ public class NamedParameter extends SimpleParameter
         }
         try
         {
-            this.parse0(invocation, true);
+            this.parse(invocation, new ArrayList<ParsedParameter>(), new ArrayList<Parameter>());
         }
         catch (Exception ignored)
         {

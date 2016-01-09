@@ -45,7 +45,7 @@ public class ParameterUsageGeneratorTest
     @Before
     public void setUp() throws Exception
     {
-        ParametricBuilder<InvokableMethod, ParametricCommandDescriptor> builder = new ParametricBuilder<>(new ParameterUsageGenerator());
+        ParametricBuilder builder = new ParametricBuilder(new ParameterUsageGenerator());
         for (Method method : ParametricBuilder.getMethods(this.getClass()))
         {
             BasicParametricCommand cmd = builder.buildCommand(new InvokableMethod(method, this));

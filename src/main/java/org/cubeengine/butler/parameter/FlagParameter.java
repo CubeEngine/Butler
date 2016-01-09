@@ -69,14 +69,14 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    public void parse(CommandInvocation invocation)
+    public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions)
     {
         ParsedParameter parsedParameter = this.parseValue(invocation);
         if (parsedParameter.getParsedValue() == null)
         {
             throw new IllegalArgumentException("Invalid CommandCall! Flag should be validated but was not valid.");
         }
-        invocation.valueFor(ParsedParameters.class).add(parsedParameter);
+        params.add(parsedParameter);
     }
 
     @Override

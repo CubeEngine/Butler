@@ -43,8 +43,7 @@ public class ParametricCommandTest
     public void setUp() throws Exception
     {
         providerManager = new ProviderManager();
-        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new ParametricBuilder(
-            new ParameterUsageGenerator()));
+        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new ParametricBuilder(new ParameterUsageGenerator()));
 
         container = new TestParametricCommand(builder);
         container.registerSubCommands();
@@ -55,8 +54,15 @@ public class ParametricCommandTest
     {
         for (CommandBase command : container.getCommands())
         {
-            assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(),
-                                                             providerManager)));
+            try
+            {
+                assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(), providerManager)));
+            }
+            catch (Exception e)
+            {
+                System.out.println(command.getDescriptor().getName());
+                throw e;
+            }
         }
     }
 }

@@ -22,14 +22,15 @@
  */
 package org.cubeengine.butler.parameter;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.cubeengine.butler.exception.CommandException;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.parameter.property.FieldHolder;
 import org.cubeengine.butler.parameter.property.FixedPosition;
-import org.cubeengine.butler.parameter.property.MethodIndex;
-import org.cubeengine.butler.parametric.SuggestionParameters;
+import org.cubeengine.butler.parametric.Group;
 import org.cubeengine.butler.property.Property;
 
 import static org.cubeengine.butler.parameter.property.Requirement.isRequired;
@@ -43,9 +44,9 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     private final List<Parameter> nonPositional;
     private final List<Parameter> positional;
 
-    public ParameterGroup(List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
+    public ParameterGroup(Class<?> clazz, List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
     {
-        super(null, null, 0); // TODO Type & Reader
+        super(clazz, null, 0); // TODO Type & Reader
         for (Parameter flag : flags) // Need to be FlagParameter
         {
             if (!(flag instanceof FlagParameter))
@@ -74,29 +75,22 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     }
 
     @Override
-    public void parse(CommandInvocation invocation)
-    {
-        parse0(invocation, false);
-    }
-
-    private boolean parse0(CommandInvocation invocation, boolean suggestion)
+    public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggs)
     {
         List<Parameter> flags = new ArrayList<>(this.flags);
         List<Parameter> nonPositional = new ArrayList<>(this.nonPositional);
         List<Parameter> positional = new ArrayList<>(this.positional);
         Parameter greedy = null;
 
-        List<ParsedParameter> params = invocation.valueFor(ParsedParameters.class);
-
+        // Parse until invocation is consumed
         while (!invocation.isConsumed())
         {
             List<Parameter> suggestions = suggestParameters(invocation, positional, nonPositional, flags, greedy);
 
-            if (suggestion && invocation.tokens().size() - invocation.consumed() == 1)
+            if (suggs != null && invocation.tokens().size() - invocation.consumed() == 1)
             {
-                List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
-                list.addAll(suggestions); // Suggest indexed first then named then flags
-                return true;
+                suggs.addAll(suggestions); // Suggest indexed first then named then flags
+                return;
             }
 
             Collections.reverse(suggestions); // Try flags first then named then indexed
@@ -107,23 +101,46 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             {
                 if (parameter.isPossible(invocation))
                 {
-                    if (suggestion && parameter instanceof NamedParameter && invocation.tokens().size() - consumed <= parameter.getGreed())
+                    if (suggs != null && parameter instanceof NamedParameter && invocation.tokens().size() - consumed <= parameter.getGreed())
                     {
-                        List<Parameter> list = invocation.valueFor(SuggestionParameters.class);
-                        list.add(parameter);
-                        return true;
+                        suggs.add(parameter);
+                        return;
                     }
                     try
                     {
-                        parameter.parse(invocation);
-                        parsed = true;
+                        List<ParsedParameter> newParams = new ArrayList<>();
                         if (parameter.greed == INFINITE)
                         {
+                            if (!params.isEmpty())
+                            {
+                                int last = params.size() - 1;
+                                if (params.get(last).getParameter() == parameter)
+                                {
+                                    newParams.add(params.remove(last));
+                                }
+                            }
+
                             greedy = parameter;
                         }
+                        parameter.parse(invocation, newParams, suggs);
+                        parsed = true;
                         flags.remove(parameter);
                         nonPositional.remove(parameter);
                         positional.remove(parameter);
+
+                        if (newParams.size() == 1)
+                        {
+                            params.add(newParams.get(0));
+                        }
+                        else
+                        {
+                            Object parsedValue = newParams;
+                            if (parameter.getType() != null && Group.class.isAssignableFrom(parameter.getType()))
+                            {
+                                parsedValue = readGroup(((Class<? extends Group>)parameter.getType()), newParams);
+                            }
+                            params.add(ParsedParameter.of(parameter, parsedValue, null));
+                        }
                         break;
                     }
                     catch (RuntimeException e)
@@ -146,24 +163,8 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
         }
 
-        List<ParsedParameter> toGroup = new ArrayList<>();
-        for (ParsedParameter param : params)
-        {
-            if (param.getParameter() != null) // empty param (last?)
-            {
-                if (!param.getParameter().hasProperty(MethodIndex.class))
-                {
-                    toGroup.add(param);
-                }
-            }
-        }
-
-        if (!toGroup.isEmpty())
-        {
-            // TODO create groupObject from toGroup and add to params
-            // FieldHolder.class Property
-        }
-
+        // Parse remaining parameters using default values or error out when too few arguments
+        // First positional
         for (Parameter parameter : positional)
         {
             if (parameter.getDefaultProvider() != null)
@@ -171,12 +172,12 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
                 continue;
             }
-            if (isRequired(parameter) && !suggestion)
+            if (isRequired(parameter) && suggs == null)
             {
                 throw new TooFewArgumentsException();
             }
         }
-
+        // then non-positional
         for (Parameter parameter : nonPositional)
         {
             if (parameter.getDefaultProvider() != null)
@@ -186,23 +187,41 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             }
             if (isRequired(parameter) && parameter.greed != INFINITE)
             {
-                if (!suggestion)
+                if (suggs == null)
                 {
                     throw new TooFewArgumentsException();
                 }
             }
         }
+        // flags always default to false
+        return;
+    }
 
-        return true;
+    private Group readGroup(Class<? extends Group> type, List<ParsedParameter> params)
+    {
+        try
+        {
+            Group group = type.newInstance();
+            for (ParsedParameter param : params)
+            {
+                Field field = param.getParameter().valueFor(FieldHolder.class);
+                field.set(group, param.getParsedValue());
+            }
+            return group;
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**
      * Gets a list of possible parameters
-     *  @param invocation    the invocation
+     *
+     * @param invocation    the invocation
      * @param positional    the positional parameters
      * @param nonPositional the non positional parameters
      * @param flags         the flags
-     * @param greedy
      */
     private ArrayList<Parameter> suggestParameters(CommandInvocation invocation, List<Parameter> positional,
                                                    List<Parameter> nonPositional, List<Parameter> flags,
@@ -252,15 +271,18 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     @Override
     public List<String> getSuggestions(CommandInvocation invocation)
     {
+        List<Parameter> suggs = new ArrayList<>();
         try
         {
-            parse0(invocation, true);
+            ParsedParameters parsed = new ParsedParameters();
+            invocation.setProperty(parsed);
+            parse(invocation, parsed.value(), suggs);
         }
         catch (CommandException ignored)
         {
         }
         List<String> result = new ArrayList<>();
-        for (Parameter parameter : invocation.valueFor(SuggestionParameters.class))
+        for (Parameter parameter : suggs)
         {
             result.addAll(parameter.getSuggestions(invocation));
         }

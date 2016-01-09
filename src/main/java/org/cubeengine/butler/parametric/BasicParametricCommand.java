@@ -49,8 +49,9 @@ public class BasicParametricCommand extends DispatcherCommand
         boolean ran = super.selfExecute(invocation);
         if (!ran)
         {
-            invocation.setProperty(new ParsedParameters());
-            this.getDescriptor().getParameters().parse(invocation);
+            ParsedParameters parsed = new ParsedParameters();
+            invocation.setProperty(parsed);
+            this.getDescriptor().getParameters().parse(invocation, parsed.value(), null);
             ran = this.run(invocation);
         }
         return ran;
@@ -60,10 +61,9 @@ public class BasicParametricCommand extends DispatcherCommand
     public List<String> getSuggestions(CommandInvocation invocation)
     {
         List<String> suggestions = new ArrayList<>();
-        invocation.setProperty(new ParsedParameters());
-        invocation.setProperty(new SuggestionParameters(new ArrayList<Parameter>()));
 
         List<String> superSuggestions = super.getSuggestions(invocation); // do this first before token is consumed!
+
         suggestions.addAll(this.getDescriptor().getParameters().getSuggestions(invocation));
 
         if (superSuggestions != null)
@@ -86,7 +86,6 @@ public class BasicParametricCommand extends DispatcherCommand
             {
                 args[i] = invocation.getContext(parameterTypes[i]);
             }
-
 
             ParameterGroup params = descriptor.getParameters();
             List<Parameter> parameters = new ArrayList<>(params.getFlags());

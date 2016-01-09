@@ -24,9 +24,12 @@ package org.cubeengine.butler.parametric;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,6 +53,7 @@ import org.cubeengine.butler.parameter.ParameterGroup;
 import org.cubeengine.butler.parameter.SimpleParameter;
 import org.cubeengine.butler.parameter.UsageGenerator;
 import org.cubeengine.butler.parameter.property.Description;
+import org.cubeengine.butler.parameter.property.FieldHolder;
 import org.cubeengine.butler.parameter.property.FixedPosition;
 import org.cubeengine.butler.parameter.property.MethodIndex;
 import org.cubeengine.butler.parameter.property.Requirement;
@@ -61,7 +65,7 @@ import static org.cubeengine.butler.parameter.property.Requirement.OPTIONAL;
 
 // TODO BaseAlias + Alias pre/suffix arguments
 // AliasCommand
-public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT extends ParametricCommandDescriptor> implements CommandBuilder<BasicParametricCommand, OriginT>
+public class ParametricBuilder implements CommandBuilder<BasicParametricCommand, InvokableMethod>
 {
     private static final Method PARAMETERS;
     private static final Method PARAMETER_NAME;
@@ -105,12 +109,12 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
     }
 
     @Override
-    public BasicParametricCommand buildCommand(OriginT origin)
+    public BasicParametricCommand buildCommand(InvokableMethod origin)
     {
         return this.isApplicable(origin) ? this.build(origin.getMethod().getAnnotation(Command.class), origin) : null;
     }
 
-    protected boolean isApplicable(OriginT method)
+    protected boolean isApplicable(InvokableMethod method)
     {
         return method.getMethod().isAnnotationPresent(Command.class) && method.getMethod().getParameterTypes().length >= 1;
     }
@@ -148,18 +152,18 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
         }
     }
 
-    protected BasicParametricCommand build(Command annotation, OriginT origin)
+    protected BasicParametricCommand build(Command annotation, InvokableMethod origin)
     {
         return new BasicParametricCommand(fillDescriptor(newDescriptor(), annotation, origin));
     }
 
     @SuppressWarnings("unchecked")
-    protected DescriptorT newDescriptor()
+    protected ParametricCommandDescriptor newDescriptor()
     {
-        return (DescriptorT)new ParametricCommandDescriptor();
+        return new ParametricCommandDescriptor();
     }
 
-    protected DescriptorT fillDescriptor(DescriptorT descriptor, Command annotation, final OriginT origin)
+    protected ParametricCommandDescriptor fillDescriptor(ParametricCommandDescriptor descriptor, Command annotation, final InvokableMethod origin)
     {
         descriptor.setName(annotation.name().isEmpty() ? origin.getMethod().getName() : annotation.name());
         descriptor.setDescription(annotation.desc());
@@ -194,55 +198,56 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
         return descriptor;
     }
 
-    protected ParameterGroup buildParameters(DescriptorT descriptor, OriginT origin)
+    protected ParameterGroup buildParameters(ParametricDescriptor descriptor, InvokableMethod origin)
     {
         Method method = origin.getMethod();
         Annotation[][] paramAnnotations = method.getParameterAnnotations();
-        Class<?>[] parameterTypes = method.getParameterTypes();
+        Type[] parameterTypes = method.getGenericParameterTypes();
         List<Parameter> flagsList = new ArrayList<>();
         List<Parameter> nPosList = new ArrayList<>();
         List<Parameter> posList = new ArrayList<>();
 
         for (int i = 1; i < parameterTypes.length; i++)
         {
-            Class<?> paramType = parameterTypes[i];
+            Type paramType = parameterTypes[i];
             Annotation[] annotations = paramAnnotations[i];
-            Parameter param = this.createParameter(descriptor, paramType, annotations, origin, getJavaParameter(method, i));
+            Parameter param = this.createParameter(paramType, annotations, getJavaParameter(method, i));
             param.setProperty(new MethodIndex(i));
-            for (Annotation annotation : annotations) // Find type of Annotation to assign to correct list
+
+            if (param instanceof FlagParameter)
             {
-                if (annotation instanceof Flag)
-                {
-                    flagsList.add(param);
-                    param = null;
-                    break;
-                }
-                else if (annotation instanceof Named)
-                {
-                    nPosList.add(param);
-                    param = null;
-                    break;
-                }
+                flagsList.add(param);
             }
-            if (param != null)
+            else if (param instanceof NamedParameter)
+            {
+                nPosList.add(param);
+            }
+            else 
             {
                 param.setProperty(new FixedPosition(posList.size()));
                 posList.add(param);
             }
         }
-        return new ParameterGroup(flagsList, nPosList, posList);
+        return new ParameterGroup(null, flagsList, nPosList, posList);
     }
 
-    private Object getJavaParameter(Method method, int index)
+    private LabelProvider getJavaParameter(Method method, int index)
     {
         if (PARAMETERS == null || PARAMETER_NAME == null)
         {
-            return null;
+            return new LabelProvider()
+            {
+                @Override
+                public String getLabel()
+                {
+                    return null;
+                }
+            };
         }
         try
         {
             Object paramArray = PARAMETERS.invoke(method);
-            return Array.get(paramArray, index);
+            return new ParameterName(Array.get(paramArray, index));
         }
         catch (IllegalAccessException | InvocationTargetException e)
         {
@@ -250,34 +255,84 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
         }
     }
 
-    private String javaParameterLabel(Object javaParameter)
+    interface LabelProvider
     {
-        if (PARAMETER_NAME == null)
+        String getLabel();
+    }
+
+    class ParameterName implements LabelProvider
+    {
+        private Object javaParameter;
+
+        public ParameterName(Object javaParameter)
         {
-            throw new IllegalStateException("Missing Label");
+            this.javaParameter = javaParameter;
         }
-        try
+
+        @Override
+        public String getLabel()
         {
-            return PARAMETER_NAME.invoke(javaParameter).toString();
+            if (PARAMETER_NAME == null)
+            {
+                throw new IllegalStateException("Missing Label");
+            }
+            try
+            {
+                return PARAMETER_NAME.invoke(javaParameter).toString();
+            }
+            catch (IllegalAccessException | InvocationTargetException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
-        catch (IllegalAccessException | InvocationTargetException e)
+    }
+
+    class FieldName implements LabelProvider
+    {
+        private Field field;
+
+        public FieldName(Field field)
         {
-            throw new RuntimeException(e);
+            this.field = field;
+        }
+
+        @Override
+        public String getLabel()
+        {
+            return field.getName();
         }
     }
 
     @SuppressWarnings("unchecked")
-    protected Parameter createParameter(DescriptorT descriptor, Class<?> clazz, Annotation[] annotations,
-                                        OriginT origin, Object javaParameter)
+    protected Parameter createParameter(Type type, Annotation[] annotations, LabelProvider labelProvider)
     {
-        if (Group.class.isAssignableFrom(clazz))
+        Class<?> reader;
+        Class clazz;
+        if (type instanceof Class)
         {
-            // TODO Groups
-            throw new UnsupportedOperationException("Groups are not yet supported");
+            if (Group.class.isAssignableFrom((Class)type))
+            {
+                return createGroupParameter((Class)type, annotations, labelProvider);
+            }
+            reader = ((Class)type);
+            clazz = ((Class)type);
+        }
+        else if (type instanceof ParameterizedType)
+        {
+            reader = ((Class)((ParameterizedType)type).getRawType());
+            Type[] typeArgs = ((ParameterizedType)type).getActualTypeArguments();
+            if (typeArgs.length != 1)
+            {
+                throw new UnsupportedOperationException("Only exactly one generic Parameter Type is supported");
+            }
+            clazz = ((Class)typeArgs[0]);
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Type is not supported: " + type);
         }
 
         List<Property> properties = new ArrayList<>();
-        Class<?> reader = clazz;
         int greed = 1;
         Flag flag = null;
         Named named = null;
@@ -319,12 +374,8 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
                 }
                 properties.add(OPTIONAL);
             }
-            else if (annotation instanceof Type)
-            {
-                clazz = ((Type)annotation).value();
-            }
         }
-        if (reader == clazz && Enum.class.isAssignableFrom(clazz))
+        if (reader == type && Enum.class.isAssignableFrom(clazz))
         {
             reader = Enum.class;
         }
@@ -335,7 +386,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
             String longName = flag.longName();
             if (shortName.isEmpty() && longName.isEmpty())
             {
-                longName = javaParameterLabel(javaParameter);
+                longName = labelProvider.getLabel();
                 shortName = longName.substring(0, 1);
             }
             parameter = new FlagParameter(shortName, longName);
@@ -352,7 +403,7 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
                 {
                     throw new IllegalArgumentException("Fixed Values can only have a greed of 1");
                 }
-                parameter = new FixedValueParameter((Class<? extends FixedValues>)clazz, reader);
+                parameter = new FixedValueParameter((Class<? extends FixedValues>)type, reader);
             }
             else
             {
@@ -367,9 +418,38 @@ public class ParametricBuilder<OriginT extends InvokableMethod, DescriptorT exte
         }
         if (parameter.valueFor(ValueLabel.class) == null)
         {
-            parameter.setProperty(new ValueLabel(javaParameterLabel(javaParameter)));
+            parameter.setProperty(new ValueLabel(labelProvider.getLabel()));
         }
         return parameter;
     }
 
+    private Parameter createGroupParameter(Class type, Annotation[] annotations, LabelProvider labelProvider)
+    {
+        List<Parameter> posList = new ArrayList<>();
+        List<Parameter> nameList = new ArrayList<>();
+        List<Parameter> flagList = new ArrayList<>();
+        for (Field field : type.getFields())
+        {
+            if (Modifier.isPublic(field.getModifiers()))
+            {
+                Parameter param = createParameter(field.getGenericType(), field.getAnnotations(), labelProvider);
+                param.setProperty(new FieldHolder(field));
+                if (param instanceof FlagParameter)
+                {
+                    flagList.add(param);
+                }
+                else if (param instanceof NamedParameter)
+                {
+                    nameList.add(param);
+                }
+                else
+                {
+                    param.setProperty(new FixedPosition(posList.size()));
+                    posList.add(param);
+                }
+            }
+        }
+
+        return new ParameterGroup(type, flagList, nameList, posList);
+    }
 }

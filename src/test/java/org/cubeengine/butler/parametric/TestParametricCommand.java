@@ -57,6 +57,21 @@ public class TestParametricCommand extends ParametricContainerCommand<InvokableM
         return true;
     }
 
+    @Command(desc = "Value1 \"default value\"")
+    public boolean parametricGroup(BasicCommandContext ctx, TestGroup group)
+    {
+        TestGroup testGroup = new TestGroup();
+        assertEquals(group.group1, testGroup.group1);
+        assertEquals(group.group2, testGroup.group2);
+        return true;
+    }
+
+    public static class TestGroup implements Group
+    {
+        public TestEnum group1 = TestEnum.VALUE1;
+        public String group2 = "default value";
+    }
+
     enum TestEnum
     {
         VALUE1,

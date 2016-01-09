@@ -39,17 +39,16 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    public void parse(CommandInvocation invocation)
+    public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions)
     {
-        List<ParsedParameter> result = invocation.valueFor(ParsedParameters.class);
         ParsedParameter pParam = this.parseValue(invocation);
-        if (!result.isEmpty() && result.get(result.size() - 1).getParameter().equals(pParam.getParameter()))
+        if (!params.isEmpty() && params.get(params.size() - 1).getParameter().equals(pParam.getParameter()))
         {
-            ParsedParameter last = result.remove(result.size() - 1);
+            ParsedParameter last = params.remove(params.size() - 1);
             String joined = last.getParsedValue() + " " + pParam.getParsedValue();
             pParam = ParsedParameter.of(pParam.getParameter(), joined, joined);
         }
-        result.add(pParam);
+        params.add(pParam);
     }
 
     @Override

@@ -102,10 +102,17 @@ public abstract class Parameter extends PropertyHolder
 
     /**
      * Parses the Parameter with given invocation
-     *
-     * @param invocation the CommandInvocation
+     *  @param invocation the CommandInvocation
+     * @param params
+     * @param suggestions
      */
-    public abstract void parse(CommandInvocation invocation);
+    public abstract void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions);
+
+    public void parse(CommandInvocation invocation, List<ParsedParameter> params)
+    {
+        parse(invocation, params, null);
+    }
+
 
     /**
      * Returns a List of suggested Strings

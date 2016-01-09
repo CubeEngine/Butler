@@ -90,15 +90,14 @@ public class FixedValueParameter extends SimpleParameter
     }
 
     @Override
-    public void parse(CommandInvocation invocation)
+    public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions)
     {
-        List<ParsedParameter> result = invocation.valueFor(ParsedParameters.class);
         String token = invocation.consume(1);
         for (String key : fixedValues.keySet())
         {
             if (key.equalsIgnoreCase(token))
             {
-                result.add(ParsedParameter.of(this, fixedValues.get(key), token));
+                params.add(ParsedParameter.of(this, fixedValues.get(key), token));
                 return;
             }
         }
