@@ -20,17 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.completer;
+package org.cubeengine.butler.builder.parameter;
 
-import org.cubeengine.butler.property.AbstractProperty;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parametric.Desc;
 
-/**
- * Holds a property class
- */
-public class CompleterProperty extends AbstractProperty<Class>
+public class DescriptionFiller implements ParameterPropertyFiller
 {
-    public CompleterProperty(Class value)
+    @Override
+    public void fill(Parameter parameter, Type type, Annotation[] annotations)
     {
-        super(value);
+        for (Annotation annotation : annotations)
+        {
+            if (annotation instanceof Desc)
+            {
+                parameter.offer(Properties.DESCRIPTION, ((Desc)annotation).value());
+                return;
+            }
+        }
     }
 }

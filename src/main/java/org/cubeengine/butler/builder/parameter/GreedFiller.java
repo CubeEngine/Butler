@@ -20,23 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.property;
+package org.cubeengine.butler.builder.parameter;
 
-import org.cubeengine.butler.parametric.Label;
-import org.cubeengine.butler.property.AbstractProperty;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parametric.Greed;
 
-/**
- * The label for the value of a parameter
- */
-public class ValueLabel extends AbstractProperty<String>
+public class GreedFiller implements ParameterPropertyFiller
 {
-    public ValueLabel(String string)
+    @Override
+    public void fill(Parameter parameter, Type type, Annotation[] annotations)
     {
-        super(string);
-    }
-
-    public static ValueLabel of(Label annotation)
-    {
-        return new ValueLabel(annotation.value());
+        for (Annotation annotation : annotations)
+        {
+            if (annotation instanceof Greed)
+            {
+                parameter.offer(Properties.GREED, ((Greed)annotation).value());
+                return;
+            }
+        }
+        parameter.offer(Properties.GREED, 1);
     }
 }

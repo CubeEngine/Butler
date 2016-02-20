@@ -33,7 +33,7 @@ import org.cubeengine.butler.Dispatcher;
 import static org.cubeengine.butler.StringUtils.join;
 
 /**
- * Provides the ability to generate a usage for a {@link ParameterGroup}
+ * Provides the ability to generate a usage for a {@link GroupParser}
  */
 public abstract class UsageGenerator
 {
@@ -103,7 +103,7 @@ public abstract class UsageGenerator
     }
 
     /**
-     * Generates the usage for given {@link ParameterGroup}
+     * Generates the usage for given {@link GroupParser}
      *
      * @param invocation the invocation
      * @param descriptor the {@link CommandDescriptor}

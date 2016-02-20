@@ -20,15 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.property;
+package org.cubeengine.butler.parametric.builder;
 
-import org.cubeengine.butler.parameter.reader.ArgumentReader;
-import org.cubeengine.butler.property.AbstractProperty;
+import org.cubeengine.butler.builder.DescriptorFiller;
+import org.cubeengine.butler.filter.Restricted;
+import org.cubeengine.butler.filter.SourceFilter;
+import org.cubeengine.butler.parametric.InvokableMethod;
+import org.cubeengine.butler.parametric.ParametricCommandDescriptor;
 
-public class ValueReader extends AbstractProperty<ArgumentReader>
+class RestrictedFiller implements DescriptorFiller<ParametricCommandDescriptor, InvokableMethod>
 {
-    public ValueReader(ArgumentReader value)
+    @Override
+    public void fill(ParametricCommandDescriptor descriptor, InvokableMethod origin)
     {
-        super(value);
+        Restricted restricted = origin.getMethod().getAnnotation(Restricted.class);
+        if (restricted != null)
+        {
+            descriptor.addFilter(new SourceFilter(restricted.value(), restricted.msg()));
+        }
     }
 }

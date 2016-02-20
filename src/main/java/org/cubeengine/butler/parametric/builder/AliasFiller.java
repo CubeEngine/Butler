@@ -20,15 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.property;
+package org.cubeengine.butler.parametric.builder;
 
-import java.lang.reflect.Field;
-import org.cubeengine.butler.property.AbstractProperty;
+import java.util.ArrayList;
+import java.util.List;
+import org.cubeengine.butler.alias.Alias;
+import org.cubeengine.butler.alias.AliasConfiguration;
+import org.cubeengine.butler.builder.DescriptorFiller;
+import org.cubeengine.butler.parametric.InvokableMethod;
+import org.cubeengine.butler.parametric.ParametricCommandDescriptor;
 
-public class FieldHolder extends AbstractProperty<Field>
+class AliasFiller implements DescriptorFiller<ParametricCommandDescriptor, InvokableMethod>
 {
-    public FieldHolder(Field value)
+    @Override
+    public void fill(ParametricCommandDescriptor descriptor, InvokableMethod origin)
     {
-        super(value);
+        Alias alias = origin.getMethod().getAnnotation(Alias.class);
+        if (alias != null)
+        {
+            List<AliasConfiguration> aliasList = new ArrayList<>();
+            for (String name : alias.value())
+            {
+                AliasConfiguration aliasConf = new AliasConfiguration(name, alias.parents());
+                aliasConf.setPrefix(alias.prefix());
+                aliasConf.setSuffix(alias.suffix());
+                aliasList.add(aliasConf);
+            }
+            descriptor.addAliases(aliasList);
+        }
     }
 }

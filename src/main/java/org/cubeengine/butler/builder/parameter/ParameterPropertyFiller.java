@@ -20,14 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.builder.parameter;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import org.cubeengine.butler.parameter.Parameter;
 
-public interface ParametricDescriptor
+public interface ParameterPropertyFiller
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    void fill(Parameter parameter, Type type, Annotation[] annotations);
 }

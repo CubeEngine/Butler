@@ -27,6 +27,7 @@ import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.ProviderManager;
 import org.cubeengine.butler.completer.CompleterProvider;
 import org.cubeengine.butler.parameter.ParameterUsageGenerator;
+import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

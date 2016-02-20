@@ -25,8 +25,8 @@ package org.cubeengine.butler.parameter;
 import org.cubeengine.butler.CommandDescriptor;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.StringUtils;
+import org.cubeengine.butler.parameter.property.Properties;
 import org.cubeengine.butler.parameter.property.Requirement;
-import org.cubeengine.butler.parameter.property.ValueLabel;
 import org.cubeengine.butler.parametric.ParametricCommandDescriptor;
 
 /**
@@ -44,80 +44,65 @@ public class ParameterUsageGenerator extends UsageGenerator
             return "<parameters>";
         }
 
-        ParameterGroup parameters = ((ParametricCommandDescriptor)descriptor).getParameters();
-        for (Parameter parameter : parameters.getPositional())
+        Parameter parameters = ((ParametricCommandDescriptor)descriptor).getParameters();
+        if (parameters.getParser() instanceof GroupParser)
         {
-            sb.append(generateParameterUsage(invocation, parameter)).append(" ");
+            sb.append(generateGroupUsage(invocation, ((GroupParser)parameters.getParser())));
         }
-
-        for (Parameter parameter : parameters.getNonPositional())
+        else // Not a group? Print it alone.
         {
-            sb.append(generateParameterUsage(invocation, parameter)).append(" ");
+            sb.append(generateParameterUsage(invocation, parameters));
         }
-
-        for (Parameter parameter : parameters.getFlags())
-        {
-            if (parameter instanceof FlagParameter)
-            {
-                sb.append(generateFlagUsage(invocation, (FlagParameter)parameter)).append(" ");
-            }
-            else
-            {
-                throw new IllegalArgumentException("Expected FlagParameter but found " + parameter.getClass().getName());
-            }
-        }
-
         return sb.toString();
     }
 
     /**
-     * Generates the usage for given {@link FlagParameter}
+     * Generates the usage for given {@link FlagParser}
      *
      * @param invocation   the invocation
-     * @param parameter the {@link org.cubeengine.butler.parameter.Parameter}
-     *
+     * @param parameter
      * @return the usage string
      */
-    protected String generateFlagUsage(CommandInvocation invocation, FlagParameter parameter)
+    protected String generateFlagUsage(CommandInvocation invocation, Parameter parameter)
     {
-        return "[-" + parameter.longName() + "]";
+        return "[-" + parameter.getProperty(Properties.FLAG_LONGNAME) + "]";
     }
 
     /**
      * Generates the usage for given {@link Parameter}
      *
-     * @param invocation    the {@link de.cubeisland.engine.butler.CommandSource}
+     * @param invocation the {@link CommandInvocation}
      * @param parameter the {@link org.cubeengine.butler.parameter.Parameter}
      *
      * @return the usage string
      */
     protected String generateParameterUsage(CommandInvocation invocation, Parameter parameter)
     {
-        if (parameter instanceof ParameterGroup)
+        if (parameter.getParser() instanceof GroupParser)
         {
             if (Requirement.isRequired(parameter))
             {
-                return "<" + this.generateParameterUsage(invocation, (ParameterGroup)parameter) + ">";
+                return "<" + generateGroupUsage(invocation, ((GroupParser)parameter.getParser())) + ">";
             }
-            return "[" + this.generateParameterUsage(invocation, (ParameterGroup)parameter) + "]";
+            return "[" + generateGroupUsage(invocation, ((GroupParser)parameter.getParser())) + "]";
         }
-        String valueLabel = parameter.valueFor(ValueLabel.class);
+        String valueLabel = parameter.getProperty(Properties.VALUE_LABEL);
         if (valueLabel != null)
         {
             valueLabel = this.valueLabel(invocation, valueLabel);
         }
-        else if (parameter instanceof FixedValueParameter)
+        else if (parameter.getParser() instanceof FixedValueParser)
         {
-            valueLabel = StringUtils.join("|", ((FixedValueParameter)parameter).getFixedValues());
+            valueLabel = StringUtils.join("|", ((FixedValueParser)parameter.getParser()).getFixedValues());
         }
         else
         {
             valueLabel = "param";
         }
 
-        if (parameter instanceof NamedParameter)
+        if (parameter.getParser() instanceof NamedParser)
         {
-            valueLabel = ((NamedParameter)parameter).getNames()[0] + " <" + valueLabel + ">";
+            valueLabel = ((NamedParser)parameter.getParser()).getNames()[0] + " <" + valueLabel + ">";
         }
 
         if (Requirement.isRequired(parameter))
@@ -130,11 +115,38 @@ public class ParameterUsageGenerator extends UsageGenerator
         }
     }
 
+    private String generateGroupUsage(CommandInvocation invocation, GroupParser parser)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Parameter parameter : parser.getPositional())
+        {
+            sb.append(generateParameterUsage(invocation, parameter)).append(" ");
+        }
+
+        for (Parameter parameter : parser.getNonPositional())
+        {
+            sb.append(generateParameterUsage(invocation, parameter)).append(" ");
+        }
+
+        for (Parameter parameter : parser.getFlags())
+        {
+            if (parameter.getParser() instanceof FlagParser)
+            {
+                sb.append(generateFlagUsage(invocation, parameter)).append(" ");
+            }
+            else
+            {
+                throw new IllegalArgumentException("Expected FlagParameter but found " + parameter.getClass().getName());
+            }
+        }
+        return sb.toString();
+    }
+
     /**
      * Possibly manipulates the label and returns it.
      * <p>This can be overwritten to for example translate the label</p>
      *
-     * @param invocation     the {@link de.cubeisland.engine.butler.CommandSource}
+     * @param invocation     the {@link  CommandInvocation}
      * @param valueLabel the valueLabel
      *
      * @return the manipulated label

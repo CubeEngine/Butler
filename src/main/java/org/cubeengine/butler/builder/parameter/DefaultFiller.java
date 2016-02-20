@@ -20,14 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.builder.parameter;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parameter.reader.DefaultValue;
+import org.cubeengine.butler.parametric.Default;
 
-public interface ParametricDescriptor
+public class DefaultFiller implements ParameterPropertyFiller
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    @Override
+    public void fill(Parameter parameter, Type type, Annotation[] annotations)
+    {
+        for (Annotation annotation : annotations)
+        {
+            if (annotation instanceof Default)
+            {
+                Class value = ((Default)annotation).value();
+                if (value == DefaultValue.class)
+                {
+                    value = parameter.getProperty(Properties.TYPE);
+                }
+                parameter.offer(Properties.DEFAULT_PROVIDER, value);
+                return;
+            }
+        }
+    }
 }

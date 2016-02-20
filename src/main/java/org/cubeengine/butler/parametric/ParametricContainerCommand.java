@@ -25,13 +25,14 @@ package org.cubeengine.butler.parametric;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import org.cubeengine.butler.CommandBuilder;
+import org.cubeengine.butler.builder.CommandBuilder;
 import org.cubeengine.butler.CommandDescriptor;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.DispatcherCommand;
 import org.cubeengine.butler.alias.Alias;
 import org.cubeengine.butler.alias.AliasConfiguration;
 import org.cubeengine.butler.parameter.UsageGenerator;
+import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 
 /**
  * A ContainerCommand able to dispatch methodic commands

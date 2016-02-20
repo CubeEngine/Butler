@@ -25,42 +25,36 @@ package org.cubeengine.butler.parameter;
 import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.parameter.property.Requirement;
-import org.cubeengine.butler.parameter.property.ValueReader;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parameter.reader.ArgumentReader;
 
-public class FlagParameter extends Parameter
+public class FlagParser implements ParameterParser
 {
-    private final String name;
-    private final String longName;
+    private Parameter parameter;
 
-    public FlagParameter(String name, String longName)
+    public FlagParser(Parameter parameter)
     {
-        super(Boolean.class, ValueReader.class, DEFAULT);
-        this.name = name;
-        this.longName = longName;
-        this.setProperty(new ValueReader(new FlagReader(name, longName))); // Set Custom FlagReader!
-        this.setDefaultProvider(FlagReader.class);
-        this.setProperty(Requirement.OPTIONAL);
+        this.parameter = parameter;
     }
 
     public final String name()
     {
-        return name;
+        return parameter.getProperty(Properties.FLAG_NAME);
     }
 
     public final String longName()
     {
-        return longName;
+        return parameter.getProperty(Properties.FLAG_LONGNAME);
     }
 
     @Override
-    protected boolean isPossible(CommandInvocation invocation)
+    public boolean isPossible(CommandInvocation invocation)
     {
         String token = invocation.currentToken();
         if (token.startsWith("-"))
         {
             token = token.substring(1);
-            if (name.equalsIgnoreCase(token) || longName.equalsIgnoreCase(token))
+            if (name().equalsIgnoreCase(token) || longName().equalsIgnoreCase(token))
             {
                 return true;
             }
@@ -80,7 +74,7 @@ public class FlagParameter extends Parameter
     }
 
     @Override
-    protected List<String> getSuggestions(CommandInvocation invocation)
+    public List<String> getSuggestions(CommandInvocation invocation)
     {
         String token = invocation.tokens().get(invocation.tokens().size() - 1);
         List<String> list = new ArrayList<>();
@@ -100,5 +94,27 @@ public class FlagParameter extends Parameter
             }
         }
         return list;
+    }
+
+    @Override
+    public ParameterType getType()
+    {
+        return  ParameterType.FLAG;
+    }
+
+    protected ParsedParameter parseValue(CommandInvocation invocation)
+    {
+        int consumed = invocation.consumed();
+        ArgumentReader reader = parameter.getProperty(Properties.VALUE_READER);
+        Object read;
+        if (reader != null)
+        {
+            read = reader.read(parameter.getType(), invocation);
+        }
+        else
+        {
+            read = invocation.getManager().read(parameter, invocation);
+        }
+        return ParsedParameter.of(parameter, read, invocation.tokensSince(consumed));
     }
 }

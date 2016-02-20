@@ -28,16 +28,15 @@ import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.SimpleCommandDescriptor;
 import org.cubeengine.butler.filter.Filter;
 import org.cubeengine.butler.filter.FilterException;
-import org.cubeengine.butler.parameter.ParameterGroup;
+import org.cubeengine.butler.parameter.GroupParser;
+import org.cubeengine.butler.parameter.Parameter;
 
-public class ParametricCommandDescriptor extends SimpleCommandDescriptor
-
-    implements ParametricDescriptor, Filter
+public class ParametricCommandDescriptor extends SimpleCommandDescriptor implements ParametricDescriptor, Filter
 {
     private InvokableMethod invokableMethod;
     private int contextParameter;
     private List<Filter> filters = new ArrayList<>();
-    private ParameterGroup parameters;
+    private Parameter parameters;
 
     public InvokableMethod getInvokableMethod()
     {
@@ -73,12 +72,12 @@ public class ParametricCommandDescriptor extends SimpleCommandDescriptor
         }
     }
 
-    public ParameterGroup getParameters()
+    public Parameter getParameters()
     {
         return parameters;
     }
 
-    public void setParameters(ParameterGroup parameters)
+    public void setParameters(Parameter parameters)
     {
         this.parameters = parameters;
     }

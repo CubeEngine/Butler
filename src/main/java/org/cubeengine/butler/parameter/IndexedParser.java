@@ -20,14 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.parameter;
 
-import org.cubeengine.butler.parameter.Parameter;
-
-public interface ParametricDescriptor
+public class IndexedParser extends SimpleParser
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    public IndexedParser(Parameter parameter)
+    {
+        super(parameter);
+    }
+
+    @Override
+    public ParameterType getType()
+    {
+        return ParameterType.INDEXED;
+    }
 }

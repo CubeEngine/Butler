@@ -20,14 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.builder;
 
-import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.CommandDescriptor;
 
-public interface ParametricDescriptor
+public interface DescriptorCreator<DescriptorT extends CommandDescriptor>
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    DescriptorT create();
 }

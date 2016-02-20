@@ -26,16 +26,19 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.completer.Completer;
-import org.cubeengine.butler.completer.CompleterProperty;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parameter.reader.ArgumentReader;
 
 /**
  * A Parameter implementation.
  */
-public class SimpleParameter extends Parameter
+public abstract class SimpleParser implements ParameterParser
 {
-    public SimpleParameter(Class<?> type, Class<?> reader, int greed)
+    protected final Parameter parameter;
+
+    public SimpleParser(Parameter parameter)
     {
-        super(type, reader, greed);
+        this.parameter = parameter;
     }
 
     @Override
@@ -52,21 +55,21 @@ public class SimpleParameter extends Parameter
     }
 
     @Override
-    protected boolean isPossible(CommandInvocation invocation)
+    public boolean isPossible(CommandInvocation invocation)
     {
         // Just checking if the parameter is possible here
         int remainingTokens = invocation.tokens().size() - invocation.consumed();
-        return remainingTokens >= 1 && remainingTokens >= greed;
+        return remainingTokens >= 1 && remainingTokens >= parameter.getGreed();
     }
 
     @Override
-    protected List<String> getSuggestions(CommandInvocation invocation)
+    public List<String> getSuggestions(CommandInvocation invocation)
     {
         List<String> result = new ArrayList<>();
-        Class completerClass = this.valueFor(CompleterProperty.class);
+        Class completerClass = parameter.getProperty(Properties.COMPLETER);
         if (completerClass == null)
         {
-            completerClass = this.getType();
+            completerClass = parameter.getType();
         }
 
         Completer completer = invocation.getManager().getCompleter(completerClass);
@@ -79,5 +82,28 @@ public class SimpleParameter extends Parameter
             System.out.println("No completer found for " + completerClass);
         }
         return result;
+    }
+
+    /**
+     * Parses this parameter using given CommandInvocation
+     *
+     * @param invocation the CommandInvocation
+     *
+     * @return the ParsedParameter
+     */
+    protected ParsedParameter parseValue(CommandInvocation invocation)
+    {
+        int consumed = invocation.consumed();
+        ArgumentReader reader = parameter.getProperty(Properties.VALUE_READER);
+        Object read;
+        if (reader != null)
+        {
+            read = reader.read(parameter.getType(), invocation);
+        }
+        else
+        {
+            read = invocation.getManager().read(parameter, invocation);
+        }
+        return ParsedParameter.of(parameter, read, invocation.tokensSince(consumed));
     }
 }

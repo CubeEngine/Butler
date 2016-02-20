@@ -28,12 +28,14 @@ import java.util.Collections;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.DispatcherCommand;
-import org.cubeengine.butler.parameter.FlagParameter;
+import org.cubeengine.butler.parameter.FlagParser;
 import org.cubeengine.butler.parameter.Parameter;
-import org.cubeengine.butler.parameter.ParameterGroup;
+import org.cubeengine.butler.parameter.GroupParser;
+import org.cubeengine.butler.parameter.ParameterParser.ParameterType;
 import org.cubeengine.butler.parameter.ParsedParameter;
 import org.cubeengine.butler.parameter.ParsedParameters;
 import org.cubeengine.butler.parameter.property.MethodIndex;
+import org.cubeengine.butler.parameter.property.Properties;
 import org.cubeengine.butler.result.CommandResult;
 
 public class BasicParametricCommand extends DispatcherCommand
@@ -87,16 +89,24 @@ public class BasicParametricCommand extends DispatcherCommand
                 args[i] = invocation.getContext(parameterTypes[i]);
             }
 
-            ParameterGroup params = descriptor.getParameters();
-            List<Parameter> parameters = new ArrayList<>(params.getFlags());
-            parameters.addAll(params.getNonPositional());
-            parameters.addAll(params.getPositional());
+            Parameter params = descriptor.getParameters();
+            List<Parameter> parameters = new ArrayList<>();
+            if (params.getParser() instanceof GroupParser)
+            {
+                parameters.addAll(((GroupParser)params.getParser()).getFlags());
+                parameters.addAll(((GroupParser)params.getParser()).getNonPositional());
+                parameters.addAll(((GroupParser)params.getParser()).getPositional());
+            }
+            else
+            {
+                parameters.add(params);
+            }
             Collections.sort(parameters, MethodIndex.COMPARATOR);
 
             List<ParsedParameter> parsedParams = new ArrayList<>(invocation.valueFor(ParsedParameters.class));
             for (Parameter parameter : parameters)
             {
-                Integer index = parameter.valueFor(MethodIndex.class);
+                Integer index = parameter.getProperty(Properties.METHOD_INDEX);
                 ParsedParameter match = null;
                 for (ParsedParameter parsedParam : parsedParams)
                 {
@@ -112,7 +122,7 @@ public class BasicParametricCommand extends DispatcherCommand
                 }
                 else
                 {
-                    if (parameter instanceof FlagParameter)
+                    if (parameter.getParameterType() == ParameterType.FLAG)
                     {
                         args[index] = false;
                     }

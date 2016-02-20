@@ -20,51 +20,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.builder.parameter;
 
-import java.util.Arrays;
-import java.util.List;
-import org.cubeengine.butler.builder.CommandBuilder;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parametric.Label;
+import org.cubeengine.butler.parametric.builder.parameter.LabelProvider;
 
-public class CompositeCommandBuilder<OriginT> implements CommandBuilder<BasicParametricCommand, OriginT>
+public class LabelFiller implements ParameterPropertyFiller
 {
-    private final List<CommandBuilder<BasicParametricCommand, OriginT>> list;
-
-    public CompositeCommandBuilder(List<CommandBuilder<BasicParametricCommand, OriginT>> list)
-    {
-        this.list = list;
-    }
-
-    @SafeVarargs
-    public CompositeCommandBuilder(CommandBuilder<BasicParametricCommand, OriginT>... builders)
-    {
-        this(Arrays.asList(builders));
-    }
-
     @Override
-    public BasicParametricCommand buildCommand(OriginT origin)
+    public void fill(Parameter parameter, Type type, Annotation[] annotations)
     {
-        for (CommandBuilder<BasicParametricCommand, OriginT> builder : list)
+        for (Annotation annotation : annotations)
         {
-            BasicParametricCommand command = builder.buildCommand(origin);
-            if (command != null)
+            if (annotation instanceof Label)
             {
-                return command;
+                // override when using explicit label
+                parameter.offer(Properties.VALUE_LABEL, ((Label)annotation).value());
+                return;
             }
         }
-        return null;
-    }
-
-    @Override
-    public boolean isApplicable(OriginT originT)
-    {
-        for (CommandBuilder<BasicParametricCommand, OriginT> builder : list)
+        if (parameter.getProperty(Properties.VALUE_LABEL) != null)
         {
-            if (builder.isApplicable(originT))
-            {
-                return true;
-            }
+            return; // already set
         }
-        return false;
+        LabelProvider provider = parameter.getProperty(Properties.LABEL_PROVIDER);
+        parameter.offer(Properties.VALUE_LABEL, provider.getLabel());
     }
 }

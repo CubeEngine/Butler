@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.parameter.FlagParameter;
-import org.cubeengine.butler.parameter.NamedParameter;
+import org.cubeengine.butler.parameter.FlagParser;
+import org.cubeengine.butler.parameter.NamedParser;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.ParsedParameter;
 import org.cubeengine.butler.parameter.ParsedParameters;
-import org.cubeengine.butler.parameter.property.FixedPosition;
+import org.cubeengine.butler.parameter.property.Properties;
 
 /**
  * A context with parameterized values
@@ -55,16 +55,16 @@ public class ParameterizedContext extends BasicCommandContext
             {
                 continue;
             }
-            if (parameter instanceof FlagParameter)
+            if (parameter.getParser() instanceof FlagParser)
             {
-                flags.put(((FlagParameter) parameter).name(), parsed);
+                flags.put(((FlagParser) parameter.getParser()).name(), parsed);
             }
             else
             {
-                Integer pos = parameter.valueFor(FixedPosition.class);
-                if (parameter instanceof NamedParameter)
+                Integer pos = parameter.getProperty(Properties.FIXED_POSITION);
+                if (parameter.getParser() instanceof NamedParser)
                 {
-                    nameBased.put(((NamedParameter)parameter).getNames()[0], parsed);
+                    nameBased.put(((NamedParser)parameter.getParser()).getNames()[0], parsed);
                 }
                 else if (pos != null)
                 {

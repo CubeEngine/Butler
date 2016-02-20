@@ -20,17 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.property;
+package org.cubeengine.butler.builder.parameter;
 
-import org.cubeengine.butler.property.AbstractProperty;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parametric.Complete;
 
-/**
- * The Parameter has to be used at a fixed position in the commandline
- */
-public class FixedPosition extends AbstractProperty<Integer>
+public class CompleterFiller implements ParameterPropertyFiller
 {
-    public FixedPosition(Integer value)
+    @Override
+    public void fill(Parameter parameter, Type type, Annotation[] annotations)
     {
-        super(value);
+        for (Annotation annotation : annotations)
+        {
+            if (annotation instanceof Complete)
+            {
+                parameter.offer(Properties.COMPLETER, ((Complete)annotation).value());
+                return;
+            }
+        }
     }
 }

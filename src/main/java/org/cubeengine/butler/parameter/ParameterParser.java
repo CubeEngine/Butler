@@ -20,14 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.parameter;
 
-import org.cubeengine.butler.parameter.Parameter;
+import java.util.List;
+import org.cubeengine.butler.CommandInvocation;
 
-public interface ParametricDescriptor
+public interface ParameterParser
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    ParameterType getType();
+
+    void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions);
+    boolean isPossible(CommandInvocation invocation);
+    List<String> getSuggestions(CommandInvocation invocation);
+
+
+    enum ParameterType
+    {
+        FLAG, // -flag
+        INDEXED, // <atPosition>
+        NAMED, // name <value>
+        GROUP
+    }
 }

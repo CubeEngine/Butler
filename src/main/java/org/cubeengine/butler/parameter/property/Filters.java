@@ -22,21 +22,48 @@
  */
 package org.cubeengine.butler.parameter.property;
 
-import org.cubeengine.butler.parametric.Desc;
-import org.cubeengine.butler.property.AbstractProperty;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.filter.Filter;
+import org.cubeengine.butler.property.Property;
 
 /**
- * A Description
+ * Contains a List of Filters
  */
-public class Description extends AbstractProperty<String>
+public class Filters implements Iterable<Filter>
 {
-    public Description(String string)
+    private List<Filter> filters = new LinkedList<>();
+
+    public void addFilter(Filter filter)
     {
-        super(string);
+        this.filters.add(filter);
     }
 
-    public static Description of(Desc annotation)
+    public void removeFilter(Class<? extends Filter> clazz)
     {
-        return new Description(annotation.value());
+        Iterator<Filter> it = filters.iterator();
+        while (it.hasNext())
+        {
+            if (it.next().getClass().equals(clazz))
+            {
+                it.remove();
+            }
+        }
+    }
+
+    @Override
+    public Iterator<Filter> iterator()
+    {
+        return this.filters.iterator();
+    }
+
+    public void run(CommandInvocation invocation)
+    {
+        for (Filter filter : filters)
+        {
+            filter.run(invocation);
+        }
     }
 }

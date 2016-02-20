@@ -20,31 +20,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.property;
+package org.cubeengine.butler.parametric.builder;
 
-import java.util.Comparator;
-import org.cubeengine.butler.parameter.Parameter;
-import org.cubeengine.butler.property.AbstractProperty;
+import java.util.ArrayList;
+import java.util.List;
+import org.cubeengine.butler.alias.AliasConfiguration;
+import org.cubeengine.butler.builder.DescriptorFiller;
+import org.cubeengine.butler.parametric.Command;
+import org.cubeengine.butler.parametric.InvokableMethod;
+import org.cubeengine.butler.parametric.ParametricCommandDescriptor;
 
-public class MethodIndex extends AbstractProperty<Integer>
+class CommandFiller implements DescriptorFiller<ParametricCommandDescriptor, InvokableMethod>
 {
-    /**
-     * A Comparator for Parameter with MethodIndex.
-     * This Comparator will throw NullPointerException when used with parameters having no MethodIndex
-     */
-    public static final Comparator<Parameter> COMPARATOR = new Comparator<Parameter>()
+    @Override
+    public void fill(ParametricCommandDescriptor descriptor, InvokableMethod origin)
     {
-        @Override
-        public int compare(Parameter o1, Parameter o2)
-        {
-            Integer i1 = o1.getProperty(Properties.METHOD_INDEX);
-            Integer i2 = o2.getProperty(Properties.METHOD_INDEX);
-            return i1.compareTo(i2); // Null is not allowed where this comparator is used
-        }
-    };
+        Command annotation = origin.getMethod().getAnnotation(Command.class);
+        descriptor.setName(annotation.name().isEmpty() ? origin.getMethod().getName() : annotation.name());
+        descriptor.setDescription(annotation.desc());
+        descriptor.setInvokableMethod(new InvokableMethod(origin.getMethod(), origin.getHolder()));
 
-    public MethodIndex(Integer value)
-    {
-        super(value);
+        List<AliasConfiguration> aliasList = new ArrayList<>();
+        for (String name : annotation.alias())
+        {
+            aliasList.add(new AliasConfiguration(name));
+        }
+        descriptor.addAliases(aliasList);
     }
 }

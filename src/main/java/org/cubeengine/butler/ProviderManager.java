@@ -43,7 +43,6 @@ public class ProviderManager
 {
     private final SourceRestrictedContextValue sourceContext = new SourceRestrictedContextValue();
 
-
     private CompleterProvider completers = new CompleterProvider();
     private ReaderProvider readers = new ReaderProvider();
     private DefaultProvider defaults = new DefaultProvider();

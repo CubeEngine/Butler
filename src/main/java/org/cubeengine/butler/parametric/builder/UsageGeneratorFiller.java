@@ -20,14 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.parametric.builder;
 
-import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.builder.DescriptorFiller;
+import org.cubeengine.butler.parameter.UsageGenerator;
+import org.cubeengine.butler.parametric.InvokableMethod;
+import org.cubeengine.butler.parametric.ParametricCommandDescriptor;
 
-public interface ParametricDescriptor
+class UsageGeneratorFiller implements DescriptorFiller<ParametricCommandDescriptor, InvokableMethod>
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    private UsageGenerator ug;
+
+    public UsageGeneratorFiller(UsageGenerator ug)
+    {
+        this.ug = ug;
+    }
+
+    @Override
+    public void fill(ParametricCommandDescriptor descriptor, InvokableMethod origin)
+    {
+        descriptor.setUsageGenerator(ug);
+    }
 }

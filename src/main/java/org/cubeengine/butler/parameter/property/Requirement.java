@@ -22,15 +22,15 @@
  */
 package org.cubeengine.butler.parameter.property;
 
-import org.cubeengine.butler.parameter.NamedParameter;
+import org.cubeengine.butler.parameter.NamedParser;
 import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.ParameterParser.ParameterType;
 import org.cubeengine.butler.parametric.Optional;
-import org.cubeengine.butler.property.Property;
 
 /**
  * Defines if the Parameter is required or not
  */
-public enum Requirement implements Property<Requirement>
+public enum Requirement
 {
     DEFAULT,
     REQUIRED,
@@ -39,7 +39,9 @@ public enum Requirement implements Property<Requirement>
     public static boolean isRequired(Parameter parameter)
     {
         boolean angleBrackets;
-        switch (parameter.valueFor(Requirement.class))
+        Requirement requirement = parameter.getProperty(Properties.REQUIREMENT);
+        requirement = requirement == null ? DEFAULT : requirement;
+        switch (requirement)
         {
             case REQUIRED:
                 angleBrackets = true;
@@ -49,15 +51,9 @@ public enum Requirement implements Property<Requirement>
                 break;
             case DEFAULT:
             default:
-                angleBrackets = !(parameter instanceof NamedParameter);
+                angleBrackets = parameter.getParameterType() != ParameterType.NAMED;
         }
         return angleBrackets;
-    }
-
-    @Override
-    public Requirement value()
-    {
-        return this;
     }
 
     public static Requirement of(Optional annotation)

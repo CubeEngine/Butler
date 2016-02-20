@@ -20,14 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.builder;
 
-import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.CommandBase;
 
-public interface ParametricDescriptor
+/**
+ * Provides a Method to build a command from an Origin
+ */
+public interface CommandBuilder<CommandT extends CommandBase, OriginT>
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    /**
+     * Builds a new command
+     *
+     * @param origin the origin of the command
+     * @return the command
+     */
+    CommandT buildCommand(OriginT origin);
+
+    boolean isApplicable(OriginT originT);
 }

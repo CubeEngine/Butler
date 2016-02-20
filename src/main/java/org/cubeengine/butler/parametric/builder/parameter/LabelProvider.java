@@ -20,18 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
+package org.cubeengine.butler.parametric.builder.parameter;
 
-/**
- * Provides a Method to build a command from an Origin
- */
-public interface CommandBuilder<CommandT extends CommandBase, OriginT>
+public interface LabelProvider
 {
-    /**
-     * Builds a new command
-     *
-     * @param origin the origin of the command
-     * @return the command
-     */
-    CommandT buildCommand(OriginT origin);
+    String getLabel();
 }

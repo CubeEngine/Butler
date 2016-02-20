@@ -22,7 +22,7 @@
  */
 package org.cubeengine.butler.parametric;
 
-import org.cubeengine.butler.CommandBuilder;
+import org.cubeengine.butler.builder.CommandBuilder;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
 
 import static org.cubeengine.butler.parameter.Parameter.INFINITE;

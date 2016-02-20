@@ -29,14 +29,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.parameter.property.Properties;
 
-public class FixedValueParameter extends SimpleParameter
+public class FixedValueParser extends IndexedParser
 {
     private Map<String, Object> fixedValues = new HashMap<>();
 
-    public FixedValueParameter(Class<? extends FixedValues> type, Class<?> reader)
+    public FixedValueParser(Parameter parameter, Class<? extends FixedValues> type)
     {
-        super(type, reader, 1);
+        super(parameter);
         try
         {
             Method valuesMethod = type.getMethod("values");
@@ -44,6 +45,7 @@ public class FixedValueParameter extends SimpleParameter
             {
                 fixedValues.put(value.getName(), value);
             }
+            parameter.offer(Properties.FIXED_VALUES, fixedValues.keySet());
         }
         catch (ReflectiveOperationException e)
         {
@@ -51,20 +53,21 @@ public class FixedValueParameter extends SimpleParameter
         }
     }
 
-    public FixedValueParameter(String[] names)
+    public FixedValueParser(Parameter parameter, String[] names)
     {
-        super(String.class, String.class, 1);
+        super(parameter);
         for (String name : names)
         {
             this.fixedValues.put(name, name);
         }
+        parameter.offer(Properties.FIXED_VALUES, fixedValues.keySet());
     }
 
     @Override
-    protected boolean isPossible(CommandInvocation invocation)
+    public boolean isPossible(CommandInvocation invocation)
     {
         String token = invocation.currentToken();
-        for (String key : fixedValues.keySet())
+        for (String key : getFixedValues())
         {
             if (key.equalsIgnoreCase(token))
             {
@@ -75,11 +78,11 @@ public class FixedValueParameter extends SimpleParameter
     }
 
     @Override
-    protected List<String> getSuggestions(CommandInvocation invocation)
+    public List<String> getSuggestions(CommandInvocation invocation)
     {
         List<String> result = new ArrayList<>();
         String token = invocation.currentToken().toLowerCase();
-        for (String key : fixedValues.keySet())
+        for (String key : getFixedValues())
         {
             if (key.startsWith(token))
             {
@@ -93,11 +96,11 @@ public class FixedValueParameter extends SimpleParameter
     public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions)
     {
         String token = invocation.consume(1);
-        for (String key : fixedValues.keySet())
+        for (String key : getFixedValues())
         {
             if (key.equalsIgnoreCase(token))
             {
-                params.add(ParsedParameter.of(this, fixedValues.get(key), token));
+                params.add(ParsedParameter.of(parameter, fixedValues.get(key), token));
                 return;
             }
         }

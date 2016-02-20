@@ -28,50 +28,54 @@ import java.util.Collections;
 import java.util.List;
 import org.cubeengine.butler.exception.CommandException;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.parameter.property.FieldHolder;
-import org.cubeengine.butler.parameter.property.FixedPosition;
+import org.cubeengine.butler.parameter.property.Properties;
 import org.cubeengine.butler.parametric.Group;
-import org.cubeengine.butler.property.Property;
-
 import static org.cubeengine.butler.parameter.property.Requirement.isRequired;
 
 /**
  * A ParameterGroup providing grouped Parameters
  */
-public class ParameterGroup extends Parameter implements Property<ParameterGroup>
+public class GroupParser implements ParameterParser
 {
     private final List<Parameter> flags;
     private final List<Parameter> nonPositional;
     private final List<Parameter> positional;
 
-    public ParameterGroup(Class<?> clazz, List<Parameter> flags, List<Parameter> nonPositional, List<Parameter> positional)
+    private Parameter parameter;
+
+    public GroupParser(Parameter parameter, Class<?> clazz, List<Parameter> parameters)
     {
-        super(clazz, null, 0); // TODO Type & Reader
-        for (Parameter flag : flags) // Need to be FlagParameter
+        this.parameter = parameter;
+
+        parameter.offer(Properties.GREED, 0);
+        parameter.offer(Properties.TYPE, clazz);
+
+        ArrayList<Parameter> flags = new ArrayList<>();
+        ArrayList<Parameter> nonPositional = new ArrayList<>();
+        ArrayList<Parameter> positional = new ArrayList<>();
+        for (Parameter param : parameters)
         {
-            if (!(flag instanceof FlagParameter))
+            switch (param.getParameterType())
             {
-                throw new IllegalArgumentException("Parameter is not a FlagParameter");
-            }
-        }
-        for (Parameter namedParameter : nonPositional) // Need to have FixedValues but no
-        {
-            if (!(namedParameter instanceof NamedParameter))
-            {
-                throw new IllegalArgumentException("Non Positional Parameter has to be a named parameter");
-            }
-        }
-        for (Parameter parameter : positional)
-        {
-            if (!parameter.hasProperty(FixedPosition.class))
-            {
-                throw new IllegalArgumentException("Positional Parameter has no position");
+                case FLAG:
+                    flags.add(param);
+                    break;
+                case INDEXED:
+                    positional.add(param);
+
+                    break;
+                case NAMED:
+                    nonPositional.add(param);
+                    break;
+                case GROUP:
+                    positional.add(param); // TODO?
+                    break;
             }
         }
 
         this.flags = Collections.unmodifiableList(flags);
         this.nonPositional = Collections.unmodifiableList(nonPositional);
-        this.positional = Collections.unmodifiableList(positional);
+        this.positional = Collections.unmodifiableList(parameters);
     }
 
     @Override
@@ -101,7 +105,8 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             {
                 if (parameter.isPossible(invocation))
                 {
-                    if (suggs != null && parameter instanceof NamedParameter && invocation.tokens().size() - consumed <= parameter.getGreed())
+                    if (suggs != null && parameter.getParameterType() == ParameterType.NAMED
+                        && invocation.tokens().size() - consumed <= parameter.getGreed())
                     {
                         suggs.add(parameter);
                         return;
@@ -109,7 +114,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                     try
                     {
                         List<ParsedParameter> newParams = new ArrayList<>();
-                        if (parameter.greed == INFINITE)
+                        if (parameter.getGreed() == Parameter.INFINITE)
                         {
                             if (!params.isEmpty())
                             {
@@ -185,7 +190,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
                 params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
                 continue;
             }
-            if (isRequired(parameter) && parameter.greed != INFINITE)
+            if (isRequired(parameter) && parameter.getGreed() != Parameter.INFINITE)
             {
                 if (suggs == null)
                 {
@@ -204,7 +209,7 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
             Group group = type.newInstance();
             for (ParsedParameter param : params)
             {
-                Field field = param.getParameter().valueFor(FieldHolder.class);
+                Field field = param.getParameter().getProperty(Properties.FIELD_HOLDER);
                 field.set(group, param.getParsedValue());
             }
             return group;
@@ -257,15 +262,9 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     }
 
     @Override
-    protected boolean isPossible(CommandInvocation invocation)
+    public boolean isPossible(CommandInvocation invocation)
     {
         return true;
-    }
-
-    @Override
-    public ParameterGroup value()
-    {
-        return this;
     }
 
     @Override
@@ -302,5 +301,11 @@ public class ParameterGroup extends Parameter implements Property<ParameterGroup
     public List<Parameter> getPositional()
     {
         return positional;
+    }
+
+    @Override
+    public ParameterType getType()
+    {
+        return ParameterType.GROUP;
     }
 }

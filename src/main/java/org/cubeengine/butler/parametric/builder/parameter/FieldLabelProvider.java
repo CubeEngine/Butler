@@ -20,14 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler.parametric.builder.parameter;
 
-import org.cubeengine.butler.parameter.Parameter;
+import java.lang.reflect.Field;
 
-public interface ParametricDescriptor
+public class FieldLabelProvider implements LabelProvider
 {
-    InvokableMethod getInvokableMethod();
-    int getContextParameter();
-    Parameter getParameters();
-    void setParameters(Parameter parameters);
+    private Field field;
+
+    public FieldLabelProvider(Field field)
+    {
+        this.field = field;
+    }
+
+    @Override
+    public String getLabel()
+    {
+        return field.getName();
+    }
 }
+
+

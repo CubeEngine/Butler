@@ -20,46 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.filter;
+package org.cubeengine.butler.builder.parameter;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import org.cubeengine.butler.property.Property;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.property.Properties;
+import org.cubeengine.butler.parameter.property.Requirement;
+import org.cubeengine.butler.parametric.Optional;
 
-/**
- * Contains a List of Filters
- */
-public class Filters implements Property<Filters>, Iterable<Filter>
+public class OptionalFiller implements ParameterPropertyFiller
 {
-    private List<Filter> filters = new LinkedList<>();
-
     @Override
-    public Filters value()
+    public void fill(Parameter parameter, Type type, Annotation[] annotations)
     {
-        return this;
-    }
-
-    public void addFilter(Filter filter)
-    {
-        this.filters.add(filter);
-    }
-
-    public void removeFilter(Class<? extends Filter> clazz)
-    {
-        Iterator<Filter> it = filters.iterator();
-        while (it.hasNext())
+        Requirement requirement = Requirement.DEFAULT;
+        for (Annotation annotation : annotations)
         {
-            if (it.next().getClass().equals(clazz))
+            if (annotation instanceof Optional)
             {
-                it.remove();
+                requirement = Requirement.OPTIONAL;
             }
         }
-    }
-
-    @Override
-    public Iterator<Filter> iterator()
-    {
-        return this.filters.iterator();
+        parameter.offer(Properties.REQUIREMENT, requirement);
     }
 }

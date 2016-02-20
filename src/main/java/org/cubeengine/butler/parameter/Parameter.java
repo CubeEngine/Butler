@@ -22,33 +22,35 @@
  */
 package org.cubeengine.butler.parameter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.filter.Filter;
-import org.cubeengine.butler.filter.Filters;
-import org.cubeengine.butler.parameter.property.ValueReader;
-import org.cubeengine.butler.parameter.reader.ArgumentReader;
-import org.cubeengine.butler.property.PropertyHolder;
+import org.cubeengine.butler.parameter.ParameterParser.ParameterType;
+import org.cubeengine.butler.parameter.property.Filters;
+import org.cubeengine.butler.parameter.property.Properties;
 
 /**
  * The Base for Parameters with a Set of ParameterProperties
  * <p>This Parameter Supports the ValueReader Property, which provides an ArgumentReader Object to use instead of preregistered ones</p>
  */
-public abstract class Parameter extends PropertyHolder
+public class Parameter
 {
     public static final int INFINITE = -1;
     public static final int DEFAULT = 1;
 
-    private final Class<?> type;
-    private final Class<?> readerType;
-    protected int greed;
-    private Class<?> defaultProvider;
 
-    protected Parameter(Class<?> type, Class<?> reader, int greed)
+    private Map<Object, Object> properties = new HashMap<>();
+
+    public Object offer(Object key, Object value)
     {
-        this.type = type;
-        this.readerType = reader;
-        this.greed = greed;
+        return properties.put(key, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getProperty(Object key)
+    {
+        return ((T)properties.get(key));
     }
 
     /**
@@ -58,7 +60,7 @@ public abstract class Parameter extends PropertyHolder
      */
     public Class<?> getType()
     {
-        return this.type;
+        return getProperty(Properties.TYPE);
     }
 
     /**
@@ -68,7 +70,7 @@ public abstract class Parameter extends PropertyHolder
      */
     public Class<?> getReaderType()
     {
-        return this.readerType;
+        return getProperty(Properties.READER);
     }
 
     /**
@@ -80,13 +82,10 @@ public abstract class Parameter extends PropertyHolder
      */
     protected boolean isAllowed(CommandInvocation invocation)
     {
-        Filters filters = this.valueFor(Filters.class);
+        Filters filters = this.getProperty(Properties.FILTERS);
         if (filters != null)
         {
-            for (Filter filter : filters)
-            {
-                filter.run(invocation);
-            }
+            filters.run(invocation);
         }
         return true;
     }
@@ -98,7 +97,10 @@ public abstract class Parameter extends PropertyHolder
      *
      * @return whether the parameter can be parsed
      */
-    protected abstract boolean isPossible(CommandInvocation invocation);
+    protected boolean isPossible(CommandInvocation invocation)
+    {
+        return getParser().isPossible(invocation);
+    }
 
     /**
      * Parses the Parameter with given invocation
@@ -106,7 +108,10 @@ public abstract class Parameter extends PropertyHolder
      * @param params
      * @param suggestions
      */
-    public abstract void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions);
+    public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions)
+    {
+        getParser().parse(invocation, params, suggestions);
+    }
 
     public void parse(CommandInvocation invocation, List<ParsedParameter> params)
     {
@@ -121,43 +126,28 @@ public abstract class Parameter extends PropertyHolder
      *
      * @return the suggestions
      */
-    protected abstract List<String> getSuggestions(CommandInvocation invocation);
-
-    /**
-     * Parses this parameter using given CommandInvocation
-     *
-     * @param invocation the CommandInvocation
-     *
-     * @return the ParsedParameter
-     */
-    protected ParsedParameter parseValue(CommandInvocation invocation)
+    public List<String> getSuggestions(CommandInvocation invocation)
     {
-        int consumed = invocation.consumed();
-        ArgumentReader reader = this.valueFor(ValueReader.class);
-        Object read;
-        if (reader != null)
-        {
-            read = reader.read(this.type, invocation);
-        }
-        else
-        {
-            read = invocation.getManager().read(this, invocation);
-        }
-        return ParsedParameter.of(this, read, invocation.tokensSince(consumed));
+        return getParser().getSuggestions(invocation);
     }
 
     public int getGreed()
     {
-        return greed;
+        return getProperty(Properties.GREED);
     }
 
     public Class<?> getDefaultProvider()
     {
-        return defaultProvider;
+        return getProperty(Properties.DEFAULT_PROVIDER);
     }
 
-    public void setDefaultProvider(Class<?> defaultProvider)
+    public ParameterType getParameterType()
     {
-        this.defaultProvider = defaultProvider;
+        return getParser().getType();
+    }
+
+    public ParameterParser getParser()
+    {
+        return getProperty(Properties.PARSER);
     }
 }

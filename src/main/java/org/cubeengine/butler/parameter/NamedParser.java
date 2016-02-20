@@ -25,23 +25,22 @@ package org.cubeengine.butler.parameter;
 import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.parameter.property.Properties;
 
-public class NamedParameter extends SimpleParameter
+public class NamedParser extends SimpleParser
 {
-    private String[] names;
-
-    public NamedParameter(Class<?> clazz, Class<?> reader, String[] names, int greed)
+    public NamedParser(Parameter parameter, String[] names)
     {
-        super(clazz, reader, greed);
-        this.names = names;
-        this.greed++; // add greed for name
+        super(parameter);
+        parameter.offer(Properties.NAMES, names);
+        parameter.offer(Properties.GREED, parameter.getGreed() + 1); // add greed for name
     }
 
     @Override
     public void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions)
     {
         String token = invocation.currentToken();
-        for (String name : names)
+        for (String name : getNames())
         {
             if (name.equalsIgnoreCase(token))
             {
@@ -56,15 +55,20 @@ public class NamedParameter extends SimpleParameter
         super.parse(invocation, params, suggestions);
     }
 
+    public String[] getNames()
+    {
+        return parameter.getProperty(Properties.NAMES);
+    }
+
     @Override
-    protected List<String> getSuggestions(CommandInvocation invocation)
+    public List<String> getSuggestions(CommandInvocation invocation)
     {
         int tokensLeft = invocation.tokens().size() - invocation.consumed();
         if (tokensLeft == 1)
         {
             ArrayList<String> result = new ArrayList<>();
             String token = invocation.currentToken().toLowerCase();
-            for (String name : names)
+            for (String name : getNames())
             {
                 if (name.startsWith(token))
                 {
@@ -85,7 +89,7 @@ public class NamedParameter extends SimpleParameter
     }
 
     @Override
-    protected boolean isPossible(CommandInvocation invocation)
+    public boolean isPossible(CommandInvocation invocation)
     {
         return isName(invocation.currentToken()) && super.isPossible(invocation);
     }
@@ -93,7 +97,7 @@ public class NamedParameter extends SimpleParameter
     private boolean isName(String token)
     {
         boolean isPossible = false;
-        for (String name : names)
+        for (String name : getNames())
         {
             if (name.equalsIgnoreCase(token))
             {
@@ -104,8 +108,9 @@ public class NamedParameter extends SimpleParameter
         return isPossible;
     }
 
-    public String[] getNames()
+    @Override
+    public ParameterType getType()
     {
-        return this.names;
+        return ParameterType.NAMED;
     }
 }
