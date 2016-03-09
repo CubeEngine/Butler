@@ -62,7 +62,6 @@ public class GroupParser implements ParameterParser
                     break;
                 case INDEXED:
                     positional.add(param);
-
                     break;
                 case NAMED:
                     nonPositional.add(param);
@@ -75,7 +74,7 @@ public class GroupParser implements ParameterParser
 
         this.flags = Collections.unmodifiableList(flags);
         this.nonPositional = Collections.unmodifiableList(nonPositional);
-        this.positional = Collections.unmodifiableList(parameters);
+        this.positional = Collections.unmodifiableList(positional);
     }
 
     @Override
