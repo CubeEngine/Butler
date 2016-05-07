@@ -67,4 +67,11 @@ public interface CommandDescriptor
      * @return the dispatcher
      */
     Dispatcher getDispatcher();
+
+    /**
+     * Returns the owner class
+     *
+     * @return the owner class
+     */
+    Class getOwner();
 }

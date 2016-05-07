@@ -25,11 +25,14 @@ package org.cubeengine.butler.parameter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.cubeengine.butler.CommandBase;
+import org.cubeengine.butler.SimpleCommandDescriptor;
 import org.cubeengine.butler.parametric.BasicParametricCommand;
 import org.cubeengine.butler.parametric.Command;
 import org.cubeengine.butler.parametric.InvokableMethod;
 import org.cubeengine.butler.parametric.Label;
 import org.cubeengine.butler.parametric.Optional;
+import org.cubeengine.butler.parametric.SimpleCommandManager;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
 import org.junit.Before;
@@ -39,15 +42,20 @@ import static org.junit.Assert.assertEquals;
 
 public class ParameterUsageGeneratorTest
 {
-    private List<BasicParametricCommand> commands = new ArrayList<>();
+    private List<CommandBase> commands = new ArrayList<>();
+    private SimpleCommandManager scm;
 
     @Before
     public void setUp() throws Exception
     {
+        SimpleCommandDescriptor desc = new SimpleCommandDescriptor();
+        desc.setName("Base Dispatcher");
+        desc.setUsageGenerator(new ParameterUsageGenerator());
+        scm = new SimpleCommandManager(desc);
         ParametricBuilder builder = new ParametricBuilder(new ParameterUsageGenerator());
         for (Method method : ParametricBuilder.getMethods(this.getClass()))
         {
-            BasicParametricCommand cmd = builder.buildCommand(new InvokableMethod(method, this));
+            CommandBase cmd = builder.buildCommand(scm, new InvokableMethod(method, this));
             if (cmd != null)
             {
                 commands.add(cmd);
@@ -58,7 +66,7 @@ public class ParameterUsageGeneratorTest
     @Test
     public void testGenerator() throws Exception
     {
-        for (BasicParametricCommand command : commands)
+        for (CommandBase command : commands)
         {
             assertEquals(command.getDescriptor().getDescription(), command.getDescriptor().getUsage(null));
         }

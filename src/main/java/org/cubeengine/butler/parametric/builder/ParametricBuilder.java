@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.cubeengine.butler.Dispatcher;
 import org.cubeengine.butler.builder.AbstractCommandBuilder;
 import org.cubeengine.butler.builder.DescriptorCreator;
 import org.cubeengine.butler.parameter.UsageGenerator;
@@ -38,7 +39,7 @@ import org.cubeengine.butler.parametric.builder.parameter.ParametricParametersFi
 
 // TODO BaseAlias + Alias pre/suffix arguments
 // AliasCommand
-public class ParametricBuilder extends AbstractCommandBuilder<BasicParametricCommand, InvokableMethod, ParametricCommandDescriptor>
+public class ParametricBuilder extends AbstractCommandBuilder<InvokableMethod, ParametricCommandDescriptor>
 {
     private ParametricParametersFiller parameterFiller;
 
@@ -87,8 +88,10 @@ public class ParametricBuilder extends AbstractCommandBuilder<BasicParametricCom
         return method.getMethod().isAnnotationPresent(Command.class) && method.getMethod().getParameterTypes().length >= 1;
     }
 
-    protected BasicParametricCommand build(ParametricCommandDescriptor descriptor)
+    protected BasicParametricCommand build(Dispatcher dispatcher, ParametricCommandDescriptor descriptor)
     {
+        descriptor.setOwner(dispatcher.getDescriptor().getOwner());
         return new BasicParametricCommand(descriptor);
     }
+
 }

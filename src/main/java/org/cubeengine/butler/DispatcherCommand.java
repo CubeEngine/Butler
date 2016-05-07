@@ -35,7 +35,6 @@ import org.cubeengine.butler.alias.AliasConfiguration;
 import org.cubeengine.butler.exception.MissingCommandDescriptorException;
 import org.cubeengine.butler.exception.UnhandledException;
 import org.cubeengine.butler.filter.Filter;
-import org.cubeengine.butler.parametric.ParametricContainerCommand;
 
 /**
  * A Command that can dispatch sub-commands
@@ -53,17 +52,6 @@ public class DispatcherCommand implements Dispatcher
             throw new MissingCommandDescriptorException();
         }
         this.descriptor = descriptor;
-    }
-
-    @Override
-    public Dispatcher getBaseDispatcher()
-    {
-        Dispatcher dispatcher = this.getDescriptor().getDispatcher();
-        if (dispatcher == null)
-        {
-            return this;
-        }
-        return dispatcher.getBaseDispatcher();
     }
 
     @Override
@@ -96,7 +84,7 @@ public class DispatcherCommand implements Dispatcher
                 }
                 else
                 {
-                    CommandBase aliasDispatcher = this.getBaseDispatcher().getCommand(alias.getDispatcher());
+                    CommandBase aliasDispatcher = getManager().getCommand(alias.getDispatcher());
                     if (aliasDispatcher == null || !(aliasDispatcher instanceof Dispatcher))
                     {
                         throw new IllegalArgumentException("Cannot add alias to dispatcher! Command missing or is not a dispatcher.");
@@ -106,9 +94,9 @@ public class DispatcherCommand implements Dispatcher
             }
         }
 
-        if (command instanceof ParametricContainerCommand)
+        if (command instanceof ContainerCommand)
         {
-            ((ParametricContainerCommand)command).registerSubCommands();
+            ((ContainerCommand)command).registerSubCommands();
         }
 
         return true;
@@ -162,7 +150,6 @@ public class DispatcherCommand implements Dispatcher
         try
         {
             this.checkInvocation(invocation);
-
             if (!invocation.isConsumed())
             {
                 CommandBase command = this.getCommand(invocation.currentToken());
@@ -257,5 +244,11 @@ public class DispatcherCommand implements Dispatcher
     public CommandDescriptor getDescriptor()
     {
         return this.descriptor;
+    }
+
+    @Override
+    public CommandManager getManager()
+    {
+        return getDescriptor().getDispatcher().getManager();
     }
 }

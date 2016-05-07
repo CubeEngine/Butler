@@ -20,23 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parametric;
+package org.cubeengine.butler;
 
-import org.cubeengine.butler.CommandBase;
-import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.CommandManager;
-import org.cubeengine.butler.exception.ExceptionHandler;
-
-public class TestContainerDescriptor extends ContainerCommandDescriptor implements ExceptionHandler
+public interface CommandManager extends Dispatcher
 {
-    public TestContainerDescriptor(CommandManager man)
-    {
-        super(man);
-    }
-
-    @Override
-    public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation)
-    {
-        throw new IllegalStateException(e);
-    }
+    ProviderManager getProviderManager();
 }

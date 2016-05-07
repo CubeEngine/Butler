@@ -75,9 +75,9 @@ public interface Dispatcher extends CommandBase
     CommandBase getCommand(String... alias);
 
     /**
-     * Returns the base dispatcher that being the first dispatcher that gets called
+     * Returns the CommandManager for this Dispatcher
      *
-     * @return the base dispatcher
+     * @return the commandManager
      */
-    Dispatcher getBaseDispatcher();
+    CommandManager getManager();
 }

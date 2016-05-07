@@ -25,6 +25,8 @@ package org.cubeengine.butler.parametric;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.cubeengine.butler.CommandBase;
+import org.cubeengine.butler.ContainerCommand;
 import org.cubeengine.butler.builder.CommandBuilder;
 import org.cubeengine.butler.CommandDescriptor;
 import org.cubeengine.butler.CommandInvocation;
@@ -37,14 +39,11 @@ import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 /**
  * A ContainerCommand able to dispatch methodic commands
  */
-public class ParametricContainerCommand<OriginT extends InvokableMethod> extends DispatcherCommand
+public class ParametricContainerCommand extends DispatcherCommand implements ContainerCommand
 {
-    private CommandBuilder<BasicParametricCommand, OriginT> builder;
-
-    public ParametricContainerCommand(ContainerCommandDescriptor descriptor, CommandBuilder<BasicParametricCommand, OriginT> builder)
+    public ParametricContainerCommand(ContainerCommandDescriptor descriptor, Class owner)
     {
         super(descriptor);
-        this.builder = builder;
 
         Command annotation = this.getClass().getAnnotation(Command.class);
         if (annotation == null)
@@ -52,6 +51,7 @@ public class ParametricContainerCommand<OriginT extends InvokableMethod> extends
             throw new IllegalArgumentException("Missing Command annotation");
         }
 
+        descriptor.setOwner(owner);
         descriptor.setName(annotation.name());
         descriptor.setDescription(annotation.desc());
         descriptor.setUsageGenerator(new UsageGenerator()
@@ -85,11 +85,13 @@ public class ParametricContainerCommand<OriginT extends InvokableMethod> extends
     /**
      * Finds and registers the SubCommands of this CommandContainer
      */
+    @Override
     public void registerSubCommands()
     {
+        CommandBuilder<InvokableMethod> builder = getManager().getProviderManager().getBuilder(InvokableMethod.class);
         for (Method method : ParametricBuilder.getMethods(this.getClass()))
         {
-            BasicParametricCommand command = builder.buildCommand(originFor(method));
+            CommandBase command = builder.buildCommand(this, originFor(method));
             if (command != null)
             {
                 this.addCommand(command);
@@ -104,8 +106,8 @@ public class ParametricContainerCommand<OriginT extends InvokableMethod> extends
      * @return the Origin for the sub command
      */
     @SuppressWarnings("unchecked")
-    protected OriginT originFor(Method method)
+    protected InvokableMethod originFor(Method method)
     {
-        return (OriginT)new InvokableMethod(method, this);
+        return new InvokableMethod(method, this);
     }
 }

@@ -34,6 +34,16 @@ public class SimpleCommandDescriptor implements CommandDescriptor, Dispatchable
     private UsageGenerator usageGenerator;
     private List<AliasConfiguration> aliases = new ArrayList<>();
     private Dispatcher dispatcher;
+    private Class owner;
+
+    public SimpleCommandDescriptor(Dispatcher dispatcher)
+    {
+        this.dispatcher = dispatcher;
+    }
+
+    public SimpleCommandDescriptor()
+    {
+    }
 
     @Override
     public String getName()
@@ -89,5 +99,16 @@ public class SimpleCommandDescriptor implements CommandDescriptor, Dispatchable
     public void setDispatcher(Dispatcher dispatcher)
     {
         this.dispatcher = dispatcher;
+    }
+
+    public void setOwner(Class owner)
+    {
+        this.owner = owner;
+    }
+
+    @Override
+    public Class getOwner()
+    {
+        return owner;
     }
 }

@@ -22,7 +22,10 @@
  */
 package org.cubeengine.butler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.cubeengine.butler.builder.CommandBuilder;
 import org.cubeengine.butler.completer.Completer;
 import org.cubeengine.butler.completer.CompleterProvider;
 import org.cubeengine.butler.exception.CompositeExceptionHandler;
@@ -50,6 +53,8 @@ public class ProviderManager
     private ContextProvider contexts = new ContextProvider();
 
     private CompositeExceptionHandler exceptionHandler = new CompositeExceptionHandler();
+
+    private Map<Class, CommandBuilder> builders = new HashMap<>();
 
     public ProviderManager()
     {
@@ -181,5 +186,16 @@ public class ProviderManager
         @SuppressWarnings("unchecked")
         T val = (T)contextValue.getContext(commandInvocation, clazz);
         return val;
+    }
+
+    public <T> void registerBuilder(Class<T> clazz, CommandBuilder<T> builder)
+    {
+        builders.put(clazz, builder);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> CommandBuilder<T> getBuilder(Class<T> clazz)
+    {
+        return builders.get(clazz);
     }
 }

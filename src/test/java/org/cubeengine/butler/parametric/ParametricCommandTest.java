@@ -24,7 +24,7 @@ package org.cubeengine.butler.parametric;
 
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.ProviderManager;
+import org.cubeengine.butler.SimpleCommandDescriptor;
 import org.cubeengine.butler.completer.CompleterProvider;
 import org.cubeengine.butler.parameter.ParameterUsageGenerator;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
@@ -35,18 +35,22 @@ import static org.junit.Assert.assertTrue;
 
 public class ParametricCommandTest
 {
-    private ProviderManager providerManager;
     private CompleterProvider completerProvider;
     private TestParametricCommand container;
+    private SimpleCommandManager scm;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception
     {
-        providerManager = new ProviderManager();
-        CompositeCommandBuilder<InvokableMethod> builder = new CompositeCommandBuilder(new ParametricBuilder(new ParameterUsageGenerator()));
+        SimpleCommandDescriptor desc = new SimpleCommandDescriptor();
+        desc.setName("Base Dispatcher");
+        desc.setUsageGenerator(new ParameterUsageGenerator());
+        scm = new SimpleCommandManager(desc);
 
-        container = new TestParametricCommand(builder);
+        scm.getProviderManager().registerBuilder(InvokableMethod.class, new ParametricBuilder(new ParameterUsageGenerator()));
+
+        container = new TestParametricCommand(scm);
         container.registerSubCommands();
     }
 
@@ -57,7 +61,7 @@ public class ParametricCommandTest
         {
             try
             {
-                assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(), providerManager)));
+                assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(), scm.getProviderManager())));
             }
             catch (Exception e)
             {
@@ -67,3 +71,4 @@ public class ParametricCommandTest
         }
     }
 }
+

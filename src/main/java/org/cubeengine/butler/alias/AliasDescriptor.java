@@ -81,4 +81,10 @@ public class AliasDescriptor implements CommandDescriptor, Dispatchable
     {
         this.dispatcher = dispatcher;
     }
+
+    @Override
+    public Class getOwner()
+    {
+        return descriptor.getOwner();
+    }
 }

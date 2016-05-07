@@ -22,49 +22,29 @@
  */
 package org.cubeengine.butler.parametric;
 
-import java.util.Arrays;
-import java.util.List;
-import org.cubeengine.butler.builder.CommandBuilder;
+import org.cubeengine.butler.CommandDescriptor;
+import org.cubeengine.butler.CommandManager;
+import org.cubeengine.butler.DispatcherCommand;
+import org.cubeengine.butler.ProviderManager;
 
-public class CompositeCommandBuilder<OriginT> implements CommandBuilder<BasicParametricCommand, OriginT>
+public class SimpleCommandManager extends DispatcherCommand implements CommandManager
 {
-    private final List<CommandBuilder<BasicParametricCommand, OriginT>> list;
+    private ProviderManager providerManager = new ProviderManager();
 
-    public CompositeCommandBuilder(List<CommandBuilder<BasicParametricCommand, OriginT>> list)
+    public SimpleCommandManager(CommandDescriptor descriptor)
     {
-        this.list = list;
-    }
-
-    @SafeVarargs
-    public CompositeCommandBuilder(CommandBuilder<BasicParametricCommand, OriginT>... builders)
-    {
-        this(Arrays.asList(builders));
+        super(descriptor);
     }
 
     @Override
-    public BasicParametricCommand buildCommand(OriginT origin)
+    public ProviderManager getProviderManager()
     {
-        for (CommandBuilder<BasicParametricCommand, OriginT> builder : list)
-        {
-            BasicParametricCommand command = builder.buildCommand(origin);
-            if (command != null)
-            {
-                return command;
-            }
-        }
-        return null;
+        return providerManager;
     }
 
     @Override
-    public boolean isApplicable(OriginT originT)
+    public CommandManager getManager()
     {
-        for (CommandBuilder<BasicParametricCommand, OriginT> builder : list)
-        {
-            if (builder.isApplicable(originT))
-            {
-                return true;
-            }
-        }
-        return false;
+        return this;
     }
 }

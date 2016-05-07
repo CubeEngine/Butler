@@ -26,8 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.CommandDescriptor;
+import org.cubeengine.butler.Dispatcher;
 
-public abstract class AbstractCommandBuilder<CommandT extends CommandBase, OriginT, DescriptorT extends CommandDescriptor> implements CommandBuilder<CommandT, OriginT>
+public abstract class AbstractCommandBuilder<OriginT, DescriptorT extends CommandDescriptor> implements CommandBuilder<OriginT>
 {
     private DescriptorCreator<DescriptorT> creator;
     private List<DescriptorFiller<DescriptorT, OriginT>> fillers = new ArrayList<>();
@@ -38,9 +39,9 @@ public abstract class AbstractCommandBuilder<CommandT extends CommandBase, Origi
     }
 
     @Override
-    public final CommandT buildCommand(OriginT origin)
+    public final CommandBase buildCommand(Dispatcher base, OriginT origin)
     {
-        return isApplicable(origin) ? this.build(buildDescriptor(origin)) : null;
+        return isApplicable(origin) ? this.build(base, buildDescriptor(origin)) : null;
     }
 
     protected DescriptorT newDescriptor()
@@ -48,7 +49,7 @@ public abstract class AbstractCommandBuilder<CommandT extends CommandBase, Origi
         return creator.create();
     }
 
-    protected abstract CommandT build(DescriptorT descriptor);
+    protected abstract CommandBase build(Dispatcher base, DescriptorT descriptor);
 
     protected DescriptorT buildDescriptor(OriginT origin)
     {
@@ -60,7 +61,7 @@ public abstract class AbstractCommandBuilder<CommandT extends CommandBase, Origi
         return descriptor;
     }
 
-    public AbstractCommandBuilder<CommandT, OriginT, DescriptorT> addFiller(DescriptorFiller<DescriptorT, OriginT> filler)
+    public AbstractCommandBuilder<OriginT, DescriptorT> addFiller(DescriptorFiller<DescriptorT, OriginT> filler)
     {
         fillers.add(filler);
         return this;

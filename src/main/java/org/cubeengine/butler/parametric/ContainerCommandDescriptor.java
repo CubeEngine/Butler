@@ -22,9 +22,13 @@
  */
 package org.cubeengine.butler.parametric;
 
+import org.cubeengine.butler.Dispatcher;
 import org.cubeengine.butler.SimpleCommandDescriptor;
 
 public class ContainerCommandDescriptor extends SimpleCommandDescriptor
 {
-
+    public ContainerCommandDescriptor(Dispatcher dispatcher)
+    {
+        super(dispatcher);
+    }
 }

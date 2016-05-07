@@ -22,7 +22,7 @@
  */
 package org.cubeengine.butler.parametric;
 
-import org.cubeengine.butler.builder.CommandBuilder;
+import org.cubeengine.butler.CommandManager;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
 
 import static org.cubeengine.butler.parameter.Parameter.INFINITE;
@@ -30,11 +30,11 @@ import static org.junit.Assert.assertEquals;
 
 
 @Command(desc = "a description")
-public class TestParametricCommand extends ParametricContainerCommand<InvokableMethod>
+public class TestParametricCommand extends ParametricContainerCommand
 {
-    public TestParametricCommand(CommandBuilder<BasicParametricCommand, InvokableMethod> builder)
+    public TestParametricCommand(CommandManager man)
     {
-        super(new TestContainerDescriptor(), builder);
+        super(new TestContainerDescriptor(man), TestParametricCommand.class);
     }
 
     @Command(desc = "a parametric command")

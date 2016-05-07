@@ -23,19 +23,21 @@
 package org.cubeengine.butler.builder;
 
 import org.cubeengine.butler.CommandBase;
+import org.cubeengine.butler.Dispatcher;
 
 /**
  * Provides a Method to build a command from an Origin
  */
-public interface CommandBuilder<CommandT extends CommandBase, OriginT>
+public interface CommandBuilder<OriginT>
 {
     /**
      * Builds a new command
      *
+     * @param base the base Dispatcher for the built command
      * @param origin the origin of the command
      * @return the command
      */
-    CommandT buildCommand(OriginT origin);
+    CommandBase buildCommand(Dispatcher base, OriginT origin);
 
     boolean isApplicable(OriginT originT);
 }
