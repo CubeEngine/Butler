@@ -22,21 +22,29 @@
  */
 package org.cubeengine.butler.parametric;
 
+import java.util.Arrays;
+import java.util.List;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.SimpleCommandDescriptor;
 import org.cubeengine.butler.completer.CompleterProvider;
 import org.cubeengine.butler.parameter.ParameterUsageGenerator;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
+import org.hamcrest.core.Is;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.cubeengine.butler.parametric.TestParametricSuggestionCommand.TEST_LIST;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class ParametricCommandTest
 {
     private CompleterProvider completerProvider;
     private TestParametricCommand container;
+    private TestParametricSuggestionCommand suggContainer;
     private SimpleCommandManager scm;
 
     @SuppressWarnings("unchecked")
@@ -52,6 +60,9 @@ public class ParametricCommandTest
 
         container = new TestParametricCommand(scm);
         container.registerSubCommands();
+
+        suggContainer = new TestParametricSuggestionCommand(scm);
+        suggContainer.registerSubCommands();
     }
 
     @Test
@@ -62,6 +73,25 @@ public class ParametricCommandTest
             try
             {
                 assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(), scm.getProviderManager())));
+            }
+            catch (Exception e)
+            {
+                System.out.println(command.getDescriptor().getName());
+                throw e;
+            }
+        }
+    }
+
+    @Test
+    public void testSuggestions() throws Exception
+    {
+        for (CommandBase command : suggContainer.getCommands())
+        {
+            try
+            {
+                String description = command.getDescriptor().getDescription();
+                List<String> suggs = command.getSuggestions(new CommandInvocation(null, description, scm.getProviderManager()));
+                assertThat(suggs, Is.is(TEST_LIST));
             }
             catch (Exception e)
             {

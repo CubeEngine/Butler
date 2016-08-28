@@ -48,7 +48,7 @@ public class NamedParser extends SimpleParser
                 break;
             }
         }
-        if (suggestions != null)
+        if (invocation.isConsumed() && suggestions != null)
         {
             return;
         }
