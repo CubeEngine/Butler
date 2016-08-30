@@ -48,7 +48,8 @@ public class NamedParser extends SimpleParser
                 break;
             }
         }
-        if (invocation.isConsumed() && suggestions != null)
+        // do not parse value if suggestion and last token
+        if (suggestions != null && (invocation.consumed() >= invocation.tokens().size() - 1))
         {
             return;
         }
