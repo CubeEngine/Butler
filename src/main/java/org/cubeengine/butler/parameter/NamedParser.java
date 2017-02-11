@@ -23,6 +23,7 @@
 package org.cubeengine.butler.parameter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.parameter.property.Properties;
@@ -78,13 +79,13 @@ public class NamedParser extends SimpleParser
             }
             return result;
         }
-        try
+        if (Arrays.asList(getNames()).contains(invocation.currentToken().toLowerCase()))
         {
-            this.parse(invocation, new ArrayList<ParsedParameter>(), new ArrayList<Parameter>());
+            invocation.consume(1);
         }
-        catch (Exception ignored)
+        else
         {
-
+            return new ArrayList<>();
         }
         return super.getSuggestions(invocation);
     }
