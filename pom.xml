@@ -4,7 +4,7 @@
 
     <groupId>org.cubeengine</groupId>
     <artifactId>butler</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
 
     <name>Butler</name>
     <description>Send him commands!</description>
