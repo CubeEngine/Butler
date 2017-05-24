@@ -82,56 +82,7 @@ public class BasicParametricCommand extends DispatcherCommand
         {
             ParametricCommandDescriptor descriptor = this.getDescriptor();
             InvokableMethod invokableMethod = descriptor.getInvokableMethod();
-            Class<?>[] parameterTypes = invokableMethod.getMethod().getParameterTypes();
-            Object[] args = new Object[parameterTypes.length];
-            for (int i = 0; i <= descriptor.getContextParameter(); i++)
-            {
-                args[i] = invocation.getContext(parameterTypes[i]);
-            }
-
-            Parameter params = descriptor.getParameters();
-            List<Parameter> parameters = new ArrayList<>();
-            if (params.getParser() instanceof GroupParser)
-            {
-                parameters.addAll(((GroupParser)params.getParser()).getFlags());
-                parameters.addAll(((GroupParser)params.getParser()).getNonPositional());
-                parameters.addAll(((GroupParser)params.getParser()).getPositional());
-            }
-            else
-            {
-                parameters.add(params);
-            }
-            Collections.sort(parameters, MethodIndex.COMPARATOR);
-
-            List<ParsedParameter> parsedParams = new ArrayList<>(invocation.valueFor(ParsedParameters.class));
-            for (Parameter parameter : parameters)
-            {
-                Integer index = parameter.getProperty(Properties.METHOD_INDEX);
-                ParsedParameter match = null;
-                for (ParsedParameter parsedParam : parsedParams)
-                {
-                    if (parsedParam.getParameter() == parameter)
-                    {
-                        match = parsedParam;
-                    }
-                }
-                if (match != null)
-                {
-                    parsedParams.remove(match);
-                    args[index] = match.getParsedValue();
-                }
-                else
-                {
-                    if (parameter.getParameterType() == ParameterType.FLAG)
-                    {
-                        args[index] = false;
-                    }
-                    else
-                    {
-                        args[index] = null;
-                    }
-                }
-            }
+            Object[] args = getArguments(invocation, descriptor, invokableMethod);
 
             Object result = invokableMethod.invoke(args);
             if (result == null)
@@ -152,6 +103,61 @@ public class BasicParametricCommand extends DispatcherCommand
             this.handleException(e, invocation);
         }
         return false;
+    }
+
+    private static Object[] getArguments(CommandInvocation invocation, ParametricCommandDescriptor descriptor, InvokableMethod invokableMethod)
+    {
+        Class<?>[] parameterTypes = invokableMethod.getMethod().getParameterTypes();
+        Object[] args = new Object[parameterTypes.length];
+        for (int i = 0; i <= descriptor.getContextParameter(); i++)
+        {
+            args[i] = invocation.getContext(parameterTypes[i]);
+        }
+
+        Parameter params = descriptor.getParameters();
+        List<Parameter> parameters = new ArrayList<>();
+        if (params.getParser() instanceof GroupParser)
+        {
+            parameters.addAll(((GroupParser)params.getParser()).getFlags());
+            parameters.addAll(((GroupParser)params.getParser()).getNonPositional());
+            parameters.addAll(((GroupParser)params.getParser()).getPositional());
+        }
+        else
+        {
+            parameters.add(params);
+        }
+        Collections.sort(parameters, MethodIndex.COMPARATOR);
+
+        List<ParsedParameter> parsedParams = new ArrayList<>(invocation.valueFor(ParsedParameters.class));
+        for (Parameter parameter : parameters)
+        {
+            Integer index = parameter.getProperty(Properties.METHOD_INDEX);
+            ParsedParameter match = null;
+            for (ParsedParameter parsedParam : parsedParams)
+            {
+                if (parsedParam.getParameter() == parameter)
+                {
+                    match = parsedParam;
+                }
+            }
+            if (match != null)
+            {
+                parsedParams.remove(match);
+                args[index] = match.getParsedValue();
+            }
+            else
+            {
+                if (parameter.getParameterType() == ParameterType.FLAG)
+                {
+                    args[index] = false;
+                }
+                else
+                {
+                    args[index] = null;
+                }
+            }
+        }
+        return args;
     }
 
     @Override

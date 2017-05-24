@@ -104,17 +104,6 @@ public class FlagParser implements ParameterParser
 
     protected ParsedParameter parseValue(CommandInvocation invocation)
     {
-        int consumed = invocation.consumed();
-        ArgumentReader reader = parameter.getProperty(Properties.VALUE_READER);
-        Object read;
-        if (reader != null)
-        {
-            read = reader.read(parameter.getType(), invocation);
-        }
-        else
-        {
-            read = invocation.getManager().read(parameter, invocation);
-        }
-        return ParsedParameter.of(parameter, read, invocation.tokensSince(consumed));
+        return SimpleParser.parseValue(invocation, parameter);
     }
 }

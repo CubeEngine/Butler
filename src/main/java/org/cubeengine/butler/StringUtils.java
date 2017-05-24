@@ -23,6 +23,7 @@
 package org.cubeengine.butler;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * String Utility Methods
@@ -38,14 +39,18 @@ public class StringUtils
      */
     public static String join(String delimiter, Iterable<String> strings)
     {
-        String del = "";
-        StringBuilder sb = new StringBuilder();
-        for (String token : strings) // excluding current (unconsumed) token
+        Iterator<String> it = strings.iterator();
+        if (it.hasNext())
         {
-            sb.append(del).append(token);
-            del = delimiter;
+            StringBuilder sb = new StringBuilder();
+            sb.append(it.next());
+            while (it.hasNext())
+            {
+                sb.append(delimiter).append(it.next());
+            }
+            return sb.toString();
         }
-        return sb.toString();
+        return "";
     }
 
     /**
@@ -62,22 +67,26 @@ public class StringUtils
 
     public static int parseString(StringBuilder sb, String[] args, int offset)
     {
-        // string is empty? return an empty string
-        if (offset >= args.length || args[offset].isEmpty())
+        if (offset >= args.length) // Out of bounds?
         {
-            sb.append("");
+            return 1;
+        }
+        String fullToken = args[offset];
+        if (fullToken.isEmpty()) // string is empty? consume token anyways.
+        {
             return 1;
         }
 
-        // first char is not a quote char? return the string
-        final char quoteChar = args[offset].charAt(0);
+        // first char is not a quote char? consume the String
+        final char quoteChar = fullToken.charAt(0);
         if (quoteChar != '"' && quoteChar != '\'')
         {
-            sb.append(args[offset]);
+            sb.append(fullToken);
             return 1;
         }
 
-        String string = args[offset].substring(1);
+        // Handle single quoted String
+        String string = fullToken.substring(1);
         // string has at least 2 chars and ends with the same quote char? return the string without quotes
         if (string.length() > 0 && string.charAt(string.length() - 1) == quoteChar)
         {
@@ -85,6 +94,12 @@ public class StringUtils
             return 1;
         }
 
+        // Handle quoted Strings
+        return parseQuotedString(sb, args, offset, quoteChar, string);
+    }
+
+    private static int parseQuotedString(StringBuilder sb, String[] args, int offset, char quoteChar, String string)
+    {
         sb.append(string);
         offset++;
         int consumed = 1;

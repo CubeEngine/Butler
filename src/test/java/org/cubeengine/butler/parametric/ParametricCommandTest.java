@@ -22,7 +22,6 @@
  */
 package org.cubeengine.butler.parametric;
 
-import java.util.Arrays;
 import java.util.List;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.CommandInvocation;
@@ -31,12 +30,10 @@ import org.cubeengine.butler.completer.CompleterProvider;
 import org.cubeengine.butler.parameter.ParameterUsageGenerator;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.cubeengine.butler.parametric.TestParametricSuggestionCommand.TEST_LIST;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 

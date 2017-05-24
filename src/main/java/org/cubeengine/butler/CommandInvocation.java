@@ -64,12 +64,13 @@ public class CommandInvocation extends PropertyHolder
     protected List<String> tokenize(String commandLine, String delim)
     {
         String[] rawTokens = commandLine.split(delim, -1);
-        List<String> stringParsed = new ArrayList<>();
+        List<String> stringParsed = new ArrayList<>(rawTokens.length);
+        StringBuilder sb = new StringBuilder();
         for (int offset = 0; offset < rawTokens.length; )
         {
-            StringBuilder sb = new StringBuilder();
             offset += StringUtils.parseString(sb, rawTokens, offset);
             stringParsed.add(sb.toString());
+            sb.setLength(0);
         }
         return stringParsed;
     }

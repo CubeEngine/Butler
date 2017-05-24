@@ -93,6 +93,11 @@ public abstract class SimpleParser implements ParameterParser
      */
     protected ParsedParameter parseValue(CommandInvocation invocation)
     {
+        return parseValue(invocation, parameter);
+    }
+
+    public static ParsedParameter parseValue(CommandInvocation invocation, Parameter parameter)
+    {
         int consumed = invocation.consumed();
         ArgumentReader reader = parameter.getProperty(Properties.VALUE_READER);
         Object read;
@@ -104,6 +109,7 @@ public abstract class SimpleParser implements ParameterParser
         {
             read = invocation.getManager().read(parameter, invocation);
         }
-        return ParsedParameter.of(parameter, read, invocation.tokensSince(consumed));
+        String tokens = invocation.tokensSince(consumed);
+        return ParsedParameter.of(parameter, read, tokens);
     }
 }
