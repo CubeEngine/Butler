@@ -20,34 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.argument;
+package org.cubeengine.butler;
 
-import org.cubeengine.butler.CommandInvocation;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-/**
- * A Reader for UpperCased Enum names
- */
-public class SimpleEnumParser implements ArgumentParser
+public class CompletionHelper
 {
-    // TODO simpleEnumCompleter
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object parse(Class type, CommandInvocation invocation) throws ParserException
+    public static List<String> complete(String prefix, List<String> choices)
     {
-        if (Enum.class.isAssignableFrom(type))
+        if (prefix.isEmpty())
         {
-            Enum<?>[] enumConstants = ((Class<? extends Enum<?>>)type).getEnumConstants();
-            String token = invocation.currentToken().replace(" ", "_").toUpperCase();
-            for (Enum<?> anEnum : enumConstants)
-            {
-                if (anEnum.name().equals(token))
-                {
-                    invocation.consume(1);
-                    return anEnum;
-                }
-            }
-            throw new ParserException("Could not find \"" + invocation.currentToken() + "\" in Enum");
+            return choices;
         }
-        throw new UnsupportedOperationException();
+        String lowerPrefix = prefix.toLowerCase();
+        List<String> suggestions = new ArrayList<>();
+        for (final String s : choices)
+        {
+            if (s.toLowerCase().startsWith(lowerPrefix))
+            {
+                suggestions.add(s);
+            }
+        }
+        if (suggestions.isEmpty())
+        {
+            return Collections.emptyList();
+        }
+        if (suggestions.size() == choices.size())
+        {
+            return choices;
+        }
+        return suggestions;
     }
 }

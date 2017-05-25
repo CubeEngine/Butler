@@ -74,10 +74,10 @@ public abstract class SimpleParser implements ParameterParser
             completerClass = parameter.getType();
         }
 
-        Completer completer = invocation.getManager().completers().resolve(completerClass);
+        Completer completer = invocation.getManager().completers().get(completerClass);
         if (completer != null)
         {
-            result.addAll(completer.suggest(completerClass, invocation));
+            result.addAll(completer.suggest(parameter.getType(), invocation));
         }
         else
         {

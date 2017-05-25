@@ -36,7 +36,7 @@ import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.argument.ArgumentParser;
 import org.cubeengine.butler.parameter.argument.DefaultValue;
 import org.cubeengine.butler.parameter.argument.ParserException;
-import org.cubeengine.butler.parameter.argument.SimpleEnumParser;
+import org.cubeengine.butler.parameter.enumeration.SimpleEnumButler;
 import org.cubeengine.butler.parameter.argument.SimpleListParser;
 import org.cubeengine.butler.parameter.argument.StringArrayParser;
 import org.cubeengine.butler.parameter.argument.StringParser;
@@ -60,7 +60,7 @@ public class ProviderManager
     {
         register(this, new StringParser(), String.class);
         register(this, new SimpleListParser(","), List.class);
-        register(this, new SimpleEnumParser(), Enum.class);
+        register(this, new SimpleEnumButler(), Enum.class);
         register(this, new StringArrayParser(), String[].class);
 
         register(this, new BasicCommandContextValue(), BasicCommandContext.class);

@@ -34,6 +34,7 @@ import org.cubeengine.butler.DispatcherCommand;
 import org.cubeengine.butler.alias.Alias;
 import org.cubeengine.butler.alias.AliasConfiguration;
 import org.cubeengine.butler.parameter.UsageGenerator;
+import org.cubeengine.butler.parameter.enumeration.EnumName;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 
 /**
