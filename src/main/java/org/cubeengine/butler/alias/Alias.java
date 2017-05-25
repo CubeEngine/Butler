@@ -35,9 +35,5 @@ public @interface Alias
 {
     String[] value();
 
-    String prefix() default "";
-
-    String suffix() default "";
-
     String[] parents() default {};
 }

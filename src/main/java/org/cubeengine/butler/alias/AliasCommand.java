@@ -29,13 +29,11 @@ import org.cubeengine.butler.CommandInvocation;
 
 public class AliasCommand implements CommandBase
 {
-    private AliasConfiguration config;
     private final CommandBase target;
     private CommandDescriptor descriptor;
 
     public AliasCommand(AliasConfiguration config, CommandBase target)
     {
-        this.config = config;
         this.target = target;
         this.descriptor = new AliasDescriptor(config.getName(), target.getDescriptor());
     }
@@ -43,7 +41,6 @@ public class AliasCommand implements CommandBase
     @Override
     public boolean execute(CommandInvocation invocation)
     {
-        // TODO prefix & suffix
         return target.execute(invocation);
     }
 

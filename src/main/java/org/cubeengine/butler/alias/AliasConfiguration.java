@@ -26,8 +26,6 @@ public class AliasConfiguration
 {
     private final String name;
     private final String[] dispatcher;
-    private String prefix;
-    private String suffix;
 
     /**
      * An alias on the same dispatcher as the commands that gets registered
@@ -70,25 +68,5 @@ public class AliasConfiguration
     public String[] getDispatcher()
     {
         return dispatcher;
-    }
-
-    public void setPrefix(String prefix)
-    {
-        this.prefix = prefix;
-    }
-
-    public String getPrefix()
-    {
-        return prefix;
-    }
-
-    public void setSuffix(String suffix)
-    {
-        this.suffix = suffix;
-    }
-
-    public String getSuffix()
-    {
-        return suffix;
     }
 }

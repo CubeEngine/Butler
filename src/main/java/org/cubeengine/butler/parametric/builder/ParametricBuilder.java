@@ -37,8 +37,6 @@ import org.cubeengine.butler.parametric.InvokableMethod;
 import org.cubeengine.butler.parametric.ParametricCommandDescriptor;
 import org.cubeengine.butler.parametric.builder.parameter.ParametricParametersFiller;
 
-// TODO BaseAlias + Alias pre/suffix arguments
-// AliasCommand
 public class ParametricBuilder extends AbstractCommandBuilder<InvokableMethod, ParametricCommandDescriptor>
 {
     private ParametricParametersFiller parameterFiller;
