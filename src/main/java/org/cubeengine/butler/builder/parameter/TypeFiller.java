@@ -28,7 +28,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.property.Properties;
-import org.cubeengine.butler.parametric.Reader;
+import org.cubeengine.butler.parametric.Parser;
 
 public class TypeFiller implements ParameterPropertyFiller
 {
@@ -64,9 +64,9 @@ public class TypeFiller implements ParameterPropertyFiller
 
         for (Annotation annotation : annotations)
         {
-            if (annotation instanceof Reader)
+            if (annotation instanceof Parser)
             {
-                reader = ((Reader)annotation).value();
+                reader = ((Parser)annotation).value();
             }
         }
 

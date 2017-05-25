@@ -29,12 +29,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines the class to be used to find a reader for the parameter
+ * Defines the class to be used to find a parser for the parameter
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
-public @interface Reader
+public @interface Parser
 {
     Class<?> value();
 }

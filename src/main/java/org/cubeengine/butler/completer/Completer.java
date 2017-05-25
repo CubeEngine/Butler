@@ -33,9 +33,11 @@ public interface Completer
     /**
      * Suggests a suitable list of strings.
      *
+     *
+     * @param type
      * @param invocation the invocation
      *
      * @return the list of suggestions
      */
-    List<String> suggest(CommandInvocation invocation);
+    List<String> suggest(Class type, CommandInvocation invocation);
 }

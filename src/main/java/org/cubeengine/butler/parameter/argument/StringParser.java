@@ -27,7 +27,7 @@ import org.cubeengine.butler.CommandInvocation;
 public final class StringParser implements ArgumentParser<String>
 {
     @Override
-    public String parse(Class type, CommandInvocation invocation) throws ReaderException
+    public String parse(Class type, CommandInvocation invocation) throws ParserException
     {
         String result = invocation.currentToken();
         invocation.consume(1);

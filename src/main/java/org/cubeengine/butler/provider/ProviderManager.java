@@ -35,7 +35,7 @@ import org.cubeengine.butler.exception.CompositeExceptionHandler;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.argument.ArgumentParser;
 import org.cubeengine.butler.parameter.argument.DefaultValue;
-import org.cubeengine.butler.parameter.argument.ReaderException;
+import org.cubeengine.butler.parameter.argument.ParserException;
 import org.cubeengine.butler.parameter.argument.SimpleEnumParser;
 import org.cubeengine.butler.parameter.argument.SimpleListParser;
 import org.cubeengine.butler.parameter.argument.StringArrayParser;
@@ -102,14 +102,14 @@ public class ProviderManager
         completers.removeAll(owner);
     }
 
-    public boolean hasReader(Class<?> type)
+    public boolean hasParser(Class<?> type)
     {
-        return resolveReader(type) != null;
+        return resolveParser(type) != null;
     }
 
-    public ArgumentParser resolveReader(Class<?> type)
+    public ArgumentParser resolveParser(Class<?> type)
     {
-        ArgumentParser reader = getReader(type);
+        ArgumentParser reader = getParser(type);
         if (reader == null)
         {
             for (Class<?> next : readers.keys())
@@ -128,20 +128,20 @@ public class ProviderManager
         return reader;
     }
 
-    public ArgumentParser getReader(Class<?> type)
+    public ArgumentParser getParser(Class<?> type)
     {
         return readers.get(type);
     }
 
     @SuppressWarnings("unchecked")
-    public Object read(Parameter param, CommandInvocation invocation) throws ReaderException
+    public Object read(Parameter param, CommandInvocation invocation) throws ParserException
     {
         return this.read(param.getReaderType(), param.getType(), invocation);
     }
 
     public Object read(Class<?> readerClass, Class<?> type, CommandInvocation invocation)
     {
-        ArgumentParser reader = resolveReader(readerClass);
+        ArgumentParser reader = resolveParser(readerClass);
         if (reader == null)
         {
             throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");

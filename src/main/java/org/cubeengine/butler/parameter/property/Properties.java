@@ -32,7 +32,7 @@ public class Properties
 {
     public static final String TYPE = "TYPE";
     public static final String READER = "READER";
-    public static final Class<ArgumentParser> VALUE_READER = ArgumentParser.class;
+    public static final Class<ArgumentParser> ARGUMENT_PARSER = ArgumentParser.class;
     public static final Class<ParameterParser> PARSER = ParameterParser.class;
     public static final Class<Filters> FILTERS = Filters.class;
     public static final String FIXED_POSITION = "FIXED_POSITION";

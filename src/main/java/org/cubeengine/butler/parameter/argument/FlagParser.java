@@ -39,7 +39,7 @@ public class FlagParser implements ArgumentParser<Boolean>, DefaultValue<Boolean
     }
 
     @Override
-    public Boolean parse(Class type, CommandInvocation invocation) throws ReaderException
+    public Boolean parse(Class type, CommandInvocation invocation) throws ParserException
     {
         String flag = invocation.currentToken();
         if (flag.startsWith("-"))

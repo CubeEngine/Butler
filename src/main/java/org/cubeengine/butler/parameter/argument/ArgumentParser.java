@@ -38,7 +38,7 @@ public interface ArgumentParser<ObjectT>
      * @param type the type of Object expected
      * @param invocation the invocation
      * @return the parsed Object
-     * @throws ReaderException when the butler cannot parse your request.
+     * @throws ParserException when the butler cannot parse your request.
      */
-    ObjectT parse(Class type, CommandInvocation invocation) throws ReaderException;
+    ObjectT parse(Class type, CommandInvocation invocation) throws ParserException;
 }

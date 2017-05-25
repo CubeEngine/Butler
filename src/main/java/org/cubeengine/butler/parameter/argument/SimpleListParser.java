@@ -40,7 +40,7 @@ public class SimpleListParser implements ArgumentParser<List>
     }
 
     @Override
-    public List parse(Class type, CommandInvocation invocation) throws ReaderException
+    public List parse(Class type, CommandInvocation invocation) throws ParserException
     {
         List<Object> result = new ArrayList<>();
 

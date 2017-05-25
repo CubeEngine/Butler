@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.SimpleCommandDescriptor;
-import org.cubeengine.butler.parametric.BasicParametricCommand;
 import org.cubeengine.butler.parametric.Command;
 import org.cubeengine.butler.parametric.InvokableMethod;
 import org.cubeengine.butler.parametric.Label;

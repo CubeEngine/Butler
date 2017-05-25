@@ -28,8 +28,6 @@ import java.util.List;
 import org.cubeengine.butler.property.PropertyHolder;
 import org.cubeengine.butler.provider.ProviderManager;
 
-import static org.cubeengine.butler.StringUtils.join;
-
 /**
  * The invocation of a command
  * Its tokens can be consumed on after the other.

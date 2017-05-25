@@ -34,5 +34,5 @@ public interface CommandResult
      *
      * @param context the context that was used by the command before
      */
-    public void process(CommandInvocation context);
+    void process(CommandInvocation context);
 }

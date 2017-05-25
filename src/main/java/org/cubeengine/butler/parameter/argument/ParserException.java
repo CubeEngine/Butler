@@ -24,14 +24,14 @@ package org.cubeengine.butler.parameter.argument;
 
 import org.cubeengine.butler.exception.CommandException;
 
-public class ReaderException extends CommandException
+public class ParserException extends CommandException
 {
-    public ReaderException(String message, String... args)
+    public ParserException(String message, String... args)
     {
         super(message, (Object[])args);
     }
 
-    public ReaderException()
+    public ParserException()
     {
     }
 }

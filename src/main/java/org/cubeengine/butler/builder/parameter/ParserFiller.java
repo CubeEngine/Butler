@@ -108,6 +108,6 @@ public class ParserFiller implements ParameterPropertyFiller
         parameter.offer(Properties.PARSER, new org.cubeengine.butler.parameter.parser.FlagParser(parameter));
         parameter.offer(Properties.REQUIREMENT, Requirement.OPTIONAL);
         parameter.offer(Properties.DEFAULT_PROVIDER, FlagParser.class);
-        parameter.offer(Properties.VALUE_READER, new FlagParser(shortName, longName));
+        parameter.offer(Properties.ARGUMENT_PARSER, new FlagParser(shortName, longName));
     }
 }

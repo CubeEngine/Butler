@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.filter.Filter;
-import org.cubeengine.butler.property.Property;
 
 /**
  * Contains a List of Filters

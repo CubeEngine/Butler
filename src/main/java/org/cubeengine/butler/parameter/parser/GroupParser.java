@@ -208,7 +208,6 @@ public class GroupParser implements ParameterParser
             }
         }
         // flags always default to false
-        return;
     }
 
     private Group readGroup(Class<? extends Group> type, List<ParsedParameter> params)

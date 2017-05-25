@@ -77,7 +77,7 @@ public abstract class SimpleParser implements ParameterParser
         Completer completer = invocation.getManager().getCompleter(completerClass);
         if (completer != null)
         {
-            result.addAll(completer.suggest(invocation));
+            result.addAll(completer.suggest(completerClass, invocation));
         }
         else
         {
@@ -101,7 +101,7 @@ public abstract class SimpleParser implements ParameterParser
     public static ParsedParameter parseValue(CommandInvocation invocation, Parameter parameter)
     {
         int consumed = invocation.consumed();
-        ArgumentParser reader = parameter.getProperty(Properties.VALUE_READER);
+        ArgumentParser reader = parameter.getProperty(Properties.ARGUMENT_PARSER);
         Object read;
         if (reader != null)
         {

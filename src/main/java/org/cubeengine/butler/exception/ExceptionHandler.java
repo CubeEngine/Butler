@@ -30,5 +30,5 @@ import org.cubeengine.butler.CommandInvocation;
  */
 public interface ExceptionHandler
 {
-    public boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation);
+    boolean handleException(Throwable e, CommandBase command, CommandInvocation invocation);
 }

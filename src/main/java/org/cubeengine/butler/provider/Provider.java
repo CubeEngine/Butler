@@ -25,6 +25,7 @@ package org.cubeengine.butler.provider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public abstract class Provider<T>
         T removed = provided.remove(type);
         if (removed != null)
         {
-            provided.values().removeAll(Arrays.asList(removed));
+            provided.values().removeAll(Collections.singletonList(removed));
             return true;
         }
         return false;

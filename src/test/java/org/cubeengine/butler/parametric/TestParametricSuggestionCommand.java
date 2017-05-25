@@ -29,10 +29,6 @@ import org.cubeengine.butler.CommandManager;
 import org.cubeengine.butler.completer.Completer;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
 
-import static org.cubeengine.butler.parameter.Parameter.INFINITE;
-import static org.junit.Assert.assertEquals;
-
-
 @Command(desc = "a description")
 public class TestParametricSuggestionCommand extends ParametricContainerCommand
 {
@@ -82,7 +78,7 @@ public class TestParametricSuggestionCommand extends ParametricContainerCommand
     class TestEnumCompleter implements Completer
     {
         @Override
-        public List<String> suggest(CommandInvocation invocation)
+        public List<String> suggest(Class type, CommandInvocation invocation)
         {
             return TEST_LIST;
         }

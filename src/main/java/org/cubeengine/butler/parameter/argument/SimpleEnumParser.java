@@ -32,9 +32,9 @@ public class SimpleEnumParser implements ArgumentParser
     // TODO simpleEnumCompleter
     @Override
     @SuppressWarnings("unchecked")
-    public Object parse(Class type, CommandInvocation invocation) throws ReaderException
+    public Object parse(Class type, CommandInvocation invocation) throws ParserException
     {
-        if (invocation.getManager().hasReader(type))
+        if (invocation.getManager().hasParser(type))
         {
             return invocation.getManager().read(type, type, invocation);
         }
@@ -50,7 +50,7 @@ public class SimpleEnumParser implements ArgumentParser
                     return anEnum;
                 }
             }
-            throw new ReaderException("Could not find \"" + invocation.currentToken() + "\" in Enum");
+            throw new ParserException("Could not find \"" + invocation.currentToken() + "\" in Enum");
         }
         throw new UnsupportedOperationException();
     }
