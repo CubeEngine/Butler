@@ -42,8 +42,6 @@ class AliasFiller implements DescriptorFiller<ParametricCommandDescriptor, Invok
             for (String name : alias.value())
             {
                 AliasConfiguration aliasConf = new AliasConfiguration(name, alias.parents());
-                aliasConf.setPrefix(alias.prefix());
-                aliasConf.setSuffix(alias.suffix());
                 aliasList.add(aliasConf);
             }
             descriptor.addAliases(aliasList);
