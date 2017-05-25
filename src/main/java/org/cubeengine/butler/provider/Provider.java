@@ -23,25 +23,29 @@
 package org.cubeengine.butler.provider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-public abstract class Provider<T>
+public class Provider<T>
 {
-    private Map<Class, T> provided = new HashMap<>();
+    private Map<Class<?>, T> provided = new HashMap<>();
+    private Map<Class<?>, Object> ownerLookup = new HashMap<>();
     private Map<Object, List<T>> providedByOwner = new WeakHashMap<>();
 
-    public void register(Object owner, T toRegister, Class... classes)
+    public void register(Object owner, T toRegister, Class<?>... classes)
     {
+        if (owner == null)
+        {
+            throw new IllegalArgumentException("owner may not be null!");
+        }
         for (Class clazz : classes)
         {
             provided.put(clazz, toRegister);
+            ownerLookup.put(clazz, owner);
         }
         provided.put(toRegister.getClass(), toRegister);
         List<T> list = providedByOwner.get(owner);
@@ -58,6 +62,11 @@ public abstract class Provider<T>
         return provided.get(type);
     }
 
+    public boolean has(Class<?> type)
+    {
+        return resolve(type) != null;
+    }
+
     public boolean removeAll(Object owner)
     {
         List<T> removed = providedByOwner.remove(owner);
@@ -65,19 +74,18 @@ public abstract class Provider<T>
         {
             return false;
         }
-        for (T r : removed)
-        {
-            provided.values().remove(r);
-        }
+        provided.values().removeAll(removed);
+        ownerLookup.values().remove(owner);
         return true;
     }
 
     public boolean remove(Class<?> type)
     {
         T removed = provided.remove(type);
+        ownerLookup.remove(type);
         if (removed != null)
         {
-            provided.values().removeAll(Collections.singletonList(removed));
+            provided.values().remove(removed);
             return true;
         }
         return false;
@@ -88,8 +96,29 @@ public abstract class Provider<T>
         return provided.values();
     }
 
-    public Set<Class> keys()
+    public Set<Class<?>> keys()
     {
         return provided.keySet();
+    }
+
+    public T resolve(Class<?> type)
+    {
+        T instance = get(type);
+        if (instance == null)
+        {
+            for (Class next : keys())
+            {
+                if (type.isAssignableFrom(next))
+                {
+                    instance = get(next);
+                    if (instance != null)
+                    {
+                        register(ownerLookup.get(next), instance, type);
+                        break;
+                    }
+                }
+            }
+        }
+        return instance;
     }
 }

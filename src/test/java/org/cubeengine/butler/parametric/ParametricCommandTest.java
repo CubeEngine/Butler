@@ -26,9 +26,10 @@ import java.util.List;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.SimpleCommandDescriptor;
-import org.cubeengine.butler.provider.CompleterProvider;
 import org.cubeengine.butler.parameter.ParameterUsageGenerator;
+import org.cubeengine.butler.parameter.argument.Completer;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
+import org.cubeengine.butler.provider.Provider;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ParametricCommandTest
 {
-    private CompleterProvider completerProvider;
+    private Provider<Completer> completerProvider;
     private TestParametricCommand container;
     private TestParametricSuggestionCommand suggContainer;
     private SimpleCommandManager scm;

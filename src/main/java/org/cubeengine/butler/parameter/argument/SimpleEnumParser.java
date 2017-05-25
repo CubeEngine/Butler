@@ -34,10 +34,6 @@ public class SimpleEnumParser implements ArgumentParser
     @SuppressWarnings("unchecked")
     public Object parse(Class type, CommandInvocation invocation) throws ParserException
     {
-        if (invocation.getManager().hasParser(type))
-        {
-            return invocation.getManager().read(type, type, invocation);
-        }
         if (Enum.class.isAssignableFrom(type))
         {
             Enum<?>[] enumConstants = ((Class<? extends Enum<?>>)type).getEnumConstants();

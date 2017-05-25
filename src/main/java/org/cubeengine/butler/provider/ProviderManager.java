@@ -47,10 +47,10 @@ public class ProviderManager
 {
     private final SourceRestrictedContextValue sourceContext = new SourceRestrictedContextValue();
 
-    private CompleterProvider completers = new CompleterProvider();
-    private ParserProvider readers = new ParserProvider();
-    private DefaultProvider defaults = new DefaultProvider();
-    private ContextProvider contexts = new ContextProvider();
+    private Provider<Completer> completers = new Provider<>();
+    private Provider<ArgumentParser<?>> parsers = new Provider<>();
+    private Provider<DefaultValue<?>> defaults = new Provider<>();
+    private Provider<ContextValue> contexts = new Provider<>();
 
     private CompositeExceptionHandler exceptionHandler = new CompositeExceptionHandler();
 
@@ -76,7 +76,7 @@ public class ProviderManager
     {
         if (toRegister instanceof ArgumentParser)
         {
-            readers.register(owner, (ArgumentParser)toRegister, classes);
+            parsers.register(owner, (ArgumentParser)toRegister, classes);
         }
 
         if (toRegister instanceof DefaultValue)
@@ -97,40 +97,30 @@ public class ProviderManager
 
     public void removeAll(Object owner)
     {
-        readers.removeAll(owner);
+        parsers.removeAll(owner);
         defaults.removeAll(owner);
         completers.removeAll(owner);
+        contexts.removeAll(owner);
     }
 
-    public boolean hasParser(Class<?> type)
+    public Provider<ArgumentParser<?>> parsers()
     {
-        return resolveParser(type) != null;
+        return parsers;
     }
 
-    public ArgumentParser resolveParser(Class<?> type)
+    public Provider<Completer> completers()
     {
-        ArgumentParser reader = getParser(type);
-        if (reader == null)
-        {
-            for (Class<?> next : readers.keys())
-            {
-                if (type.isAssignableFrom(next))
-                {
-                    reader = readers.get(next);
-                    if (reader != null)
-                    {
-                        register(reader, type);
-                        break;
-                    }
-                }
-            }
-        }
-        return reader;
+        return completers;
     }
 
-    public ArgumentParser getParser(Class<?> type)
+    public Provider<DefaultValue<?>> defaults()
     {
-        return readers.get(type);
+        return defaults;
+    }
+
+    public Provider<ContextValue> contexts()
+    {
+        return contexts;
     }
 
     @SuppressWarnings("unchecked")
@@ -141,7 +131,7 @@ public class ProviderManager
 
     public Object read(Class<?> readerClass, Class<?> type, CommandInvocation invocation)
     {
-        ArgumentParser reader = resolveParser(readerClass);
+        ArgumentParser<?> reader = parsers().resolve(readerClass);
         if (reader == null)
         {
             throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");
@@ -151,17 +141,13 @@ public class ProviderManager
 
     public Object getDefault(Class<?> defaultProvider, CommandInvocation invocation)
     {
-        DefaultValue def = this.defaults.get(defaultProvider);
+        @SuppressWarnings("unchecked")
+        DefaultValue<?> def = defaults().get(defaultProvider);
         if (def != null)
         {
             return def.provide(invocation);
         }
         return null;
-    }
-
-    public Completer getCompleter(Class completerClass)
-    {
-        return completers.get(completerClass);
     }
 
     public CompositeExceptionHandler getExceptionHandler()
