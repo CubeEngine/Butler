@@ -20,13 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.completer;
+package org.cubeengine.butler.provider;
 
-import org.cubeengine.butler.Provider;
+import org.cubeengine.butler.parameter.argument.DefaultValue;
+import org.cubeengine.butler.provider.Provider;
 
-/**
- * Provides completer
- */
-public class CompleterProvider extends Provider<Completer>
+public class DefaultProvider extends Provider<DefaultValue>
 {
 }

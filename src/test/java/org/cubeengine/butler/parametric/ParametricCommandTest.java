@@ -26,7 +26,7 @@ import java.util.List;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.SimpleCommandDescriptor;
-import org.cubeengine.butler.completer.CompleterProvider;
+import org.cubeengine.butler.provider.CompleterProvider;
 import org.cubeengine.butler.parameter.ParameterUsageGenerator;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 import org.hamcrest.core.Is;

@@ -23,7 +23,7 @@
 package org.cubeengine.butler.parametric;
 
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.ProviderManager;
+import org.cubeengine.butler.provider.ProviderManager;
 
 public interface InvocationBuilder
 {

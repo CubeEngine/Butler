@@ -20,21 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
+package org.cubeengine.butler.provider;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.ContextValue;
+import org.cubeengine.butler.SourceRestrictedContextValue;
 import org.cubeengine.butler.builder.CommandBuilder;
 import org.cubeengine.butler.completer.Completer;
-import org.cubeengine.butler.completer.CompleterProvider;
 import org.cubeengine.butler.exception.CompositeExceptionHandler;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.argument.ArgumentParser;
-import org.cubeengine.butler.parameter.argument.DefaultProvider;
 import org.cubeengine.butler.parameter.argument.DefaultValue;
 import org.cubeengine.butler.parameter.argument.ReaderException;
-import org.cubeengine.butler.parameter.argument.ReaderProvider;
 import org.cubeengine.butler.parameter.argument.SimpleEnumParser;
 import org.cubeengine.butler.parameter.argument.SimpleListParser;
 import org.cubeengine.butler.parameter.argument.StringArrayParser;
@@ -47,9 +48,8 @@ public class ProviderManager
     private final SourceRestrictedContextValue sourceContext = new SourceRestrictedContextValue();
 
     private CompleterProvider completers = new CompleterProvider();
-    private ReaderProvider readers = new ReaderProvider();
+    private ParserProvider readers = new ParserProvider();
     private DefaultProvider defaults = new DefaultProvider();
-
     private ContextProvider contexts = new ContextProvider();
 
     private CompositeExceptionHandler exceptionHandler = new CompositeExceptionHandler();

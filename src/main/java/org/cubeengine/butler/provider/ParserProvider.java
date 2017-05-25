@@ -20,10 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.argument;
+package org.cubeengine.butler.provider;
 
-import org.cubeengine.butler.Provider;
+import org.cubeengine.butler.parameter.argument.ArgumentParser;
+import org.cubeengine.butler.provider.Provider;
 
-public class ReaderProvider extends Provider<ArgumentParser>
+public class ParserProvider extends Provider<ArgumentParser>
 {
 }

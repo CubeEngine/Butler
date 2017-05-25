@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.cubeengine.butler.property.PropertyHolder;
+import org.cubeengine.butler.provider.ProviderManager;
 
 import static org.cubeengine.butler.StringUtils.join;
 

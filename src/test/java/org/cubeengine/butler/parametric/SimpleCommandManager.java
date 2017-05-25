@@ -25,7 +25,7 @@ package org.cubeengine.butler.parametric;
 import org.cubeengine.butler.CommandDescriptor;
 import org.cubeengine.butler.CommandManager;
 import org.cubeengine.butler.DispatcherCommand;
-import org.cubeengine.butler.ProviderManager;
+import org.cubeengine.butler.provider.ProviderManager;
 
 public class SimpleCommandManager extends DispatcherCommand implements CommandManager
 {

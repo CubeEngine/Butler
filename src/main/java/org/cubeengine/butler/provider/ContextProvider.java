@@ -20,7 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler;
+package org.cubeengine.butler.provider;
+
+import org.cubeengine.butler.ContextValue;
+import org.cubeengine.butler.provider.Provider;
 
 public class ContextProvider extends Provider<ContextValue>
 {

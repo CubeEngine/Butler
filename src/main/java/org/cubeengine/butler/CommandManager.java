@@ -22,6 +22,8 @@
  */
 package org.cubeengine.butler;
 
+import org.cubeengine.butler.provider.ProviderManager;
+
 public interface CommandManager extends Dispatcher
 {
     ProviderManager getProviderManager();
