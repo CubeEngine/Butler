@@ -22,7 +22,7 @@
  */
 package org.cubeengine.butler.parameter.property;
 
-import org.cubeengine.butler.completer.Completer;
+import org.cubeengine.butler.parameter.argument.Completer;
 import org.cubeengine.butler.parameter.parser.ParameterParser;
 import org.cubeengine.butler.parameter.argument.ArgumentParser;
 import org.cubeengine.butler.parameter.argument.DefaultValue;

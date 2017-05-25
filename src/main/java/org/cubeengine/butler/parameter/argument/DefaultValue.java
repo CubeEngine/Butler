@@ -24,7 +24,16 @@ package org.cubeengine.butler.parameter.argument;
 
 import org.cubeengine.butler.CommandInvocation;
 
+/**
+ * A DefaultValue provides you with an agreeable default.
+ */
 public interface DefaultValue<ObjectT>
 {
-    ObjectT getDefault(CommandInvocation invocation);
+    /**
+     * Provides a default value.
+     *
+     * @param invocation the invocation
+     * @return the default value
+     */
+    ObjectT provide(CommandInvocation invocation);
 }

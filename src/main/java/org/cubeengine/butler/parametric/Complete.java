@@ -27,7 +27,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.cubeengine.butler.completer.Completer;
+import org.cubeengine.butler.parameter.argument.Completer;
 
 /**
  * Sets the completer for the annotated command parameter

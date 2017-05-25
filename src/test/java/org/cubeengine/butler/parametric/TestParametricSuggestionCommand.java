@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.CommandManager;
-import org.cubeengine.butler.completer.Completer;
+import org.cubeengine.butler.parameter.argument.Completer;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
 
 @Command(desc = "a description")

@@ -55,7 +55,7 @@ public class FlagParser implements ArgumentParser<Boolean>, DefaultValue<Boolean
     }
 
     @Override
-    public Boolean getDefault(CommandInvocation invocation)
+    public Boolean provide(CommandInvocation invocation)
     {
         return false;
     }

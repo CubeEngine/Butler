@@ -30,7 +30,7 @@ import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.ContextValue;
 import org.cubeengine.butler.SourceRestrictedContextValue;
 import org.cubeengine.butler.builder.CommandBuilder;
-import org.cubeengine.butler.completer.Completer;
+import org.cubeengine.butler.parameter.argument.Completer;
 import org.cubeengine.butler.exception.CompositeExceptionHandler;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.argument.ArgumentParser;
@@ -154,7 +154,7 @@ public class ProviderManager
         DefaultValue def = this.defaults.get(defaultProvider);
         if (def != null)
         {
-            return def.getDefault(invocation);
+            return def.provide(invocation);
         }
         return null;
     }

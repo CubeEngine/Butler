@@ -22,8 +22,7 @@
  */
 package org.cubeengine.butler.provider;
 
-import org.cubeengine.butler.completer.Completer;
-import org.cubeengine.butler.provider.Provider;
+import org.cubeengine.butler.parameter.argument.Completer;
 
 /**
  * Provides completer

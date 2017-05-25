@@ -25,7 +25,7 @@ package org.cubeengine.butler.parameter.parser;
 import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.completer.Completer;
+import org.cubeengine.butler.parameter.argument.Completer;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.ParsedParameter;
 import org.cubeengine.butler.parameter.property.Properties;

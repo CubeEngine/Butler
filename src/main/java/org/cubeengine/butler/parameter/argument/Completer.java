@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.completer;
+package org.cubeengine.butler.parameter.argument;
 
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
@@ -32,7 +32,6 @@ public interface Completer
 {
     /**
      * Suggests a suitable list of strings.
-     *
      *
      * @param type
      * @param invocation the invocation
