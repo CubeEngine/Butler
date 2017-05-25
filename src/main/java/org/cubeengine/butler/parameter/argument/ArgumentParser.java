@@ -20,11 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
+package org.cubeengine.butler.parameter.argument;
 
 import org.cubeengine.butler.CommandInvocation;
 
-public interface DefaultValue<ObjectT>
+/**
+ * A ArgumentParser parses a {@link CommandInvocation}s input to your liking.
+ */
+public interface ArgumentParser<ObjectT>
 {
-    ObjectT getDefault(CommandInvocation invocation);
+
+    /**
+     * Parses the next command input.
+     *
+     * Implementors {@link CommandInvocation#consume(int)} the parsed input.
+     *
+     * @param type the type of Object expected
+     * @param invocation the invocation
+     * @return the parsed Object
+     * @throws ReaderException when the butler cannot parse your request.
+     */
+    ObjectT parse(Class type, CommandInvocation invocation) throws ReaderException;
 }

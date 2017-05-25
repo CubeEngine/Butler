@@ -28,7 +28,6 @@ import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.SimpleCommandDescriptor;
 import org.cubeengine.butler.filter.Filter;
 import org.cubeengine.butler.filter.FilterException;
-import org.cubeengine.butler.parameter.GroupParser;
 import org.cubeengine.butler.parameter.Parameter;
 
 public class ParametricCommandDescriptor extends SimpleCommandDescriptor implements ParametricDescriptor, Filter

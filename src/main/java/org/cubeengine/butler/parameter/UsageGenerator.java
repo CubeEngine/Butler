@@ -29,6 +29,7 @@ import java.util.Stack;
 import org.cubeengine.butler.CommandDescriptor;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.Dispatcher;
+import org.cubeengine.butler.parameter.parser.GroupParser;
 
 import static org.cubeengine.butler.StringUtils.join;
 

@@ -20,18 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
+package org.cubeengine.butler.parameter.argument;
 
-import org.cubeengine.butler.exception.CommandException;
+import org.cubeengine.butler.Provider;
 
-public class ReaderException extends CommandException
+public class ReaderProvider extends Provider<ArgumentParser>
 {
-    public ReaderException(String message, String... args)
-    {
-        super(message, (Object[])args);
-    }
-
-    public ReaderException()
-    {
-    }
 }

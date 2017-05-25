@@ -20,17 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
+package org.cubeengine.butler.parameter.argument;
 
 import org.cubeengine.butler.CommandInvocation;
 
-public final class StringReader implements ArgumentReader<String>
+/**
+ * A Reader for UpperCased Enum names
+ */
+public class SimpleEnumParser implements ArgumentParser
 {
+    // TODO simpleEnumCompleter
     @Override
-    public String read(Class type, CommandInvocation invocation) throws ReaderException
+    @SuppressWarnings("unchecked")
+    public Object parse(Class type, CommandInvocation invocation) throws ReaderException
     {
-        String result = invocation.currentToken();
-        invocation.consume(1);
-        return result;
+        if (invocation.getManager().hasReader(type))
+        {
+            return invocation.getManager().read(type, type, invocation);
+        }
+        if (Enum.class.isAssignableFrom(type))
+        {
+            Enum<?>[] enumConstants = ((Class<? extends Enum<?>>)type).getEnumConstants();
+            String token = invocation.currentToken().replace(" ", "_").toUpperCase();
+            for (Enum<?> anEnum : enumConstants)
+            {
+                if (anEnum.name().equals(token))
+                {
+                    invocation.consume(1);
+                    return anEnum;
+                }
+            }
+            throw new ReaderException("Could not find \"" + invocation.currentToken() + "\" in Enum");
+        }
+        throw new UnsupportedOperationException();
     }
 }

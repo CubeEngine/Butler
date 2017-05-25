@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.parameter.ParameterParser.ParameterType;
+import org.cubeengine.butler.parameter.parser.ParameterParser;
+import org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType;
 import org.cubeengine.butler.parameter.property.Filters;
 import org.cubeengine.butler.parameter.property.Properties;
 
@@ -80,7 +81,7 @@ public class Parameter
      *
      * @return whether the parameter is allowed to be parsed
      */
-    protected boolean isAllowed(CommandInvocation invocation)
+    public boolean isAllowed(CommandInvocation invocation)
     {
         Filters filters = this.getProperty(Properties.FILTERS);
         if (filters != null)
@@ -97,14 +98,14 @@ public class Parameter
      *
      * @return whether the parameter can be parsed
      */
-    protected boolean isPossible(CommandInvocation invocation)
+    public boolean isPossible(CommandInvocation invocation)
     {
         return getParser().isPossible(invocation);
     }
 
     /**
      * Parses the Parameter with given invocation
-     *  @param invocation the CommandInvocation
+     * @param invocation the CommandInvocation
      * @param params
      * @param suggestions
      */

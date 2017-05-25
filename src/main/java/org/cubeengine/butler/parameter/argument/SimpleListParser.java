@@ -20,38 +20,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
+package org.cubeengine.butler.parameter.argument;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 
 /**
- * A Reader for UpperCased Enum names
+ * Reads a list of Arguments
  */
-public class SimpleEnumReader implements ArgumentReader
+public class SimpleListParser implements ArgumentParser<List>
 {
-    // TODO simpleEnumCompleter
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object read(Class type, CommandInvocation invocation) throws ReaderException
+    private final String delimiter;
+
+    public SimpleListParser(String delimiter)
     {
-        if (invocation.getManager().hasReader(type))
+        this.delimiter = delimiter;
+    }
+
+    @Override
+    public List parse(Class type, CommandInvocation invocation) throws ReaderException
+    {
+        List<Object> result = new ArrayList<>();
+
+        invocation = invocation.setTokens(invocation.consume(1), delimiter);
+        while (!invocation.isConsumed())
         {
-            return invocation.getManager().read(type, type, invocation);
+            result.add(invocation.getManager().read(type, type, invocation));
         }
-        if (Enum.class.isAssignableFrom(type))
-        {
-            Enum<?>[] enumConstants = ((Class<? extends Enum<?>>)type).getEnumConstants();
-            String token = invocation.currentToken().replace(" ", "_").toUpperCase();
-            for (Enum<?> anEnum : enumConstants)
-            {
-                if (anEnum.name().equals(token))
-                {
-                    invocation.consume(1);
-                    return anEnum;
-                }
-            }
-            throw new ReaderException("Could not find \"" + invocation.currentToken() + "\" in Enum");
-        }
-        throw new UnsupportedOperationException();
+
+        return result;
     }
 }

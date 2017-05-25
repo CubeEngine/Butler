@@ -30,15 +30,15 @@ import org.cubeengine.butler.completer.Completer;
 import org.cubeengine.butler.completer.CompleterProvider;
 import org.cubeengine.butler.exception.CompositeExceptionHandler;
 import org.cubeengine.butler.parameter.Parameter;
-import org.cubeengine.butler.parameter.reader.ArgumentReader;
-import org.cubeengine.butler.parameter.reader.DefaultProvider;
-import org.cubeengine.butler.parameter.reader.DefaultValue;
-import org.cubeengine.butler.parameter.reader.ReaderException;
-import org.cubeengine.butler.parameter.reader.ReaderProvider;
-import org.cubeengine.butler.parameter.reader.SimpleEnumReader;
-import org.cubeengine.butler.parameter.reader.SimpleListReader;
-import org.cubeengine.butler.parameter.reader.StringArrayReader;
-import org.cubeengine.butler.parameter.reader.StringReader;
+import org.cubeengine.butler.parameter.argument.ArgumentParser;
+import org.cubeengine.butler.parameter.argument.DefaultProvider;
+import org.cubeengine.butler.parameter.argument.DefaultValue;
+import org.cubeengine.butler.parameter.argument.ReaderException;
+import org.cubeengine.butler.parameter.argument.ReaderProvider;
+import org.cubeengine.butler.parameter.argument.SimpleEnumParser;
+import org.cubeengine.butler.parameter.argument.SimpleListParser;
+import org.cubeengine.butler.parameter.argument.StringArrayParser;
+import org.cubeengine.butler.parameter.argument.StringParser;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
 import org.cubeengine.butler.parametric.context.BasicCommandContextValue;
 
@@ -58,10 +58,10 @@ public class ProviderManager
 
     public ProviderManager()
     {
-        register(this, new StringReader(), String.class);
-        register(this, new SimpleListReader(","), List.class);
-        register(this, new SimpleEnumReader(), Enum.class);
-        register(this, new StringArrayReader(), String[].class);
+        register(this, new StringParser(), String.class);
+        register(this, new SimpleListParser(","), List.class);
+        register(this, new SimpleEnumParser(), Enum.class);
+        register(this, new StringArrayParser(), String[].class);
 
         register(this, new BasicCommandContextValue(), BasicCommandContext.class);
     }
@@ -74,9 +74,9 @@ public class ProviderManager
      */
     public void register(Object owner, Object toRegister, Class<?>... classes)
     {
-        if (toRegister instanceof ArgumentReader)
+        if (toRegister instanceof ArgumentParser)
         {
-            readers.register(owner, (ArgumentReader)toRegister, classes);
+            readers.register(owner, (ArgumentParser)toRegister, classes);
         }
 
         if (toRegister instanceof DefaultValue)
@@ -107,9 +107,9 @@ public class ProviderManager
         return resolveReader(type) != null;
     }
 
-    public ArgumentReader resolveReader(Class<?> type)
+    public ArgumentParser resolveReader(Class<?> type)
     {
-        ArgumentReader reader = getReader(type);
+        ArgumentParser reader = getReader(type);
         if (reader == null)
         {
             for (Class<?> next : readers.keys())
@@ -128,7 +128,7 @@ public class ProviderManager
         return reader;
     }
 
-    public ArgumentReader getReader(Class<?> type)
+    public ArgumentParser getReader(Class<?> type)
     {
         return readers.get(type);
     }
@@ -141,12 +141,12 @@ public class ProviderManager
 
     public Object read(Class<?> readerClass, Class<?> type, CommandInvocation invocation)
     {
-        ArgumentReader reader = resolveReader(readerClass);
+        ArgumentParser reader = resolveReader(readerClass);
         if (reader == null)
         {
             throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");
         }
-        return reader.read(type, invocation);
+        return reader.parse(type, invocation);
     }
 
     public Object getDefault(Class<?> defaultProvider, CommandInvocation invocation)

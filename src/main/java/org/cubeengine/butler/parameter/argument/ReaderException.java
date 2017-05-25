@@ -20,11 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
+package org.cubeengine.butler.parameter.argument;
 
-import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.exception.CommandException;
 
-public interface ArgumentReader<ObjectT>
+public class ReaderException extends CommandException
 {
-    ObjectT read(Class type, CommandInvocation invocation) throws ReaderException;
+    public ReaderException(String message, String... args)
+    {
+        super(message, (Object[])args);
+    }
+
+    public ReaderException()
+    {
+    }
 }

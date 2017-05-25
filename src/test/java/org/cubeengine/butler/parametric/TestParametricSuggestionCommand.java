@@ -82,7 +82,7 @@ public class TestParametricSuggestionCommand extends ParametricContainerCommand
     class TestEnumCompleter implements Completer
     {
         @Override
-        public List<String> getSuggestions(CommandInvocation invocation)
+        public List<String> suggest(CommandInvocation invocation)
         {
             return TEST_LIST;
         }

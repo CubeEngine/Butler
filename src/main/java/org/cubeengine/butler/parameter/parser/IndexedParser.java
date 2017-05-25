@@ -20,46 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter;
+package org.cubeengine.butler.parameter.parser;
 
-import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.parameter.reader.ArgumentReader;
-import org.cubeengine.butler.parameter.reader.DefaultValue;
-import org.cubeengine.butler.parameter.reader.ReaderException;
+import org.cubeengine.butler.parameter.Parameter;
 
-/**
- * An ArgumentReader for Flags
- */
-public class FlagReader implements ArgumentReader<Boolean>, DefaultValue<Boolean>
+public class IndexedParser extends SimpleParser
 {
-    private final String name;
-    private final String longName;
-
-    public FlagReader(String name, String longName)
+    public IndexedParser(Parameter parameter)
     {
-        this.name = name;
-        this.longName = longName;
+        super(parameter);
     }
 
     @Override
-    public Boolean read(Class type, CommandInvocation invocation) throws ReaderException
+    public ParameterType getType()
     {
-        String flag = invocation.currentToken();
-        if (flag.startsWith("-"))
-        {
-            flag = flag.substring(1);
-            if (this.name.equalsIgnoreCase(flag) || this.longName.equalsIgnoreCase(flag))
-            {
-                invocation.consume(1);
-                return true;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Boolean getDefault(CommandInvocation invocation)
-    {
-        return false;
+        return ParameterType.INDEXED;
     }
 }

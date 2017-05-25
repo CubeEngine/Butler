@@ -20,25 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter;
+package org.cubeengine.butler.parameter.argument;
 
-import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 
-public interface ParameterParser
+public final class StringParser implements ArgumentParser<String>
 {
-    ParameterType getType();
-
-    void parse(CommandInvocation invocation, List<ParsedParameter> params, List<Parameter> suggestions);
-    boolean isPossible(CommandInvocation invocation);
-    List<String> getSuggestions(CommandInvocation invocation);
-
-
-    enum ParameterType
+    @Override
+    public String parse(Class type, CommandInvocation invocation) throws ReaderException
     {
-        FLAG, // -flag
-        INDEXED, // <atPosition>
-        NAMED, // name <value>
-        GROUP
+        String result = invocation.currentToken();
+        invocation.consume(1);
+        return result;
     }
 }

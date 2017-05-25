@@ -26,16 +26,16 @@ import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 
 /**
- * A completer providing suggestions for a CommandInvocation
+ * A Completer suggests a list of strings to perfect your already good {@link CommandInvocation}.
  */
 public interface Completer
 {
     /**
-     * Returns a List of possible String
+     * Suggests a suitable list of strings.
      *
      * @param invocation the invocation
      *
-     * @return the list
+     * @return the list of suggestions
      */
-    List<String> getSuggestions(CommandInvocation invocation);
+    List<String> suggest(CommandInvocation invocation);
 }

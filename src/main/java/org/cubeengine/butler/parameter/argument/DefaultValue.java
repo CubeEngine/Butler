@@ -20,10 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
+package org.cubeengine.butler.parameter.argument;
 
-import org.cubeengine.butler.Provider;
+import org.cubeengine.butler.CommandInvocation;
 
-public class ReaderProvider extends Provider<ArgumentReader>
+public interface DefaultValue<ObjectT>
 {
+    ObjectT getDefault(CommandInvocation invocation);
 }

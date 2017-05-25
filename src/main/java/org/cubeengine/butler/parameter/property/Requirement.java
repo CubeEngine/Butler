@@ -22,9 +22,8 @@
  */
 package org.cubeengine.butler.parameter.property;
 
-import org.cubeengine.butler.parameter.NamedParser;
 import org.cubeengine.butler.parameter.Parameter;
-import org.cubeengine.butler.parameter.ParameterParser.ParameterType;
+import org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType;
 import org.cubeengine.butler.parametric.Optional;
 
 /**

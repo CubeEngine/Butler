@@ -20,22 +20,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
+package org.cubeengine.butler.parameter.argument;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 
-public class StringArrayReader implements ArgumentReader<String[]>
+/**
+ * An ArgumentReader for Flags
+ */
+public class FlagParser implements ArgumentParser<Boolean>, DefaultValue<Boolean>
 {
-    @Override
-    public String[] read(Class type, CommandInvocation invocation) throws ReaderException
+    private final String name;
+    private final String longName;
+
+    public FlagParser(String name, String longName)
     {
-        List<String> list = new ArrayList<>();
-        while (!invocation.isConsumed())
+        this.name = name;
+        this.longName = longName;
+    }
+
+    @Override
+    public Boolean parse(Class type, CommandInvocation invocation) throws ReaderException
+    {
+        String flag = invocation.currentToken();
+        if (flag.startsWith("-"))
         {
-            list.add(invocation.getManager().read(String.class, String.class, invocation).toString());
+            flag = flag.substring(1);
+            if (this.name.equalsIgnoreCase(flag) || this.longName.equalsIgnoreCase(flag))
+            {
+                invocation.consume(1);
+                return true;
+            }
         }
-        return list.toArray(new String[list.size()]);
+        return null;
+    }
+
+    @Override
+    public Boolean getDefault(CommandInvocation invocation)
+    {
+        return false;
     }
 }

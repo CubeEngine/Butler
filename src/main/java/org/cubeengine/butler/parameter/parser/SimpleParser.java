@@ -20,14 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter;
+package org.cubeengine.butler.parameter.parser;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 import org.cubeengine.butler.completer.Completer;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.ParsedParameter;
 import org.cubeengine.butler.parameter.property.Properties;
-import org.cubeengine.butler.parameter.reader.ArgumentReader;
+import org.cubeengine.butler.parameter.argument.ArgumentParser;
 
 /**
  * A Parameter implementation.
@@ -75,7 +77,7 @@ public abstract class SimpleParser implements ParameterParser
         Completer completer = invocation.getManager().getCompleter(completerClass);
         if (completer != null)
         {
-            result.addAll(completer.getSuggestions(invocation));
+            result.addAll(completer.suggest(invocation));
         }
         else
         {
@@ -99,11 +101,11 @@ public abstract class SimpleParser implements ParameterParser
     public static ParsedParameter parseValue(CommandInvocation invocation, Parameter parameter)
     {
         int consumed = invocation.consumed();
-        ArgumentReader reader = parameter.getProperty(Properties.VALUE_READER);
+        ArgumentParser reader = parameter.getProperty(Properties.VALUE_READER);
         Object read;
         if (reader != null)
         {
-            read = reader.read(parameter.getType(), invocation);
+            read = reader.parse(parameter.getType(), invocation);
         }
         else
         {

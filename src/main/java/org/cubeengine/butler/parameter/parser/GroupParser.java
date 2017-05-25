@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter;
+package org.cubeengine.butler.parameter.parser;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,8 +28,18 @@ import java.util.Collections;
 import java.util.List;
 import org.cubeengine.butler.exception.CommandException;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.ParsedParameter;
+import org.cubeengine.butler.parameter.ParsedParameters;
+import org.cubeengine.butler.parameter.TooFewArgumentsException;
+import org.cubeengine.butler.parameter.TooManyArgumentsException;
 import org.cubeengine.butler.parameter.property.Properties;
 import org.cubeengine.butler.parametric.Group;
+
+import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.FLAG;
+import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.GROUP;
+import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.INDEXED;
+import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.NAMED;
 import static org.cubeengine.butler.parameter.property.Requirement.isRequired;
 
 /**
@@ -104,7 +114,7 @@ public class GroupParser implements ParameterParser
             {
                 if (parameter.isPossible(invocation))
                 {
-                    if (suggs != null && parameter.getParameterType() == ParameterType.NAMED
+                    if (suggs != null && parameter.getParameterType() == NAMED
                         && invocation.tokens().size() - consumed <= parameter.getGreed())
                     {
                         suggs.add(parameter);
@@ -305,6 +315,6 @@ public class GroupParser implements ParameterParser
     @Override
     public ParameterType getType()
     {
-        return ParameterType.GROUP;
+        return GROUP;
     }
 }

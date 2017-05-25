@@ -24,12 +24,11 @@ package org.cubeengine.butler.builder.parameter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import org.cubeengine.butler.parameter.FixedValueParser;
+import org.cubeengine.butler.parameter.parser.FixedValueParser;
 import org.cubeengine.butler.parameter.FixedValues;
-import org.cubeengine.butler.parameter.FlagParser;
-import org.cubeengine.butler.parameter.FlagReader;
-import org.cubeengine.butler.parameter.IndexedParser;
-import org.cubeengine.butler.parameter.NamedParser;
+import org.cubeengine.butler.parameter.argument.FlagParser;
+import org.cubeengine.butler.parameter.parser.IndexedParser;
+import org.cubeengine.butler.parameter.parser.NamedParser;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.property.Properties;
 import org.cubeengine.butler.parameter.property.Requirement;
@@ -106,9 +105,9 @@ public class ParserFiller implements ParameterPropertyFiller
         }
         parameter.offer(Properties.FLAG_LONGNAME, longName);
         parameter.offer(Properties.FLAG_NAME, shortName);
-        parameter.offer(Properties.PARSER, new FlagParser(parameter));
+        parameter.offer(Properties.PARSER, new org.cubeengine.butler.parameter.parser.FlagParser(parameter));
         parameter.offer(Properties.REQUIREMENT, Requirement.OPTIONAL);
-        parameter.offer(Properties.DEFAULT_PROVIDER, FlagReader.class);
-        parameter.offer(Properties.VALUE_READER, new FlagReader(shortName, longName));
+        parameter.offer(Properties.DEFAULT_PROVIDER, FlagParser.class);
+        parameter.offer(Properties.VALUE_READER, new FlagParser(shortName, longName));
     }
 }

@@ -27,7 +27,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.cubeengine.butler.parameter.reader.DefaultValue;
+import org.cubeengine.butler.parameter.argument.DefaultValue;
 
 /**
  * When no value was parsed use a default value Provided by

@@ -26,7 +26,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.property.Properties;
-import org.cubeengine.butler.parameter.reader.DefaultValue;
+import org.cubeengine.butler.parameter.argument.DefaultValue;
 import org.cubeengine.butler.parametric.Default;
 
 public class DefaultFiller implements ParameterPropertyFiller

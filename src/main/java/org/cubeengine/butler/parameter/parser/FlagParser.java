@@ -20,13 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter;
+package org.cubeengine.butler.parameter.parser;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.ParsedParameter;
 import org.cubeengine.butler.parameter.property.Properties;
-import org.cubeengine.butler.parameter.reader.ArgumentReader;
 
 public class FlagParser implements ParameterParser
 {

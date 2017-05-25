@@ -20,36 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter.reader;
-
+package org.cubeengine.butler.parameter.argument;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
 
-/**
- * Reads a list of Arguments
- */
-public class SimpleListReader implements ArgumentReader<List>
+public class StringArrayParser implements ArgumentParser<String[]>
 {
-    private final String delimiter;
-
-    public SimpleListReader(String delimiter)
-    {
-        this.delimiter = delimiter;
-    }
-
     @Override
-    public List read(Class type, CommandInvocation invocation) throws ReaderException
+    public String[] parse(Class type, CommandInvocation invocation) throws ReaderException
     {
-        List<Object> result = new ArrayList<>();
-
-        invocation = invocation.setTokens(invocation.consume(1), delimiter);
+        List<String> list = new ArrayList<>();
         while (!invocation.isConsumed())
         {
-            result.add(invocation.getManager().read(type, type, invocation));
+            list.add(invocation.getManager().read(String.class, String.class, invocation).toString());
         }
-
-        return result;
+        return list.toArray(new String[list.size()]);
     }
 }

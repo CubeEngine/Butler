@@ -23,16 +23,16 @@
 package org.cubeengine.butler.parameter.property;
 
 import org.cubeengine.butler.completer.Completer;
-import org.cubeengine.butler.parameter.ParameterParser;
-import org.cubeengine.butler.parameter.reader.ArgumentReader;
-import org.cubeengine.butler.parameter.reader.DefaultValue;
+import org.cubeengine.butler.parameter.parser.ParameterParser;
+import org.cubeengine.butler.parameter.argument.ArgumentParser;
+import org.cubeengine.butler.parameter.argument.DefaultValue;
 import org.cubeengine.butler.parametric.builder.parameter.LabelProvider;
 
 public class Properties
 {
     public static final String TYPE = "TYPE";
     public static final String READER = "READER";
-    public static final Class<ArgumentReader> VALUE_READER = ArgumentReader.class;
+    public static final Class<ArgumentParser> VALUE_READER = ArgumentParser.class;
     public static final Class<ParameterParser> PARSER = ParameterParser.class;
     public static final Class<Filters> FILTERS = Filters.class;
     public static final String FIXED_POSITION = "FIXED_POSITION";

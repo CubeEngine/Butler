@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cubeengine.butler.parameter;
+package org.cubeengine.butler.parameter.parser;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.parameter.FixedValues;
+import org.cubeengine.butler.parameter.Parameter;
+import org.cubeengine.butler.parameter.ParsedParameter;
 import org.cubeengine.butler.parameter.property.Properties;
 
 public class FixedValueParser extends IndexedParser
