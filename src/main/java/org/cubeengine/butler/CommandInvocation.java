@@ -43,21 +43,21 @@ public class CommandInvocation extends PropertyHolder
     private final List<String> labels = new ArrayList<>();
 
     private final List<String> tokens;
-    private final Providers manager;
+    private final Providers providers;
 
     private int consumed = 0;
 
-    public CommandInvocation(Object source, String commandLine, String delim, Providers manager)
+    public CommandInvocation(Object source, String commandLine, String delim, Providers providers)
     {
         this.commandSource = source;
         this.commandLine = commandLine;
         this.tokens = tokenize(commandLine, delim);
-        this.manager = manager;
+        this.providers = providers;
     }
 
-    public CommandInvocation(Object source, String commandLine, Providers manager)
+    public CommandInvocation(Object source, String commandLine, Providers providers)
     {
-        this(source, commandLine, SPACE, manager);
+        this(source, commandLine, SPACE, providers);
     }
 
     protected List<String> tokenize(String commandLine, String delim)
@@ -91,12 +91,12 @@ public class CommandInvocation extends PropertyHolder
      */
     public Providers providers()
     {
-        return manager;
+        return providers;
     }
 
     public <T> T getContext(Class<T> clazz)
     {
-        return manager.getContext(clazz, this);
+        return providers.getContext(clazz, this);
     }
 
     /**
