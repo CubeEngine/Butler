@@ -35,7 +35,7 @@ public class TestParametricSuggestionCommand extends ParametricContainerCommand
     public TestParametricSuggestionCommand(CommandManager man)
     {
         super(new TestContainerDescriptor(man), TestParametricSuggestionCommand.class);
-        man.getProviderManager().register(getClass(), new TestEnumCompleter(), TestEnum.class);
+        man.getProviders().register(getClass(), new TestEnumCompleter(), TestEnum.class);
     }
 
     @Command(desc = "")

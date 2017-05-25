@@ -25,11 +25,11 @@ package org.cubeengine.butler.parametric;
 import org.cubeengine.butler.CommandDescriptor;
 import org.cubeengine.butler.CommandManager;
 import org.cubeengine.butler.DispatcherCommand;
-import org.cubeengine.butler.provider.ProviderManager;
+import org.cubeengine.butler.provider.Providers;
 
 public class SimpleCommandManager extends DispatcherCommand implements CommandManager
 {
-    private ProviderManager providerManager = new ProviderManager();
+    private Providers providers = new Providers();
 
     public SimpleCommandManager(CommandDescriptor descriptor)
     {
@@ -37,9 +37,9 @@ public class SimpleCommandManager extends DispatcherCommand implements CommandMa
     }
 
     @Override
-    public ProviderManager getProviderManager()
+    public Providers getProviders()
     {
-        return providerManager;
+        return providers;
     }
 
     @Override

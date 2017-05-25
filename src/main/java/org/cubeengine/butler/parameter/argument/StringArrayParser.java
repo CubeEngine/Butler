@@ -34,7 +34,7 @@ public class StringArrayParser implements ArgumentParser<String[]>
         List<String> list = new ArrayList<>();
         while (!invocation.isConsumed())
         {
-            list.add(invocation.getManager().read(String.class, String.class, invocation).toString());
+            list.add(invocation.providers().read(String.class, String.class, invocation).toString());
         }
         return list.toArray(new String[list.size()]);
     }

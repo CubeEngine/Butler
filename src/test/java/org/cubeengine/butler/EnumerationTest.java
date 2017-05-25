@@ -25,7 +25,7 @@ package org.cubeengine.butler;
 import java.util.List;
 import org.cubeengine.butler.parameter.enumeration.EnumName;
 import org.cubeengine.butler.parameter.enumeration.SimpleEnumButler;
-import org.cubeengine.butler.provider.ProviderManager;
+import org.cubeengine.butler.provider.Providers;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -43,7 +43,7 @@ public class EnumerationTest
 {
     private static CommandInvocation cmd(String commandLine)
     {
-        return new CommandInvocation(null, commandLine, new ProviderManager());
+        return new CommandInvocation(null, commandLine, new Providers());
     }
 
     @Test

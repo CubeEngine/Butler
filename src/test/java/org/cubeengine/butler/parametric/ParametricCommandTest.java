@@ -54,7 +54,7 @@ public class ParametricCommandTest
         desc.setUsageGenerator(new ParameterUsageGenerator());
         scm = new SimpleCommandManager(desc);
 
-        scm.getProviderManager().registerBuilder(InvokableMethod.class, new ParametricBuilder(new ParameterUsageGenerator()));
+        scm.getProviders().registerBuilder(InvokableMethod.class, new ParametricBuilder(new ParameterUsageGenerator()));
 
         container = new TestParametricCommand(scm);
         container.registerSubCommands();
@@ -70,7 +70,7 @@ public class ParametricCommandTest
         {
             try
             {
-                assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(), scm.getProviderManager())));
+                assertTrue(command.execute(new CommandInvocation(null, command.getDescriptor().getDescription(), scm.getProviders())));
             }
             catch (Exception e)
             {
@@ -88,7 +88,7 @@ public class ParametricCommandTest
             try
             {
                 String description = command.getDescriptor().getDescription();
-                List<String> suggs = command.getSuggestions(new CommandInvocation(null, description, scm.getProviderManager()));
+                List<String> suggs = command.getSuggestions(new CommandInvocation(null, description, scm.getProviders()));
                 assertThat(suggs, Is.is(TEST_LIST));
             }
             catch (Exception e)

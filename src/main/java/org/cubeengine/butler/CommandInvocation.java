@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.cubeengine.butler.property.PropertyHolder;
-import org.cubeengine.butler.provider.ProviderManager;
+import org.cubeengine.butler.provider.Providers;
 
 /**
  * The invocation of a command
@@ -43,11 +43,11 @@ public class CommandInvocation extends PropertyHolder
     private final List<String> labels = new ArrayList<>();
 
     private final List<String> tokens;
-    private final ProviderManager manager;
+    private final Providers manager;
 
     private int consumed = 0;
 
-    public CommandInvocation(Object source, String commandLine, String delim, ProviderManager manager)
+    public CommandInvocation(Object source, String commandLine, String delim, Providers manager)
     {
         this.commandSource = source;
         this.commandLine = commandLine;
@@ -55,7 +55,7 @@ public class CommandInvocation extends PropertyHolder
         this.manager = manager;
     }
 
-    public CommandInvocation(Object source, String commandLine, ProviderManager manager)
+    public CommandInvocation(Object source, String commandLine, Providers manager)
     {
         this(source, commandLine, SPACE, manager);
     }
@@ -85,11 +85,11 @@ public class CommandInvocation extends PropertyHolder
     }
 
     /**
-     * Returns the ReaderManager
+     * Returns the providers
      *
-     * @return the readerManager
+     * @return the {@link Providers}
      */
-    public ProviderManager getManager()
+    public Providers providers()
     {
         return manager;
     }
@@ -227,7 +227,7 @@ public class CommandInvocation extends PropertyHolder
     public CommandInvocation setTokens(String tokens, String delimiter)
     {
         CommandInvocation invocation = new CommandInvocation(this.getCommandSource(), tokens, delimiter,
-                                                             this.getManager());
+                                                             this.providers());
         invocation.properties.putAll(this.properties);
         return invocation;
     }

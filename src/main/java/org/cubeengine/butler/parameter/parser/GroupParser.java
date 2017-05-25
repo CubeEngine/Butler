@@ -36,9 +36,7 @@ import org.cubeengine.butler.parameter.TooManyArgumentsException;
 import org.cubeengine.butler.parameter.property.Properties;
 import org.cubeengine.butler.parametric.Group;
 
-import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.FLAG;
 import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.GROUP;
-import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.INDEXED;
 import static org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType.NAMED;
 import static org.cubeengine.butler.parameter.property.Requirement.isRequired;
 
@@ -183,7 +181,7 @@ public class GroupParser implements ParameterParser
         {
             if (parameter.getDefaultProvider() != null)
             {
-                params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
+                params.add(ParsedParameter.of(parameter, invocation.providers().getDefault(parameter.getDefaultProvider(), invocation), null));
                 continue;
             }
             if (isRequired(parameter) && suggs == null)
@@ -196,7 +194,7 @@ public class GroupParser implements ParameterParser
         {
             if (parameter.getDefaultProvider() != null)
             {
-                params.add(ParsedParameter.of(parameter, invocation.getManager().getDefault(parameter.getDefaultProvider(), invocation), null));
+                params.add(ParsedParameter.of(parameter, invocation.providers().getDefault(parameter.getDefaultProvider(), invocation), null));
                 continue;
             }
             if (isRequired(parameter) && parameter.getGreed() != Parameter.INFINITE)

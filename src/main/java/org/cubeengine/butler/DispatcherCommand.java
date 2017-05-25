@@ -187,7 +187,7 @@ public class DispatcherCommand implements Dispatcher
      */
     protected void handleException(Throwable e, CommandInvocation invocation)
     {
-        if (!invocation.getManager().getExceptionHandler().handleException(e, this, invocation))
+        if (!invocation.providers().getExceptionHandler().handleException(e, this, invocation))
         {
             throw new UnhandledException(e);
         }

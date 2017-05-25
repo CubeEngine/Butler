@@ -47,7 +47,7 @@ public class SimpleListParser implements ArgumentParser<List>
         invocation = invocation.setTokens(invocation.consume(1), delimiter);
         while (!invocation.isConsumed())
         {
-            result.add(invocation.getManager().read(type, type, invocation));
+            result.add(invocation.providers().read(type, type, invocation));
         }
 
         return result;

@@ -43,7 +43,7 @@ import org.cubeengine.butler.parameter.argument.StringParser;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
 import org.cubeengine.butler.parametric.context.BasicCommandContextValue;
 
-public class ProviderManager
+public class Providers
 {
     private final SourceRestrictedContextValue sourceContext = new SourceRestrictedContextValue();
 
@@ -56,7 +56,7 @@ public class ProviderManager
 
     private Map<Class, CommandBuilder> builders = new HashMap<>();
 
-    public ProviderManager()
+    public Providers()
     {
         register(this, new StringParser(), String.class);
         register(this, new SimpleListParser(","), List.class);

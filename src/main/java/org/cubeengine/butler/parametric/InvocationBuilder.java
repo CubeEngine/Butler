@@ -23,9 +23,9 @@
 package org.cubeengine.butler.parametric;
 
 import org.cubeengine.butler.CommandInvocation;
-import org.cubeengine.butler.provider.ProviderManager;
+import org.cubeengine.butler.provider.Providers;
 
 public interface InvocationBuilder
 {
-    CommandInvocation build(Object source, String commandLine, String delim, ProviderManager manager);
+    CommandInvocation build(Object source, String commandLine, String delim, Providers manager);
 }

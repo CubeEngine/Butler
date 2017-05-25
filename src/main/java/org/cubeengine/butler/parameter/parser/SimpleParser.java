@@ -74,7 +74,7 @@ public abstract class SimpleParser implements ParameterParser
             completerClass = parameter.getType();
         }
 
-        Completer completer = invocation.getManager().completers().get(completerClass);
+        Completer completer = invocation.providers().completers().get(completerClass);
         if (completer != null)
         {
             result.addAll(completer.suggest(parameter.getType(), invocation));
@@ -109,7 +109,7 @@ public abstract class SimpleParser implements ParameterParser
         }
         else
         {
-            read = invocation.getManager().read(parameter, invocation);
+            read = invocation.providers().read(parameter, invocation);
         }
         String tokens = invocation.tokensSince(consumed);
         return ParsedParameter.of(parameter, read, tokens);

@@ -34,7 +34,6 @@ import org.cubeengine.butler.DispatcherCommand;
 import org.cubeengine.butler.alias.Alias;
 import org.cubeengine.butler.alias.AliasConfiguration;
 import org.cubeengine.butler.parameter.UsageGenerator;
-import org.cubeengine.butler.parameter.enumeration.EnumName;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 
 /**
@@ -87,7 +86,7 @@ public class ParametricContainerCommand extends DispatcherCommand implements Con
     @Override
     public void registerSubCommands()
     {
-        CommandBuilder<InvokableMethod> builder = getManager().getProviderManager().getBuilder(InvokableMethod.class);
+        CommandBuilder<InvokableMethod> builder = getManager().getProviders().getBuilder(InvokableMethod.class);
         for (Method method : ParametricBuilder.getMethods(this.getClass()))
         {
             CommandBase command = builder.buildCommand(this, originFor(method));
