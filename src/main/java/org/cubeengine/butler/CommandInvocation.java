@@ -45,6 +45,8 @@ public class CommandInvocation extends PropertyHolder
     private final List<String> tokens;
     private final Providers providers;
 
+    private DiagnoseListener listener = NoOpDiagnoseListener.DEFAULT;
+
     private int consumed = 0;
 
     public CommandInvocation(Object source, String commandLine, String delim, Providers providers)
@@ -235,5 +237,16 @@ public class CommandInvocation extends PropertyHolder
     public CommandBase getCommand()
     {
         return this.invocationPath.getLast();
+    }
+
+    public DiagnoseListener getListener()
+    {
+        return listener;
+    }
+
+    public CommandInvocation withListener(DiagnoseListener listener)
+    {
+        this.listener = listener;
+        return this;
     }
 }

@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.DiagnoseListener.Phase;
+import org.cubeengine.butler.DiagnoseListener.Stage;
 import org.cubeengine.butler.DispatcherCommand;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.parser.GroupParser;
@@ -50,12 +52,19 @@ public class BasicParametricCommand extends DispatcherCommand
         boolean ran = super.selfExecute(invocation);
         if (!ran)
         {
-            ParsedParameters parsed = new ParsedParameters();
-            invocation.setProperty(parsed);
-            this.getDescriptor().getParameters().parse(invocation, parsed.value(), null);
+            this.parse(invocation);
             ran = this.run(invocation);
         }
         return ran;
+    }
+
+    private void parse(CommandInvocation invocation)
+    {
+        invocation.getListener().on(Stage.PARSE, Phase.PRE, invocation);
+        ParsedParameters parsed = new ParsedParameters();
+        invocation.setProperty(parsed);
+        this.getDescriptor().getParameters().parse(invocation, parsed.value(), null);
+        invocation.getListener().on(Stage.PARSE, Phase.POST, invocation);
     }
 
     @Override
@@ -83,7 +92,9 @@ public class BasicParametricCommand extends DispatcherCommand
             InvokableMethod invokableMethod = descriptor.getInvokableMethod();
             Object[] args = getArguments(invocation, descriptor, invokableMethod);
 
+            invocation.getListener().on(Stage.INVOKE, Phase.PRE, invocation);
             Object result = invokableMethod.invoke(args);
+            invocation.getListener().on(Stage.INVOKE, Phase.POST, invocation);
             if (result == null)
             {
                 return true;
@@ -94,7 +105,9 @@ public class BasicParametricCommand extends DispatcherCommand
             }
             else if (result instanceof CommandResult)
             {
+                invocation.getListener().on(Stage.PROCESS_RESULT, Phase.PRE, invocation);
                 ((CommandResult)result).process(invocation); // TODO recreate context for CommandResult OR somehow ensure the types are the same
+                invocation.getListener().on(Stage.PROCESS_RESULT, Phase.POST, invocation);
             }
         }
         catch (IllegalAccessException | InvocationTargetException e)
@@ -106,6 +119,8 @@ public class BasicParametricCommand extends DispatcherCommand
 
     private static Object[] getArguments(CommandInvocation invocation, ParametricCommandDescriptor descriptor, InvokableMethod invokableMethod)
     {
+        invocation.getListener().on(Stage.PREPARE_ARGUMENTS, Phase.PRE, invocation);
+
         Class<?>[] parameterTypes = invokableMethod.getMethod().getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i <= descriptor.getContextParameter(); i++)
@@ -156,6 +171,8 @@ public class BasicParametricCommand extends DispatcherCommand
                 }
             }
         }
+
+        invocation.getListener().on(Stage.PREPARE_ARGUMENTS, Phase.POST, invocation);
         return args;
     }
 
