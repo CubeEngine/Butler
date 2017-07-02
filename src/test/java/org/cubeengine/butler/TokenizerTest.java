@@ -26,5 +26,6 @@ public class TokenizerTest
         assertEquals(asList(plain("a"), plain("b"), plain("c")), tokenize("a b c"));
         assertEquals(asList(plain("\\\"\\a"), plain("b\""), plain("\\\"c")), tokenize("\\\"\\a b\" \\\"c"));
         assertEquals(asList(quoted("a b "), plain("c")), tokenize("\"a b \"c"));
+        assertEquals(asList(plain("a"), plain("b"), plain("c")), tokenize("a b c "));
     }
 }
