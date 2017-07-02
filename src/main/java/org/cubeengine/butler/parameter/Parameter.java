@@ -48,10 +48,20 @@ public class Parameter
         return properties.put(key, value);
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T getProperty(Object key)
     {
-        return ((T)properties.get(key));
+        return getProperty(key, null);
+    }
+
+    public <T> T getProperty(Object key, T def)
+    {
+        @SuppressWarnings("unchecked")
+        T prop = ((T)properties.get(key));
+        if (prop == null)
+        {
+            return def;
+        }
+        return prop;
     }
 
     /**

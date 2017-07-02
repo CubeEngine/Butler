@@ -84,7 +84,7 @@ public class ParametricParametersFiller extends ParametersFiller<ParametricComma
         Parameter param;
         if (fields == null)
         {
-            param = createParameter(type, annotations, Java8Util.getJavaParameter(method, index));
+            param = createParameter(type, annotations, new ParameterName(method.getParameters()[index]));
             param.offer(Properties.METHOD_INDEX, index);
 
         }
@@ -96,7 +96,6 @@ public class ParametricParametersFiller extends ParametersFiller<ParametricComma
         return param;
     }
 
-    @SuppressWarnings("unchecked")
     protected Parameter createParameter(Type type, Annotation[] annotations, LabelProvider labelProvider)
     {
         if (type instanceof Class && Group.class.isAssignableFrom(((Class)type)))

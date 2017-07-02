@@ -23,11 +23,12 @@
 package org.cubeengine.butler.builder.parameter;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Optional;
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.property.Properties;
 import org.cubeengine.butler.parameter.property.Requirement;
-import org.cubeengine.butler.parametric.Optional;
 
 public class OptionalFiller implements ParameterPropertyFiller
 {
@@ -35,13 +36,26 @@ public class OptionalFiller implements ParameterPropertyFiller
     public void fill(Parameter parameter, Type type, Annotation[] annotations)
     {
         Requirement requirement = Requirement.DEFAULT;
-        for (Annotation annotation : annotations)
-        {
-            if (annotation instanceof Optional)
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType)type;
+            Class<?> rawClass = toRawType(parameterizedType);
+            if (Optional.class.isAssignableFrom(rawClass))
             {
                 requirement = Requirement.OPTIONAL;
             }
         }
         parameter.offer(Properties.REQUIREMENT, requirement);
+    }
+
+    private static Class<?> toRawType(Type t)
+    {
+        if (t instanceof ParameterizedType)
+        {
+            return toRawType(((ParameterizedType)t).getRawType());
+        }
+        else
+        {
+            return (Class<?>)t;
+        }
     }
 }

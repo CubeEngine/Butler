@@ -22,31 +22,21 @@
  */
 package org.cubeengine.butler.parametric.builder.parameter;
 
-import java.lang.reflect.InvocationTargetException;
+
+import java.lang.reflect.Parameter;
 
 public class ParameterName implements LabelProvider
 {
-    private Object javaParameter;
+    private Parameter parameter;
 
-    public ParameterName(Object javaParameter)
+    public ParameterName(Parameter parameter)
     {
-        this.javaParameter = javaParameter;
+        this.parameter = parameter;
     }
 
     @Override
     public String getLabel()
     {
-        if (Java8Util.PARAMETER_NAME == null)
-        {
-            throw new IllegalStateException("Missing Label");
-        }
-        try
-        {
-            return Java8Util.PARAMETER_NAME.invoke(javaParameter).toString();
-        }
-        catch (IllegalAccessException | InvocationTargetException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return parameter.getName();
     }
 }

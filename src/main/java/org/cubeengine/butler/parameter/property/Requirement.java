@@ -24,7 +24,6 @@ package org.cubeengine.butler.parameter.property;
 
 import org.cubeengine.butler.parameter.Parameter;
 import org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType;
-import org.cubeengine.butler.parametric.Optional;
 
 /**
  * Defines if the Parameter is required or not
@@ -37,28 +36,15 @@ public enum Requirement
 
     public static boolean isRequired(Parameter parameter)
     {
-        boolean angleBrackets;
-        Requirement requirement = parameter.getProperty(Properties.REQUIREMENT);
-        requirement = requirement == null ? DEFAULT : requirement;
-        switch (requirement)
+        switch (parameter.getProperty(Properties.REQUIREMENT, DEFAULT))
         {
             case REQUIRED:
-                angleBrackets = true;
-                break;
+                return true;
             case OPTIONAL:
-                angleBrackets = false;
-                break;
+                return false;
             case DEFAULT:
             default:
-                angleBrackets = parameter.getParameterType() != ParameterType.NAMED;
+                return parameter.getParameterType() != ParameterType.NAMED;
         }
-        return angleBrackets;
     }
-
-    public static Requirement of(Optional annotation)
-    {
-        return OPTIONAL;
-    }
-
-
 }

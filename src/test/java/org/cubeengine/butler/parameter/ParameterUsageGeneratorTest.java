@@ -25,12 +25,12 @@ package org.cubeengine.butler.parameter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.cubeengine.butler.CommandBase;
 import org.cubeengine.butler.SimpleCommandDescriptor;
 import org.cubeengine.butler.parametric.Command;
 import org.cubeengine.butler.parametric.InvokableMethod;
 import org.cubeengine.butler.parametric.Label;
-import org.cubeengine.butler.parametric.Optional;
 import org.cubeengine.butler.parametric.SimpleCommandManager;
 import org.cubeengine.butler.parametric.builder.ParametricBuilder;
 import org.cubeengine.butler.parametric.context.BasicCommandContext;
@@ -77,7 +77,7 @@ public class ParameterUsageGeneratorTest
     }
 
     @Command(desc = "cmd2 [aString]")
-    public void cmd2(BasicCommandContext ctx, @Label("aString") @Optional String aString)
+    public void cmd2(BasicCommandContext ctx, @Label("aString") Optional<String> aString)
     {
     }
 }
