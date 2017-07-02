@@ -77,7 +77,12 @@ public class Tokenizer
             {
                 do
                 {
-                    current = input.charAt(++i);
+                    ++i;
+                    if (i >= len)
+                    {
+                        break;
+                    }
+                    current = input.charAt(i);
                 }
                 while (isWhitespace(current));
             }
