@@ -85,8 +85,12 @@ public abstract class UsageGenerator
             {
                 break;
             }
-            commands.add(descriptor.getName());
+
             dispatcher = descriptor.getDispatcher();
+            if (dispatcher != null)
+            {
+                commands.add(descriptor.getName());
+            }
         }
         return commands;
     }
