@@ -22,10 +22,11 @@
  */
 package org.cubeengine.butler.parameter;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import org.cubeengine.butler.CommandInvocation;
+import org.cubeengine.butler.parameter.argument.DefaultValue;
 import org.cubeengine.butler.parameter.parser.ParameterParser;
 import org.cubeengine.butler.parameter.parser.ParameterParser.ParameterType;
 import org.cubeengine.butler.parameter.property.Filters;
@@ -41,14 +42,14 @@ public class Parameter
     public static final int DEFAULT = 1;
 
 
-    private Map<Object, Object> properties = new HashMap<>();
+    private Map<Object, Object> properties = new IdentityHashMap<>();
 
     public Object offer(Object key, Object value)
     {
         return properties.put(key, value);
     }
 
-    public <T> T getProperty(Object key)
+    public <T> T getProperty(Property<T> key)
     {
         return getProperty(key, null);
     }
@@ -147,7 +148,7 @@ public class Parameter
         return getProperty(Properties.GREED);
     }
 
-    public Class<?> getDefaultProvider()
+    public Class<? extends DefaultValue<?>> getDefaultProvider()
     {
         return getProperty(Properties.DEFAULT_PROVIDER);
     }
@@ -160,5 +161,10 @@ public class Parameter
     public ParameterParser getParser()
     {
         return getProperty(Properties.PARSER);
+    }
+
+    public static final class Property<T>
+    {
+
     }
 }

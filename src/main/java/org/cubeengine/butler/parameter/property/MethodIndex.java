@@ -32,15 +32,11 @@ public class MethodIndex extends AbstractProperty<Integer>
      * A Comparator for Parameter with MethodIndex.
      * This Comparator will throw NullPointerException when used with parameters having no MethodIndex
      */
-    public static final Comparator<Parameter> COMPARATOR = new Comparator<Parameter>()
+    public static final Comparator<Parameter> COMPARATOR = (o1, o2) ->
     {
-        @Override
-        public int compare(Parameter o1, Parameter o2)
-        {
-            Integer i1 = o1.getProperty(Properties.METHOD_INDEX);
-            Integer i2 = o2.getProperty(Properties.METHOD_INDEX);
-            return i1.compareTo(i2); // Null is not allowed where this comparator is used
-        }
+        Integer i1 = o1.getProperty(Properties.METHOD_INDEX);
+        Integer i2 = o2.getProperty(Properties.METHOD_INDEX);
+        return i1.compareTo(i2); // Null is not allowed where this comparator is used
     };
 
     public MethodIndex(Integer value)

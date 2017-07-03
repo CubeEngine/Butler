@@ -68,7 +68,7 @@ public abstract class SimpleParser implements ParameterParser
     public List<String> getSuggestions(CommandInvocation invocation)
     {
         List<String> result = new ArrayList<>();
-        Class completerClass = parameter.getProperty(Properties.COMPLETER);
+        Class<?> completerClass = parameter.getProperty(Properties.COMPLETER);
         if (completerClass == null)
         {
             completerClass = parameter.getType();

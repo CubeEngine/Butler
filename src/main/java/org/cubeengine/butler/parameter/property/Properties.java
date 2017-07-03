@@ -22,6 +22,8 @@
  */
 package org.cubeengine.butler.parameter.property;
 
+import java.lang.reflect.Field;
+import org.cubeengine.butler.parameter.Parameter.Property;
 import org.cubeengine.butler.parameter.argument.Completer;
 import org.cubeengine.butler.parameter.parser.ParameterParser;
 import org.cubeengine.butler.parameter.argument.ArgumentParser;
@@ -30,29 +32,29 @@ import org.cubeengine.butler.parametric.builder.parameter.LabelProvider;
 
 public class Properties
 {
-    public static final String TYPE = "TYPE";
-    public static final String READER = "READER";
-    public static final Class<ArgumentParser> ARGUMENT_PARSER = ArgumentParser.class;
-    public static final Class<ParameterParser> PARSER = ParameterParser.class;
-    public static final Class<Filters> FILTERS = Filters.class;
-    public static final String FIXED_POSITION = "FIXED_POSITION";
-    public static final String FIELD_HOLDER = "FIELD_HOLDER";
-    public static final String METHOD_INDEX = "METHOD_INDEX";
-    public static final String GREED = "GREED";
+    public static final Property<Class<?>> TYPE = new Property<>();
+    public static final Property<Class<?>> READER = new Property<>();
+    public static final Property<ArgumentParser> ARGUMENT_PARSER = new Property<>();
+    public static final Property<ParameterParser> PARSER = new Property<>();
+    public static final Property<Filters> FILTERS = new Property<>();
+    public static final Property<Integer> FIXED_POSITION = new Property<>();
+    public static final Property<Field> FIELD_HOLDER = new Property<>();
+    public static final Property<Integer> METHOD_INDEX = new Property<>();
+    public static final Property<Integer> GREED = new Property<>();
 
-    public static final String NAMES = "NAMES";
-    public static final String FIXED_VALUES = "FIXED_VALUES";
+    public static final Property<String[]> NAMES = new Property<>();
+    public static final Property<String> FIXED_VALUES = new Property<>();
 
-    public static final String FLAG_NAME = "FLAG_NAME";
-    public static final String FLAG_LONGNAME = "FLAG_LONGNAME";
+    public static final Property<String> FLAG_NAME = new Property<>();
+    public static final Property<String> FLAG_LONGNAME = new Property<>();
 
-    public static final String VALUE_LABEL = "VALUE_LABEL";
+    public static final Property<String> VALUE_LABEL = new Property<>();
 
-    public static final Class<Requirement> REQUIREMENT = Requirement.class;
-    public static final String DESCRIPTION = "DESCRIPTION";
-    public static final Class<Completer> COMPLETER = Completer.class;
+    public static final Property<Requirement> REQUIREMENT = new Property<>();
+    public static final Property<String> DESCRIPTION = new Property<>();
+    public static final Property<Class<? extends Completer>> COMPLETER = new Property<>();
 
-    public static final Class<DefaultValue> DEFAULT_PROVIDER = DefaultValue.class;
+    public static final Property<Class<? extends DefaultValue<?>>> DEFAULT_PROVIDER = new Property<>();
 
-    public static final Class<LabelProvider> LABEL_PROVIDER = LabelProvider.class;
+    public static final Property<LabelProvider> LABEL_PROVIDER = new Property<>();
 }
