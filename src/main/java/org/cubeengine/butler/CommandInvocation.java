@@ -25,6 +25,7 @@ package org.cubeengine.butler;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.cubeengine.butler.Tokenizer.Token;
 import org.cubeengine.butler.property.PropertyHolder;
 import org.cubeengine.butler.provider.Providers;
 
@@ -49,31 +50,23 @@ public class CommandInvocation extends PropertyHolder
 
     private int consumed = 0;
 
-    public CommandInvocation(Object source, String commandLine, String delim, Providers providers)
+    public CommandInvocation(Object source, String commandLine, Providers providers)
     {
         this.commandSource = source;
         this.commandLine = commandLine;
-        this.tokens = tokenize(commandLine, delim);
+        this.tokens = tokenize(commandLine);
         this.providers = providers;
     }
 
-    public CommandInvocation(Object source, String commandLine, Providers providers)
+    protected List<String> tokenize(String commandLine)
     {
-        this(source, commandLine, SPACE, providers);
-    }
-
-    protected List<String> tokenize(String commandLine, String delim)
-    {
-        String[] rawTokens = commandLine.split(delim, -1);
-        List<String> stringParsed = new ArrayList<>(rawTokens.length);
-        StringBuilder sb = new StringBuilder();
-        for (int offset = 0; offset < rawTokens.length; )
+        List<Token> tokens = Tokenizer.tokenize(commandLine);
+        List<String> strings = new ArrayList<>(tokens.size());
+        for (final Token t : tokens)
         {
-            offset += StringUtils.parseString(sb, rawTokens, offset);
-            stringParsed.add(sb.toString());
-            sb.setLength(0);
+            strings.add(t.value);
         }
-        return stringParsed;
+        return strings;
     }
 
     /**
@@ -228,8 +221,7 @@ public class CommandInvocation extends PropertyHolder
      */
     public CommandInvocation setTokens(String tokens, String delimiter)
     {
-        CommandInvocation invocation = new CommandInvocation(this.getCommandSource(), tokens, delimiter,
-                                                             this.providers());
+        CommandInvocation invocation = new CommandInvocation(this.getCommandSource(), tokens, this.providers());
         invocation.properties.putAll(this.properties);
         return invocation;
     }
