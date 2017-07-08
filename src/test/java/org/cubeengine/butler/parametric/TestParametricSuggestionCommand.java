@@ -38,7 +38,7 @@ public class TestParametricSuggestionCommand extends ParametricContainerCommand
         man.getProviders().register(getClass(), new TestEnumCompleter(), TestEnum.class);
     }
 
-    @Command(desc = "")
+    @Command(desc = " ")
     public void parametricVal(BasicCommandContext ctx, TestEnum enumVal)
     {
         // Suggest enumVal
