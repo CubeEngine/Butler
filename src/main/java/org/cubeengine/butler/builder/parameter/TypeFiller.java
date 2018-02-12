@@ -57,11 +57,6 @@ public class TypeFiller implements ParameterPropertyFiller
             throw new UnsupportedOperationException("Type is not supported: " + type);
         }
 
-        if (reader == type && Enum.class.isAssignableFrom(clazz))
-        {
-            reader = Enum.class; // Use default enum reader
-        }
-
         for (Annotation annotation : annotations)
         {
             if (annotation instanceof Parser)

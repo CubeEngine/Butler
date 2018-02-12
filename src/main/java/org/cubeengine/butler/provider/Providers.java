@@ -134,7 +134,14 @@ public class Providers
         ArgumentParser<?> reader = parsers().resolve(readerClass);
         if (reader == null)
         {
-            throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");
+            if (Enum.class.isAssignableFrom(type))
+            {
+                reader = parsers().resolve(Enum.class);
+            }
+            if (reader == null)
+            {
+                throw new IllegalArgumentException("No reader found for " + readerClass.getName() + "!");
+            }
         }
         return reader.parse(type, invocation);
     }
