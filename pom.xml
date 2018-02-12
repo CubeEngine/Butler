@@ -4,7 +4,7 @@
 
     <groupId>org.cubeengine</groupId>
     <artifactId>butler</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5-SNAPSHOT</version>
 
     <name>Butler</name>
     <description>Send him commands!</description>
@@ -28,7 +28,7 @@
         <url>https://github.com/CubeEngine/Butler</url>
         <connection>scm:git:https://github.com/CubeEngine/Butler</connection>
         <developerConnection>scm:git:git@github.com:CubeEngine/Butler</developerConnection>
-        <tag>butler-0.1.4</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
